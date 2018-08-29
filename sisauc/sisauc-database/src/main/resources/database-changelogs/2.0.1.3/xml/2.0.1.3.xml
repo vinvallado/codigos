@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+         
+	<changeSet id="limpar-banco-para-cissfa" author="tadeutbc">
+		<sql>
+
+			DELETE FROM sch_sisauc.item_gab_metadado_valor_item_gab where id_item_gab in (
+				select id FROM sch_sisauc.item_gab where id_configuracao_edital_credenciado_procedimento in (
+					select id from sch_sisauc.configuracao_edital_credenciado_procedimento where id_procedimento in (
+						select id FROM sch_sisauc.procedimento_base where tabela = 'CISSFA'
+					)
+				)
+			);
+			
+			DELETE FROM sch_sisauc.auditoria_resultado_procedimento_auditoria where id_resposta_procedimento_auditoria in (
+				select id FROM sch_sisauc.resposta_procedimento_auditoria where id_configuracao_edital_credenciado_procedimento in (
+					select id from sch_sisauc.configuracao_edital_credenciado_procedimento where id_procedimento in (
+						select id FROM sch_sisauc.procedimento_base where tabela = 'CISSFA'
+					)
+				)
+			);
+			
+			DELETE FROM sch_sisauc.resposta_procedimento_auditoria where id_configuracao_edital_credenciado_procedimento in (
+				select id from sch_sisauc.configuracao_edital_credenciado_procedimento where id_procedimento in (
+					select id FROM sch_sisauc.procedimento_base where tabela = 'CISSFA'
+				)
+			);
+			
+			DELETE FROM sch_sisauc.solicitacao_pedidos_procedimento where id_procedimento_pedido_solicitacao in (
+				select id FROM sch_sisauc.procedimento_pedido_solicitacao where id_configuracao_edital_credenciado_procedimento in (
+					select id from sch_sisauc.configuracao_edital_credenciado_procedimento where id_procedimento in (
+						select id FROM sch_sisauc.procedimento_base where tabela = 'CISSFA'
+					)
+				)
+			);
+			
+			DELETE FROM sch_sisauc.procedimento_pedido_solicitacao where id_configuracao_edital_credenciado_procedimento in (
+				select id from sch_sisauc.configuracao_edital_credenciado_procedimento where id_procedimento in (
+					select id FROM sch_sisauc.procedimento_base where tabela = 'CISSFA'
+				)
+			);
+			
+			DELETE FROM sch_sisauc.item_gab where id_configuracao_edital_credenciado_procedimento in (
+				select id from sch_sisauc.configuracao_edital_credenciado_procedimento where id_procedimento in (
+					select id FROM sch_sisauc.procedimento_base where tabela = 'CISSFA'
+				)
+			);
+			
+			DELETE FROM sch_sisauc.historico_valor_configuracao_edital_procedimento where id_configuracao_edital_credenciado_procedimento in (
+				select id from sch_sisauc.configuracao_edital_credenciado_procedimento where id_procedimento in (
+					select id FROM sch_sisauc.procedimento_base where tabela = 'CISSFA'
+				)
+			);
+			
+			delete from sch_sisauc.historico_valor_configuracao_edital_credenciado where id_configuracao_edital_credenciamento in (
+				select id from sch_sisauc.configuracao_edital_credenciado_procedimento where id_procedimento in (
+					select id FROM sch_sisauc.procedimento_base where tabela = 'CISSFA'
+				)
+			);
+			
+			delete from sch_sisauc.configuracao_edital_credenciado_procedimento where id_procedimento in (select id FROM sch_sisauc.procedimento_base where tabela = 'CISSFA');
+			delete from sch_sisauc.procedimento_cissfa where id_subgrupo in (select id from sch_sisauc.subgrupo where id_grupo in (select id from sch_sisauc.grupo where tabela = 'CISSFA')  );
+			DELETE FROM sch_sisauc.procedimento_base where tabela = 'CISSFA';
+			delete from sch_sisauc.subgrupo where id_grupo in (select id from sch_sisauc.grupo where tabela = 'CISSFA');
+			delete from sch_sisauc.grupo where tabela = 'CISSFA';
+			
+			
+			delete from sch_sdga.cancelamento_apresentacao_gab where id_gab not in (select id_gab from sch_sisauc.item_gab);
+			
+			
+			DELETE FROM sch_sisauc.gab as gab where gab.id not in (select id_gab from sch_sisauc.item_gab);
+			
+			ALTER SEQUENCE sch_sisauc.grupo_id_seq RESTART WITH 35;
+			ALTER SEQUENCE sch_sisauc.subgrupo_id_seq RESTART WITH 217;
+			ALTER SEQUENCE sch_sisauc.procedimento_base_id_seq RESTART WITH 10000;
+			
+			CREATE SEQUENCE sch_sisauc.procedimento_cissfa_id_seq
+			INCREMENT 1
+			MINVALUE 1
+			MAXVALUE 9223372036854775807
+			START 10000
+			CACHE 1;
+			
+			ALTER TABLE sch_sisauc.procedimento_cissfa_id_seq
+			OWNER TO sisauc;
+
+		</sql>
+	</changeSet>  
+	       
+	<changeSet id="carga-cissfa" author="tadeutbc">
+		<sqlFile relativeToChangelogFile="true" path="../sql/carga-cissfa.sql" />
+	</changeSet>
+
+	<changeSet id="atualizar-notas-2.0.1" author="tadeutbc">
+		<sql>
+			UPDATE sch_sisauc.usuario set leu_notas_versao = false;
+		</sql>
+	</changeSet>
+         
+</databaseChangeLog>

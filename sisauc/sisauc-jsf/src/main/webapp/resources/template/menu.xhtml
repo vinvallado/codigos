@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:sec="http://www.springframework.org/security/tags">
+
+	<h:outputText value="#{pageContext.request.pathTranslated}" />
+
+	<h:form id="form-menu" prependId="false">
+
+		<p:accordionPanel styleClass="menu-sisauc"
+			activeIndex="#{sessionBean.menuIndex}" dynamic="true" id="menu">
+			<p:ajax event="tabChange" listener="#{sessionBean.menuTabChange}"
+				global="false" immediate="true" />
+			<sec:authorize ifAllGranted="PERFIL_ADMINISTRADOR_SISTEMA">
+
+				<p:tab title="Cadastros" id="cadastros-tab">
+					<p:menu>
+						<p:menuitem icon="fa fa-user" value="Usuários" id="menu-usuarios"
+							url="/administracao/cadastro/usuario" />
+						<p:menuitem icon="fa fa-user-md" value="Profissionais"
+							id="menu-medicos" url="/administracao/cadastro/medico" />
+						<p:menuitem icon="fa fa-briefcase" value="Credenciados"
+							id="menu-credenciados" url="/administracao/cadastro/credenciado" />
+						<p:menuitem icon="fa fa-circle-o" value="Portes CBHPM-2012"
+							id="menu-porte" url="/administracao/cadastro/portes-cbhpm2012" />
+						<p:menuitem icon="fa fa-calculator" value="Unidade Multiplicadora"
+							id="menu-unidade-multiplicadora"
+							url="/administracao/cadastro/unidade-multiplicadora" />
+					</p:menu>
+				</p:tab>
+
+				<p:tab title="Editais" id="editais-tab">
+					<p:menu>
+						<p:menuitem icon="fa fa-file-o" value="Cadastro"
+							id="menu-edital-credenciamento"
+							url="/administracao/cadastro/edital-credenciamento" />
+						<p:menuitem icon="fa fa-file-text-o" value="Configuração"
+							id="menu-configuracao-edital"
+							url="/administracao/cadastro/configuracao-edital" />
+					</p:menu>
+				</p:tab>
+
+			</sec:authorize>
+
+			<sec:authorize ifAllGranted="PERFIL_USUARIO">
+				<p:tab title="Beneficiários" id="beneficiarios-tab">
+					<p:menu>
+						<p:menuitem icon="fa fa-users" value="Consulta"
+							id="menu-beneficiarios"
+							url="/administracao/cadastro/beneficiario" />
+					</p:menu>
+				</p:tab>
+			</sec:authorize>
+
+			<sec:authorize ifAllGranted="PERFIL_ATENDENTE_FUNSA">
+				<p:tab title="Atendimento" id="atendimento-tab">
+					<p:menu>
+						<p:menuitem icon="fa fa-file" value="Solic. Procedimento"
+							id="menu-cadastro-solicitacao"
+							url="/atendente/cadastro/solicitacao" />
+						<p:menuitem icon="fa fa-file-text" value="Solic. Ressarcimento"
+							id="menu-cadastro-solicitacao-ressarcimento"
+							url="/atendente/cadastro/solicitacao-ressarcimento" />
+						<p:menuitem icon="fa fa-search" value="Buscar Solicitação"
+							id="menu-busca-solicitacao" url="/atendente/busca/solicitacao" />
+						<p:menuitem icon="fa fa-download" value="Apresentar ARE"
+							id="menu-apresentar-ar" url="/atendente/apresentar-are" />
+					</p:menu>
+				</p:tab>
+			</sec:authorize>
+
+
+
+			<sec:authorize ifAllGranted="PERFIL_AUDITOR_FUNSA">
+				<p:tab title="Auditoria Prospectiva" id="auditoria-prospectiva-tab">
+					<p:menu>
+						<p:menuitem icon="fa fa-gavel" value="Solic. Procedimento"
+							id="menu-solicitacoes-pendentes"
+							url="/auditoria-prospectiva/pendentes" />
+						<p:menuitem icon="fa fa-gavel" value="Solic. Ressarcimento"
+							id="menu-solicitacoes-pendentes-ressarcimento"
+							url="/auditoria-prospectiva-ressarcimento/pendentes" />
+					</p:menu>
+				</p:tab>
+			</sec:authorize>
+
+			<sec:authorize
+				access="hasAnyRole('PERFIL_CHEFE_FUNSA', 'PERFIL_ATENDENTE_FUNSA')">
+				<p:tab title="Acompanhamento" id="chefe-funsa-tab">
+					<p:menu>
+						<p:menuitem icon="fa fa-file" value="GAB"
+							id="menu-acompanhar-gabs" url="/chefe-funsa/gab/acompanhamento" />
+						<p:menuitem icon="fa fa-file-text" value="ARE"
+							id="menu-acompanhar-ars" url="/chefe-funsa/ar/acompanhamento" />
+					</p:menu>
+				</p:tab>
+			</sec:authorize>
+
+			<sec:authorize ifAllGranted="PERFIL_AUDITOR_FINANCEIRO">
+				<p:tab title="Auditoria Retrospectiva"
+					id="auditoria-retrospectiva-tab">
+					<p:menu>
+						<p:menuitem icon="fa fa-download" value="Apresentar GAB"
+							id="menu-apresentar-gab"
+							url="/auditoria-retrospectiva/apresentar-gab" />
+						<p:menuitem icon="fa fa-edit" value="Realizar Auditoria GAB"
+							id="menu-gab-apresentada"
+							url="/auditoria-retrospectiva/realizar-auditoria" />
+						<p:menuitem icon="fa fa-edit" value="Realizar Auditoria ARE"
+							id="menu-ar-apresentada"
+							url="/auditoria-retrospectiva-ressarcimento/realizar-auditoria" />
+						<p:menuitem icon="fa fa-list-alt" value="Lotes de Pagamento"
+							id="lotes-pagamento"
+							url="/auditoria-retrospectiva/gerenciar-lotes" />
+						<p:menuitem icon="fa fa-list-alt" value="Lotes de Ressarcimento"
+							id="lotes-ressarcimento"
+							url="/auditoria-retrospectiva/gerenciar-lotes-ressarcimento" />
+						<p:menuitem icon="fa fa-thumbs-o-down" value="Não Conformidade"
+							id="nao-conformidade"
+							url="/auditoria-retrospectiva/relatorio-nao-conformidade" />
+						<p:menuitem icon="fa fa-search" value="Buscar GAB" id="buscar-gab"
+							url="/auditoria-retrospectiva/buscar-gab" />
+						<p:menuitem icon="fa fa-search" value="Buscar ARE" id="buscar-are"
+							url="/auditoria-retrospectiva/buscar-are" />
+
+					</p:menu>
+				</p:tab>
+			</sec:authorize>
+
+
+			<sec:authorize ifAllGranted="PERFIL_INTENDENCIA">
+				<p:tab title="Folha Beneficiário" id="desconto-beneficiario-tab">
+					<p:menu>
+						<p:submenu label="Relatório/Envio" icon="fa fa-tab"
+							style="margin-left: 12px; margin-top: -4px; height: 20px;color: gray;background-color:white">
+							<p:menuitem icon="fa fa-minus-circle" value="Pagamento"
+								style="margin-left: 18px;"
+								url="/desconto-beneficiario/relatorio-desconto-beneficiario" />
+							<p:menuitem icon="fa fa-plus-circle" value="Ressarcimento"
+								style="margin-left: 18px;"
+								url="/ressarcimento-beneficiario/relatorio-ressarcimento-beneficiario" />
+
+						</p:submenu>
+					</p:menu>
+				</p:tab>
+
+			</sec:authorize>
+
+
+			<sec:authorize ifAllGranted="PERFIL_ADMINISTRADOR_SISTEMA">
+				<p:tab title="Sistema" id="sistema-tab">
+					<p:menu>
+						<p:menuitem icon="fa fa-cog" value="Configuração"
+							id="menu-configuracao"
+							url="/administracao/sistema/configuracoes-sistema" />
+						<p:menuitem icon="fa fa-institution" value="Organização Militar"
+							id="menu-organizacao-militar"
+							url="/administracao/cadastro/organizacao-militar" />
+						<p:menuitem icon="fa fa-hospital-o" value="SIGPES Web Service"
+							id="menu-sigame-ws" url="/administracao/cadastro/sigpes-ws" />
+					</p:menu>
+				</p:tab>
+			</sec:authorize>
+			<sec:authorize
+				access="hasAnyRole('PERFIL_CHEFE_FUNSA', 'PERFIL_DIRETOR')">
+				<p:tab title="Relatórios" id="relatorios">
+					<p:menu>
+						<p:menuitem value="Solic. Procedimento"
+							id="relatorio-solicitacao-procedimento"
+							url="/pesquisa/solicitacao-procedimento" />
+						<p:menuitem value="GAB" id="pesquisa-gab" url="/pesquisa/gab" />
+						<p:menuitem value="Item de GAB" id="pesquisa-item-gab"
+							url="/pesquisa/item-gab" />
+						<p:menuitem value="Solic. Ressarcimento"
+							id="relatorio-solicitacao-ressarcimento"
+							url="/pesquisa/solicitacao-ressarcimento" />
+						<p:menuitem value="ARE" id="pesquisa-ar" url="/pesquisa/ar" />
+						<p:menuitem value="Item de ARE" id="pesquisa-item-are"
+							url="/pesquisa/item-are" />
+					</p:menu>
+				</p:tab>
+			</sec:authorize>
+
+			<sec:authorize ifAllGranted="PERFIL_DIRSA">
+				<p:tab title="DIRSA" id="dirsa-tab">
+					<p:menu>
+						<p:submenu label="GAB" icon="fa fa-tab"
+							style="margin-left: 12px; margin-top: -4px; height: 20px;color: gray;background-color:white">
+							<p:menuitem value="Cancelar Lote" icon="fa fa-tab"
+								id="menu-dirsa-cancelar-lote" url="/dirsa/cancelar-lote" />
+							<p:menuitem value="Cancelar Audit.Retrosp." icon="fa fa-tab"
+								id="menu-dirsa-cancelar-aud-retrospectiva"
+								url="/dirsa/cancelar-auditoria-retrospectiva" />
+							<p:menuitem value="Cancelar Apresentação" icon="fa fa-tab"
+								id="menu-dirsa-cancelar-apresentacao-gab"
+								url="/dirsa/cancelar-apresentacao-gab" />
+							<p:menuitem value="Desfazer Cancelamento"
+								id="menu-dirsa-desfazer-cancelamento-gab" icon="fa fa-tab"
+								url="/dirsa/desfazer-cancelamento-gab" />
+						</p:submenu>
+						<p:submenu label="ARE" icon="fa fa-tab"
+							style="margin-left: 12px;  margin-top: -4px; height: 20px;color: gray;background-color:white">
+							<p:menuitem value="Cancelar Lote" icon="fa fa-tab"
+								id="menu-dirsa-cancelar-lote-are" url="/dirsa/cancelar-lote-are" />
+							<p:menuitem value="Cancelar Audit.Retrosp." icon="fa fa-tab"
+								id="menu-dirsa-cancelar-aud-retrospectiva-are"
+								url="/dirsa/cancelar-auditoria-retrospectiva-are" />
+							<p:menuitem value="Cancelar Apresentação" icon="fa fa-tab"
+								id="menu-dirsa-cancelar-apresentacao-are"
+								url="/dirsa/cancelar-apresentacao-are" />
+							<p:menuitem value="Desfazer Cancelamento" icon="fa fa-tab"
+								id="menu-dirsa-desfazer-cancelamento-are"
+								url="/dirsa/desfazer-cancelamento-are" />
+						</p:submenu>
+						<p:submenu label="Beneficiário" icon="fa fa-tab"
+							style="margin-left: 12px;  margin-top: -4px; height: 20px;color: gray;background-color:white">
+							<p:menuitem value="Desfazer Relat Desconto"
+								id="menu-dirsa-desfazer-relatorio-desconto-beneficiario"
+								url="/dirsa/desfazer-relatorio-desconto-beneficiario"
+								icon="fa fa-tab" />
+						</p:submenu>
+					</p:menu>
+				</p:tab>
+			</sec:authorize>
+
+
+		</p:accordionPanel>
+
+	</h:form>
+
+</ui:composition>

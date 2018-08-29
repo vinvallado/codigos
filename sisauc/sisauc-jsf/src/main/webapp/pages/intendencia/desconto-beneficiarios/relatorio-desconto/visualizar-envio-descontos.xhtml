@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="/resources/template/template.xhtml">
+
+	<p:dialog header="Envio de Descontos Sisconsig"
+		id="visualizar-envio-dialog" widgetVar="visualizarEnvioDialog"
+		modal="true" resizable="false" width="800">
+
+		<h3>Descontos</h3>
+
+		<p:separator />
+
+		<p:messages />
+
+		<h4>
+			<h:outputText
+				value="#{relatorioDescontoBeneficiarioVisualizacaoBean.relatorio.codigo} do dia " />
+			<h:outputText
+				value="#{relatorioDescontoBeneficiarioVisualizacaoBean.relatorio.dataGeracao}">
+				<f:convertDateTime pattern="dd/MM/yyyy 'às' HH:mm" />
+			</h:outputText>
+		</h4>
+
+		<br />
+		<br />
+
+		<div class="vgap-20" />
+
+		<p:dataTable id="tabela"
+			value="#{relatorioDescontoBeneficiarioVisualizacaoBean.relatorio.itens}"
+			var="item" scrollRows="15" scrollable="true" 
+			scrollHeight="150" liveScroll="true" rows="15" 
+			paginatorAlwaysVisible="false"
+			emptyMessage="#{msgs.no_records_found}">
+			
+			<!-- style="margin-bottom:0" -->
+			
+			<f:facet name="header">
+				<p:column>
+					<h:outputText value="Itens descontados" />
+				</p:column>
+			</f:facet>
+
+			<p:column headerText="Código" id="codigo-item-gab" width="200">
+				<h:outputText value="#{item.itemGab.codigo}" />
+			</p:column>
+
+			<p:column headerText="Titular" id="titular">
+				<h:outputText
+					value="#{item.itemGab.gab.beneficiario.beneficiarioTitular.nome}"
+					rendered="#{item.itemGab.gab.beneficiario.beneficiarioTitular != null}" />
+				<h:outputText value="#{item.itemGab.gab.beneficiario.nome}"
+					rendered="#{item.itemGab.gab.beneficiario.beneficiarioTitular == null}" />
+			</p:column>
+
+			<p:column headerText="Valor Item" width="160"
+				styleClass="text-center">
+				<h:outputText
+					value="#{item.itemGab.auditoriaRetrospectiva.valorFinal}">
+					<f:convertNumber type="currency" />
+				</h:outputText>
+			</p:column>
+
+			<p:column headerText="Valor Descontado" width="160"
+				styleClass="text-center">
+				<h:outputText value="#{item.itemGab.valorADescontar}">
+					<f:convertNumber type="currency" />
+				</h:outputText>
+			</p:column>
+
+
+			<p:column headerText="Estado Envio" width="160"
+				styleClass="text-center">
+				<h:outputText value="#{item.estado}">
+					<!-- "fa fa-check" -->
+				</h:outputText>
+				<a title="Enviado com Sucesso"><h:panelGroup
+						styleClass="fa fa-check" rendered="#{item.estado == 'ENVIADO'}"
+						styleClass="btn btn-link" /></a>
+				<a title="Erro"><h:panelGroup
+						styleClass="fa fa-exclamation-circle"
+						rendered="#{item.estado == 'ERRO'}" styleClass="btn btn-link" /></a>
+				<a title="Aguardando Envio"><h:panelGroup
+						styleClass="fa fa-spinner" rendered="#{item.estado == null}"
+						styleClass="btn btn-link" /></a>
+				<!-- fa-li fa fa-spinner fa-spin -->
+			</p:column>
+
+
+		</p:dataTable>
+
+
+	</p:dialog>
+
+</ui:composition>

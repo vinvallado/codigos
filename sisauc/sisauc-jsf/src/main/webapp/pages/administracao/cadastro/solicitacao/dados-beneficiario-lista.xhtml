@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="/resources/template/template.xhtml">
+
+	<ui:define name="html-title">Lista de Beneficiários</ui:define>
+
+	<ui:define name="main">
+		<h3>Consulta de Beneficiários</h3>
+		<p:separator />
+		<a class="btn btn-success" href="beneficiario/busca" id="buscar-sigpes"> <span
+			class="fa fa-search"></span> <span>Buscar no SIGPES</span>
+		</a>
+		<div class="vgap-10"></div>
+		<h:form id="beneficiarios-form">
+			<p:messages id="msg" showIcon="false" />
+			<p:dataTable value="#{cadastroBeneficiarioListaBean.lazyDataModel}"
+				var="beneficiario" sortBy="#{beneficiario.nome}" paginator="true" rows="30"
+				paginatorPosition="bottom" paginatorAlwaysVisible="false"
+				rowsPerPageTemplate="15, 30, 50" id="tabela"
+				emptyMessage="#{msgs.no_records_found}" lazy="true"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+				filteredValue="#{viewUtilsBean.filtrados}" filterDelay="500">
+        
+				<p:column headerText="Nome Completo" width="230" filterBy="#{nome}" id="nome">
+					<h:outputText value="#{beneficiario.nome}" />
+				</p:column>
+				<p:column headerText="SARAM" width="100" id="saram" filterBy="#{saram}">
+					<h:outputText value="#{formatterBean.beneficiarioFormatter.getSaramTitular(beneficiario)}" />
+				</p:column>
+
+				<p:column headerText="CPF" width="110" id="cpf" filterBy="#{cpf}">
+					<h:outputText value="#{formatterBean.beneficiarioFormatter.getCpfFormatado(beneficiario)}" />
+				</p:column>
+        
+                <p:column headerText="Convênio" width="70" id="convenio" styleClass="text-center" filterOptions="#{viewUtilsBean.convenioOptions()}" filterBy="#{convenio.sigla}">
+                  <h:outputText value="#{beneficiario.convenio.sigla}" />
+                </p:column>        
+         
+				<p:column headerText="Titular" width="70" styleClass="text-center" id="titular" filterOptions="#{viewUtilsBean.booleanOptions()}" filterBy="#{titular}">
+					<h:outputText value="#{viewUtilsBean.booleanLabel(beneficiario.titular)}" styleClass="#{beneficiario.titular? 'text-success' : 'text-error'}" />
+				</p:column>
+        
+				<p:column headerText="Ativo" width="70" styleClass="text-center" filterOptions="#{viewUtilsBean.booleanOptions()}" filterBy="#{ativo}">
+					<h:outputText value="#{viewUtilsBean.booleanLabel(beneficiario.ativo)}" styleClass="#{beneficiario.ativo? 'text-success' : 'text-error'}" />
+				</p:column>
+
+				<p:column width="40" styleClass="text-center muted">
+                    <h:outputLink id="visualizar" styleClass="btn btn-link" value="beneficiario/#{beneficiario.id}" title="Visualizar">
+                      <span id="editar" class="fa fa-file-text-o"></span>
+                    </h:outputLink>
+				</p:column>
+
+			</p:dataTable>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

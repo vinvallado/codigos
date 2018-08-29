@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="/resources/template/template.xhtml">
+
+	<ui:define name="html-title">Buscar beneficiários no SIGPES-WS</ui:define>
+
+	<ui:define name="main">
+		<h3>Busca de beneficiário no SIGPES</h3>
+		<p:separator />
+		<div class="vgap-10"></div>
+		<h:form prependId="false">
+			<p:messages id="msgs" showIcon="false" />
+			<p:panelGrid>
+				
+				<p:row>
+					<p:column>
+						<p:outputLabel value="CPF do Titular:" for="cpf" />
+					</p:column>
+					<p:column>
+						<p:inputMask size="20" id="cpf" maxlength="11" mask="?99999999999"/>
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column>
+						<p:outputLabel value="SARAM do Titular:" for="saram"/>
+					</p:column>
+					<p:column>
+						<p:inputMask size="20" id="saram" maxlenght="7"  mask="9999999" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column colspan="2">
+						<p:commandButton value="Buscar" id="buscar-beneficiario"
+								styleClass="btn btn-success" icon="fa fa-search"
+								validateClient="true"
+								action="#{cadastroBeneficiarioBuscaSigpesBean.buscar}"
+								update="@form" />
+						  <a href="../beneficiario" id="voltar" class="btn">Voltar</a>
+					</p:column>
+				</p:row>
+			</p:panelGrid>
+			<div class="vgap-10"></div>
+
+
+			<p:separator />
+			<p:dataTable id="listaBeneficiarioBusca"
+				value="#{cadastroBeneficiarioBuscaSigpesBean.beneficiariosLista}"
+				var="beneficiario" sortBy="#{beneficiario.nome}" paginator="false"
+				emptyMessage="#{msgs.no_records_found}"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+				filteredValue="#{viewUtilsBean.filtrados}" filterDelay="300">
+				<p:column headerText="Nome Completo" width="150">
+					<h:outputText value="#{beneficiario.nome}" />
+				</p:column>
+				<p:column headerText="SARAM" width="70" id="saram-beneficiario-lista">
+					<h:outputText value="#{beneficiario.saram}" />
+				</p:column>
+
+				<p:column headerText="CPF" width="70" id="cpf-beneficiario-lista">
+					<h:outputText value="#{beneficiario.cpf}" />
+				</p:column>
+				<p:column headerText="Titular" width="30" styleClass="text-center"  id="titular-beneficiario-lista">
+					<h:outputText
+						value="#{viewUtilsBean.booleanLabel(beneficiario.titular)}"
+						styleClass="#{beneficiario.titular? 'text-success' : 'text-error'}" />
+				</p:column>
+				<p:column headerText="Ativo" width="30" styleClass="text-center"  id="ativo-beneficiario-lista">
+					<h:outputText
+						value="#{viewUtilsBean.booleanLabel(beneficiario.ativo)}"
+						styleClass="#{beneficiario.ativo? 'text-success' : 'text-error'}" />
+				</p:column>
+
+			</p:dataTable>
+
+		</h:form>
+	</ui:define>
+
+</ui:composition>

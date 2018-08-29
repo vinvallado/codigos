@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets">
+
+
+  <h:form id="configuracao-parametros-sistema">
+    <p:messages id="msgs" showIcon="false" />
+
+    <p:fieldset legend="Configurações Sistema">
+      <p:row>
+        <p:column>
+          <p:panelGrid>
+            <p:row>
+              <p:column>
+                <h:outputText value="Bloquear Emissão de GAB" />
+              </p:column>
+              <p:column>
+                <h:selectBooleanCheckbox
+                  value="#{configuracaoParametrosSistemaBean.configuracaoSistema.bloquearEmissaoGab}" />
+                <h:panelGroup id="spanBloquearEmissaoGab">
+                  <SPAN class="btn btn-link"><span class="fa fa-info-circle"></span></SPAN>
+                  <p:tooltip for="spanBloquearEmissaoGab"
+                    value="Ao habilitar, o sistema bloqueará qualquer emissão de GAB futura" />
+                </h:panelGroup>
+              </p:column>
+            </p:row>
+            <p:row>
+              <p:column>
+                <h:outputText value="Permitir solicitações sem upload de fichas" />
+              </p:column>
+              <p:column>
+                <h:selectBooleanCheckbox
+                  value="#{configuracaoParametrosSistemaBean.configuracaoSistema.permitirSolicitacoesSemUpload}" />
+                <h:panelGroup id="spanPermitirSemUpload">
+                  <SPAN class="btn btn-link"><span class="fa fa-info-circle"></span></SPAN>
+                  <p:tooltip for="spanPermitirSemUpload"
+                    value="Permitir que o Atendente cadastre solicitações sem fazer o upload da ficha de solicitação" />
+                </h:panelGroup>
+              </p:column>
+            </p:row>
+          </p:panelGrid>
+        </p:column>
+      </p:row>
+    </p:fieldset>
+
+    <div class="vgap-20" />
+
+    <p:fieldset legend="Configurações Regional">
+      <p:panelGrid>
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Cidade:" id="label-cidade" />
+          </p:column>
+          <p:column>
+            <p:autoComplete value="#{configuracaoParametrosSistemaBean.configuracaoSistema.cidadeRegional}"
+              completeMethod="#{applicationBean.procurarCidade}" size="50" forceSelection="true" id="input-cidade"
+              var="cidade" itemValue="#{cidade}" 
+              itemLabel="#{cidade.estado != null ? cidade.nome.concat('/').concat(cidade.estado.sigla) : cidade.nome}"
+              minQueryLength="3" converter="jsonConverter" maxResults="15" scrollHeight="250" />
+            <h:panelGroup id="span-cidade">
+              <SPAN class="btn btn-link"><span class="fa fa-info-circle"></span></SPAN>
+              <p:tooltip for="span-cidade"
+                value="Cidade que será apresentada nos relatórios" />
+            </h:panelGroup>
+          </p:column>
+        </p:row>
+
+      </p:panelGrid>
+    </p:fieldset>
+    <div class="vgap-20" />
+    <p:commandButton value="Salvar" styleClass="btn btn-success" id="confirmar" icon="fa fa-save"
+      action="#{configuracaoParametrosSistemaBean.salvar}" update="@form" />
+
+  </h:form>
+</ui:composition>

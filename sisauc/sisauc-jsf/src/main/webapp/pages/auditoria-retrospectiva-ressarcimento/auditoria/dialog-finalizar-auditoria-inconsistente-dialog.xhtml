@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets">
+  <p:dialog header="Informar Inconsistência de ARE" id="finalizar-inconsistente" widgetVar="finalizarInconsistenteDialog"
+    modal="true" resizable="false">
+    <h:form id="finalizar-inconsistente-form">
+
+      <p:messages id="msgs"/>
+
+      <p:outputLabel value="Motivo da Inconsistência: " />
+      <p:inputTextarea cols="70" required="true" requiredMessage="Informe o motivo da inconsistência."
+        maxlength="255" value="#{auditoriaRetrospectivaRessarcimentoFormularioBean.ar.motivoInconsistencia}"/><br/><br/>
+
+      <p:commandButton value="Informar Inconsistência" id="finalizar-auditoria-inconsistente"
+        styleClass="btn btn-danger" icon="fa fa-gavel" validateClient="true"
+        update="msgs" action="#{auditoriaRetrospectivaRessarcimentoFormularioBean.informarInconsistencia}" />
+
+      <a id="cancelar" class="btn" onclick="PF('finalizarInconsistenteDialog').hide()">Cancelar</a>
+    </h:form>
+  </p:dialog>
+
+
+
+</ui:composition>

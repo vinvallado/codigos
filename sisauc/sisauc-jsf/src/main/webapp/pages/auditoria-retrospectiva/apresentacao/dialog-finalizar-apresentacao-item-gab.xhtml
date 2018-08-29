@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets">
+
+  <p:dialog header="Atenção!" id="finalizar-apresentacao-gab-dialog" widgetVar="salvarApresentacaoGabDialog"
+    modal="true" resizable="false">
+    <h:form id="dialog-form-finalizar-apresentacao">
+      <h:outputText value="Confirma salvar a apresentação da GAB? Todos os itens da GAB foram preenchidos corretamente?" />
+      <div class="vgap-30">
+        <!-- GAP 30px -->
+      </div>
+
+      <h:panelGroup styleClass="dialog-footer" layout="block">
+        <p:commandButton id="btn-sim-salvar-apresentacao" value="Sim" styleClass="btn btn-success" icon="fa fa-save"
+          action="#{apresentacaoGabFormularioBean.salvarApresentacaoGAB}" update=":form-detalhes-gab" />
+        <p:commandButton id="btn-nao-salvar-apresentacao" value="Cancelar" styleClass="btn" icon="fa" type="button"
+          onclick="PF('salvarApresentacaoGabDialog').hide()" />
+      </h:panelGroup>
+
+    </h:form>
+  </p:dialog>
+
+
+
+</ui:composition>

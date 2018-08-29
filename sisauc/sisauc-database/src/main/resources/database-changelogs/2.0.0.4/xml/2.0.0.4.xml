@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+	
+	<changeSet id="add-coluna-tipo-solicitacao" author="tadeutbc">
+		<sql>
+			ALTER TABLE sch_sisauc.solicitacao
+			ADD COLUMN tipo character varying(20) NOT NULL DEFAULT 'GAB';
+		</sql>
+	</changeSet>
+	
+	<changeSet id="criar-estrutura-para-solicitacao-ressarcimento-pedidos" author="tadeutbc">
+		<sql>
+			CREATE TABLE sch_sisauc.procedimento_pedido_solicitacao_ressarcimento
+			(
+			  id integer NOT NULL,
+			  descricao_outros character varying(255),
+			  observacao character varying(255),
+			  orcamento double precision,
+			  quantidade integer NOT NULL,
+			  id_especialidade integer,
+			  id_procedimento_base integer,
+			  CONSTRAINT procedimento_pedido_solicitacao_ressarcimento_pkey PRIMARY KEY (id),
+			  CONSTRAINT fk_procedimento_pedido_solicitacao_ressarcimento_procedimento FOREIGN KEY (id_procedimento_base)
+			      REFERENCES sch_sisauc.procedimento_base (id) MATCH SIMPLE
+			      ON UPDATE NO ACTION ON DELETE NO ACTION,
+			  CONSTRAINT fk_procedimento_pedido_solicitacao_ressarcimento_especialidade FOREIGN KEY (id_especialidade)
+			      REFERENCES sch_sisauc.especialidade (id) MATCH SIMPLE
+			      ON UPDATE NO ACTION ON DELETE NO ACTION
+			)
+			WITH (
+			  OIDS=FALSE
+			);
+			ALTER TABLE sch_sisauc.procedimento_pedido_solicitacao_ressarcimento
+			  OWNER TO sisauc;
+			  
+			CREATE TABLE sch_sisauc.solicitacao_pedidos_procedimento_ressarcimento
+			(
+			  id_solicitacao integer NOT NULL,
+			  id_procedimento_pedido_solicitacao_ressarcimento integer NOT NULL,
+			  CONSTRAINT solicitacao_pedidos_procedimento_ressarcimento_pkey PRIMARY KEY (id_solicitacao, id_procedimento_pedido_solicitacao_ressarcimento),
+			  CONSTRAINT fk_solicitacao_pedidos_procedimento_ressarcimento_id_solicitacao FOREIGN KEY (id_solicitacao)
+			      REFERENCES sch_sisauc.solicitacao (id) MATCH SIMPLE
+			      ON UPDATE NO ACTION ON DELETE NO ACTION,
+			  CONSTRAINT fk_solicitacao_pedidos_procedimento_ressarcimento_id_pedido FOREIGN KEY (id_procedimento_pedido_solicitacao_ressarcimento)
+			      REFERENCES sch_sisauc.procedimento_pedido_solicitacao_ressarcimento (id) MATCH SIMPLE
+			      ON UPDATE NO ACTION ON DELETE NO ACTION,
+			  CONSTRAINT uk_id_procedimento_pedido_solicitacao_ressarcimento UNIQUE (id_procedimento_pedido_solicitacao_ressarcimento)
+			)
+			WITH (
+			  OIDS=FALSE
+			);
+			ALTER TABLE sch_sisauc.solicitacao_pedidos_procedimento_ressarcimento
+			  OWNER TO sisauc;
+
+			CREATE SEQUENCE sch_sisauc.procedimento_pedido_solicitacao_ressarcimento_id_seq
+			  INCREMENT 1
+			  MINVALUE 1
+			  MAXVALUE 9223372036854775807
+			  START 1
+			  CACHE 1;
+			ALTER TABLE sch_sisauc.procedimento_pedido_solicitacao_ressarcimento_id_seq
+			  OWNER TO sisauc;
+			  
+		</sql>
+	</changeSet>
+
+  <changeSet id="alteracao-coluna-finalidade-solicitacao" author="januarioacsj">
+    <sql>
+      ALTER TABLE sch_sisauc.solicitacao
+      ALTER COLUMN finalidade DROP NOT NULL;
+    </sql>
+  </changeSet>
+  
+  <changeSet id="alteracao-coluna-medico-solicitacao" author="tadeutbc">
+    <sql>
+      ALTER TABLE sch_sisauc.solicitacao
+      ALTER COLUMN id_medico DROP NOT NULL;
+    </sql>
+  </changeSet>
+  
+
+</databaseChangeLog>

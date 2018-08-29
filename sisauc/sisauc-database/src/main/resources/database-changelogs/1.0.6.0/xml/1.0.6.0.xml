@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<changeSet id="renomear-colunas-tabela-gab" author="januarioacsj">
+		<sql>
+			ALTER TABLE sch_sisauc.gab RENAME COLUMN data_emissao TO data_geracao;
+			ALTER TABLE sch_sisauc.gab RENAME COLUMN data_impressao TO data_emissao;			
+		</sql>
+	</changeSet> 
+	
+	<changeSet id="aumentar_numero_caracteres_campo_opme_descricao" author="januarioacsj">
+		<sql>
+			ALTER TABLE sch_sisauc.resposta_procedimento_auditoria ALTER COLUMN opme_descricao TYPE text;
+			ALTER TABLE sch_sisauc.item_gab ALTER COLUMN descricao_opme TYPE text;
+		</sql>
+	</changeSet> 
+	
+</databaseChangeLog>

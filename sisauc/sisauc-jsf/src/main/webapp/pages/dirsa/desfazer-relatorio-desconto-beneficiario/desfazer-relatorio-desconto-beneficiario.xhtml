@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" template="/resources/template/template.xhtml">
+
+  <ui:define name="html-title">Desfazer Relatório de Desconto de Beneficiário</ui:define>
+
+  <ui:define name="main">
+
+    <h3>Desfazer Relatório de Desconto de Beneficiário</h3>
+
+    <p:separator />
+
+    <div class="vgap-10" />
+
+    <h:form id="relatorios-desconto-beneficiario-lista-form">
+      <p:messages id="msg" showIcon="false" autoUpdate="true" />
+
+      <div class="vgap-10" />
+
+      <p:dataTable value="#{desfazerRelatorioDescontoBeneficiarioBean.relatorios}" var="relatorio" 
+        paginator="true" paginatorPosition="bottom" id="table-relatorios-desconto-beneficiario"
+        rows="15" paginatorAlwaysVisible="false">
+        <p:column id="codigo-Relatorio" headerText="Código" width="180" styleClass="text-center" filterMatchMode="contains" sortBy="#{relatorio.codigo}" filterBy="#{relatorio.codigo}">
+          <h:outputText value="#{relatorio.codigo}"/>
+        </p:column>
+        
+        <p:column id="autor" headerText="Autor" filterMatchMode="contains" sortBy="#{relatorio.autor.nome}" filterBy="#{relatorio.autor.nome}">
+          <h:outputText value="#{relatorio.autor.nome} (#{relatorio.autor.login})"/>
+        </p:column>
+        
+        <p:column headerText="Gerado em" width="180" styleClass="text-center" sortBy="#{relatorio.dataGeracao}">
+          <h:outputText value="#{relatorio.dataGeracao}">
+            <f:convertDateTime pattern="dd/MM/yy 'às' HH:mm"/>
+          </h:outputText>
+        </p:column>
+        
+        <p:column id="cancelado" styleClass="text-center" width="120" headerText="Estado" sortBy="#{relatorio.cancelado}">
+          <p:outputLabel id="cancelado-label" value="#{relatorio.cancelado ? 'CANCELADO' : 'VIGENTE'}"
+            styleClass="#{relatorio.cancelado ? 'text-error' : 'text-success'}" />
+        </p:column>                
+        
+        <p:column width="30" styleClass="text-center muted">
+          <p:commandButton action="#{desfazerRelatorioDescontoBeneficiarioBean.selecionarRelatorioDescontoBenefiario(relatorio)}" icon="fa fa-times text-error"
+            update=":acao-sdga-desfazer-relatorio-desconto-beneficiario-form" styleClass="btn btn-link" rendered="#{!relatorio.cancelado}" />
+        </p:column>
+        
+      </p:dataTable>
+
+    </h:form>
+
+  </ui:define>
+
+  <ui:define name="dialogs">
+    <ui:include src="desfazer-relatorio-desconto-beneficiario-dialog.xhtml" />
+    <ui:include src="confirmar-desfazer-relatorio-desconto-beneficiario.xhtml"/>
+  </ui:define>
+
+</ui:composition>

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets">
+
+  <p:dialog header="Item GAB" id="informacoes-item-gab-dialog" widgetVar="dialogInformacoesItemGAB" modal="true"
+    resizable="false" width="960">
+    <h:form id="informacoes-item-gab-dialog-form">
+
+      <h4>
+        <h:outputText value="#{buscaGabFormularioBean.itemGAB.codigo}" />
+        <span class="muted">(#{buscaGabFormularioBean.itemGAB.estadoItemGAB.label})</span>
+      </h4>
+      <p>
+        <h:outputText value="Procedimento: " class="text-bold" />
+        #{formatterBean.configuracaoProcedimentoFormatter.getCodigoNomeSiglaEspecialidade(buscaGabFormularioBean.itemGAB.configuracao)}
+      </p>
+      <p>
+        <h:outputText value="Observação da GAB: " class="text-bold" rendered="#{buscaGabFormularioBean.itemGAB.observacaoGAB != null}"/>
+        <h:outputText value="#{buscaGabFormularioBean.itemGAB.observacaoGAB}" rendered="#{buscaGabFormularioBean.itemGAB.observacaoGAB != null}" />
+      </p>
+      <p>
+        <h:outputText value="Credenciado: " class="text-bold" />
+        <h:outputText value="#{buscaGabFormularioBean.itemGAB.gab.credenciado.nomeFantasia}" />
+      </p>
+      <p>
+        <h:outputText value="Auditor Retrospectivo: " class="text-bold"
+          rendered="#{buscaGabFormularioBean.itemGAB.auditoriaRetrospectiva.auditorRetrospectivo.nome != null}"/>
+        <h:outputText value="#{buscaGabFormularioBean.itemGAB.auditoriaRetrospectiva.auditorRetrospectivo.nome}"
+          rendered="#{buscaGabFormularioBean.itemGAB.auditoriaRetrospectiva.auditorRetrospectivo.nome != null}" />
+      </p>
+      <p>
+        <h:outputText value="Lote: " class="text-bold" />
+        <h:outputText value="#{buscaGabFormularioBean.lote.numero}" rendered="#{buscaGabFormularioBean.lote != null}"/>
+        <h:outputText value="Este item não pertence a nenhum lote" styleClass="muted" rendered="#{buscaGabFormularioBean.lote == null}"/>
+      </p>
+      <p>
+        <h:outputText value="Desconto Beneficiário: " class="text-bold" />
+        <h:outputText value="#{buscaGabFormularioBean.codigoRelatorioDescontoBeneficiario}" rendered="#{buscaGabFormularioBean.codigoRelatorioDescontoBeneficiario != null}"/>
+        <h:outputText value="Este item não foi descontado" styleClass="muted" rendered="#{buscaGabFormularioBean.codigoRelatorioDescontoBeneficiario == null}"/>
+      </p>
+      <p>
+        <h:outputText value="Observações da apresentação: " class="text-bold" />
+        <h:outputText value="#{buscaGabFormularioBean.itemGAB.auditoriaRetrospectiva.observacaoApresentacao}" />
+        <h:outputText value="Não há observação" styleClass="muted"
+          rendered="#{buscaGabFormularioBean.itemGAB.auditoriaRetrospectiva.observacaoApresentacao == null}" />
+      </p>
+      
+      <div class="vgap-10" />
+      
+      <div class="well well-sm">
+        <div class="row-fluid">
+          <div class="span3 text-center">
+            <h4>Valor Estimado</h4>
+
+            <h:outputText value="#{buscaGabFormularioBean.itemGAB.valorTotal}" style="font-size: 20px">
+              <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR"  />
+            </h:outputText>
+            <br/>
+            <p:commandButton id="btn-valor-estimado" styleClass="btn btn-link" value="Ver detalhes..."/>
+            <p:overlayPanel for="btn-valor-estimado" style="width:440px; " appendToBody="true">
+              <p:dataTable value="#{buscaGabFormularioBean.itemGAB.valores}" var="valores"
+                emptyMessage="Este procedimento não contém valores adicionais.">
+                <f:facet name="header">
+                  <h:outputText value="Valores Adicionais ao Procedimento"></h:outputText>
+                </f:facet>
+                <p:column width="200">
+                  <p:outputLabel value="#{valores.descricao}">
+                    <h:outputLabel id="descricao-OPME" styleClass="btn btn-link fa fa-info"
+                      rendered="#{valores.chave.equals('valorOPME')}" title="Descrição: #{buscaGabFormularioBean.itemGAB.descricaoOpme}" />
+                  </p:outputLabel>
+                </p:column>
+                <p:column width="70">
+                  <h:outputText value="#{valores.valor}">
+                    <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR"  />
+                  </h:outputText>
+                </p:column>
+              </p:dataTable>
+            </p:overlayPanel>
+          </div>
+
+          <div class="span3 text-center">
+            <h4>Valor Apresentado</h4>
+
+            <h:outputText style="font-size: 20px" value="#{buscaGabFormularioBean.itemGAB.auditoriaRetrospectiva.valorApresentado != null ? buscaGabFormularioBean.itemGAB.auditoriaRetrospectiva.valorApresentado : 'Não definido'}">
+              <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR"  />
+            </h:outputText>
+            <br/>
+            <p:commandButton id="btn-valor-apresentado" styleClass="btn btn-link"  value="Ver detalhes..."
+              rendered="#{buscaGabFormularioBean.itemGAB.auditoriaRetrospectiva.valorApresentado != null}" />
+            <p:overlayPanel for="btn-valor-apresentado"  style="width:440px;" appendToBody="true">
+              <p:dataTable value="#{buscaGabFormularioBean.valoresAuditoriaFiltrados}" var="valores"
+                emptyMessage="Este procedimento não possui valores adicionais.">
+                <f:facet name="header">
+                  <h:outputText value="Valores Adicionais ao Procedimento"></h:outputText>
+                </f:facet>
+                <p:column>
+                  <p:outputLabel value="#{valores.descricao}" rendered="#{!empty valores.descricao}" />
+                </p:column>
+                <p:column>
+                  <h:outputText value="#{valores.valor}" rendered="#{!empty valores.descricao}">
+                    <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR"  />
+                  </h:outputText>
+                </p:column>
+  
+              </p:dataTable>
+            </p:overlayPanel>
+
+
+          </div>
+
+          <div class="span3 text-center">
+            <h4>Valor Auditado</h4>
+            <h:outputText style="font-size: 20px" value="#{buscaGabFormularioBean.itemGAB.auditoriaRetrospectiva.valorAuditado != null ? buscaGabFormularioBean.itemGAB.auditoriaRetrospectiva.valorAuditado : 'Não definido'}">
+              <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR"  />
+            </h:outputText>
+            <br/>
+            <p:commandButton title="Clique para ler a justificativa" id="btn-valor-auditado" styleClass="btn btn-link"
+              value="Ver detalhes..." rendered="#{buscaGabFormularioBean.itemGAB.auditoriaRetrospectiva.justificativaValorAuditado != null}" />
+            <p:overlayPanel for="btn-valor-auditado" style="width:440px" appendToBody="true">
+              <p>
+                <h:outputText value="Justificativa:" class="text-bold"/>
+                <h:outputText value="#{buscaGabFormularioBean.itemGAB.auditoriaRetrospectiva.motivo.codigo} - #{buscaGabFormularioBean.itemGAB.auditoriaRetrospectiva.motivo.descricao}" />
+              </p>
+              <p>
+                <h:outputText value="Detalhes da justificativa:" class="text-bold"/>
+                <h:outputText value="#{buscaGabFormularioBean.itemGAB.auditoriaRetrospectiva.justificativaValorAuditado}" />
+              </p>
+            </p:overlayPanel>
+          </div>
+
+          <div class="span3 text-center">
+            <h4>Valor Final</h4>            
+            <h:outputText style="font-size: 20px" value="#{buscaGabFormularioBean.itemGAB.auditoriaRetrospectiva.valorFinal != null ? buscaGabFormularioBean.itemGAB.auditoriaRetrospectiva.valorFinal : 'Não definido'}">
+              <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR"  />
+            </h:outputText>
+            <br/>
+            <p:commandButton title="Clique para ler a justificativa" id="btn-valor-final" styleClass="btn btn-link"
+              value="Ver detalhes..." rendered="#{buscaGabFormularioBean.itemGAB.auditoriaRetrospectiva.justificativaValorFinal != null}" />
+            <p:overlayPanel for="btn-valor-final" style="width:440px;" appendToBody="true" at="left bottom">
+              <h:outputText value="#{buscaGabFormularioBean.itemGAB.auditoriaRetrospectiva.justificativaValorFinal}" />
+            </p:overlayPanel>
+          </div>
+        </div>
+      </div>
+
+
+    </h:form>
+  </p:dialog>
+
+</ui:composition>

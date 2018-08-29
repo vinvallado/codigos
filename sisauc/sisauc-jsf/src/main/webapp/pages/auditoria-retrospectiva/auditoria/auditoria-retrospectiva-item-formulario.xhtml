@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" template="/resources/template/template.xhtml"
+  xmlns:sisauc="http://java.sun.com/jsf/composite/sisaucjsf">
+
+  <ui:define name="html-title">Auditoria Retrospectiva</ui:define>
+
+  <ui:define name="html-body-bottom">
+    <script type="text/javascript" src="#{request.contextPath}/resources/vendor/js/jquery.maskMoney.min.js" />
+    <script type="text/javascript" src="#{request.contextPath}/resources/vendor/js/pdfjs/pdf.js" />
+    <script type="text/javascript" src="#{request.contextPath}/resources/js/ver-pdf.js" />
+    <script type="text/javascript">
+		$(document).ready(function() {
+			maskPrefix('R$');
+		});
+	</script>
+  </ui:define>
+
+  <ui:define name="main">
+    <h3>Auditoria Retrospectiva - Auditando Item da GAB</h3>
+    <div class="vgap-10"></div>
+    <h:form prependId="false" id="form-auditoria-item-gab">
+      <p:messages id="msgs" showIcon="false" />
+      <p:growl id="msg" showDetail="true" />
+      <div class="vgap-10"></div>
+      
+      <p:tabView id="tabview-auditoria-retrospectiva-item">
+
+        <p:tab title="Item da GAB a ser auditada" id="tab-item">
+           <ui:include src="auditoria-retrospectiva-item-formulario_tab.xhtml"/>
+        </p:tab>
+      
+        <p:tab title="Dados da GAB" id="tab-dados-gab">
+          <sisauc:dadosGAB_RealizarAuditoria gab="#{auditoriaRetrospectivaFormularioBean.gab}" />
+          <div class="vgap-10"></div>
+        </p:tab>
+      
+        <p:tab title="Auditoria Prospectiva" id="tab-auditoria-prospectiva">
+          <sisauc:dadosAuditoriaProspectiva auditoria="#{auditoriaRetrospectivaFormularioBean.auditoriaProspectiva}" />
+          <div class="vgap-10"></div>
+       </p:tab>
+      
+        <p:tab title="Dados da solicitação" id="tab-dados-solicitacao">
+          <sisauc:exibirSolicitacao solicitacao="#{auditoriaRetrospectivaFormularioBean.auditoriaProspectiva.solicitacao}" />
+          <div class="vgap-10"></div>      
+        </p:tab>
+      
+      </p:tabView>
+    </h:form>
+  </ui:define>
+
+  <ui:define name="dialogs">
+    <ui:include src="dialog-ver-pdf.xhtml"/>
+    <ui:include src="dialog-finalizar-auditoria-conforme-dialog.xhtml" />
+    <ui:include src="dialog-finalizar-auditoria-nao-conforme-dialog.xhtml" />    
+    <ui:include src="dialog-salvar-auditoria-item-gab-dialog.xhtml" />
+  </ui:define>
+
+</ui:composition>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" template="/resources/template/template.xhtml">
+
+  <ui:define name="html-title">Desfazer Cancelamento de GAB</ui:define>
+
+  <ui:define name="main">
+
+    <h3>Desfazer Cancelamento de GAB</h3>
+
+    <p:separator />
+
+    <div class="vgap-10" />
+
+    <h:form id="gabs-canceladas-lista-form">
+      <p:messages id="msg" showIcon="false" autoUpdate="true" />
+
+      <div class="vgap-10" />
+
+      <p:dataTable value="#{desfazerCancelamentoGABBean.gabs}" paginator="true" rows="15"
+        emptyMessage="#{msgs.no_records_found}" id="table-gabs-canceladas" paginatorPosition="bottom"
+        paginatorAlwaysVisible="false" rowsPerPageTemplate="15, 20, 25"
+        paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+        var="gab">
+
+        <f:facet name="header">
+          <h:outputText value="GAB Canceladas" />
+        </f:facet>
+        
+        <p:column headerText="Divisão" width="90" styleClass="text-center" filterOptions="#{viewUtilsBean.divisoesOptions()}" filterBy="#{gab.divisao}">
+          <a title="Divisão Médica"><h:panelGroup styleClass="fa fa-tag muted" rendered="#{gab.divisao == 'DIVISAO_MEDICA'}" /></a>
+          <a title="Divisão Odonológica"><h:panelGroup styleClass="fa fa-tag text-info" rendered="#{gab.divisao == 'DIVISAO_ODONTOLOGICA'}" /></a>
+        </p:column>
+
+        <p:column headerText="GAB Código" width="180" filterMatchMode="contains" sortBy="#{gab.codigo}"
+          styleClass="text-center" id="gab-codigo" filterBy="#{gab.codigo}">
+          <h:outputText value="#{gab.codigo}" />
+        </p:column>
+
+        <p:column headerText="Credenciado" filterBy="#{gab.credenciado.nomeFantasia}"
+          sortBy="#{gab.credenciado.nomeFantasia}" filterMatchMode="contains"
+          filterFunction="#{viewUtilsBean.filterIgnoreCase}" id="credenciado">
+          <h:outputText value="#{gab.credenciado.nomeFantasia}" />
+        </p:column>
+
+        <p:column headerText="Data Emissão" width="140" id="data-emissao" sortBy="#{gab.dataEmissao}"
+          styleClass="text-center">
+          <h:outputText value="#{gab.dataEmissao}">
+            <f:convertDateTime pattern="dd/MM/yyyy" />
+          </h:outputText>
+        </p:column>
+        
+        <p:column headerText="Estado" width="140" id="estado" sortBy="#{gab.estado}" styleClass="text-center">
+          <h:outputText value="#{gab.estado.label}"/>
+        </p:column>
+
+        <p:column width="30" styleClass="text-center muted">
+          <p:commandButton action="#{desfazerCancelamentoGABBean.selecionarGAB(gab)}" icon="fa fa-times text-error"
+            update=":acao-sdga-desfazer-cancelamento-gab-form" styleClass="btn btn-link" />
+        </p:column>
+      </p:dataTable>
+
+    </h:form>
+
+  </ui:define>
+
+  <ui:define name="dialogs">
+    <ui:include src="desfazer-cancelamento-gab-dialog.xhtml" />
+    <ui:include src="confirmar-dasfazer-cancelamento-gab.xhtml"/>
+  </ui:define>
+
+</ui:composition>

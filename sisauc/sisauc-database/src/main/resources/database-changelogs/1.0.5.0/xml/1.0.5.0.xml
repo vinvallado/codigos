@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<changeSet id="adicior-historico-sincronizacao-beneficiario" author="taveirajcft">
+		<sql>
+			CREATE TABLE sch_sisauc.historico_sincronizacao_beneficiario (
+			  id serial NOT NULL,
+			  data_hora_fim timestamp without time zone,
+			  data_hora_inicio timestamp without time zone,
+			  estado_sincronizacao character varying(20),
+			  numero_registros_atualizados integer,
+			  numero_registros_erro integer,
+			  resumo text,
+			  CONSTRAINT historico_sincronizacao_beneficiario_pkey PRIMARY KEY (id)
+			);
+			ALTER TABLE sch_sisauc.historico_sincronizacao_beneficiario OWNER TO sisauc;
+			
+			ALTER TABLE sch_sisauc.configuracao_ws_sigameh ADD COLUMN hora_diaria_sincronizacao time without time zone DEFAULT '00:00';
+			
+			ALTER TABLE sch_sisauc.configuracao_ws_sigameh RENAME TO configuracao_ws_sigpes;
+			
+			--Inserir marcação da carga inicial.
+			insert into sch_sisauc.historico_sincronizacao_beneficiario (id, data_hora_fim, data_hora_inicio, estado_sincronizacao, numero_registros_atualizados, numero_registros_erro, resumo) 
+                values (0,'2014-11-04', '2014-11-04', 'FINALIZADO', 0, 0, 'Carga inicial do sistema.');
+		</sql>
+	</changeSet>
+	<changeSet id="modificar-pk-beneficiario" author="taveirajcft">
+		<sqlFile relativeToChangelogFile="true" path="../sql/ajuste-estrutura.sql" />
+	</changeSet>
+	<changeSet id="atualizar-data-importacao-inicial-sigpes" author="taveirajcft">
+		<sql>
+			UPDATE sch_sisauc.beneficiario set data_atualizacao_registro = '2014-11-03 00:00:00' where data_atualizacao_registro is null or data_atualizacao_registro = '2011-11-03 00:00:00';
+		</sql>
+	</changeSet>
+
+	<changeSet id="correcao-arquitetural-item-gab" author="tadeutbc">
+		<sql>
+			ALTER TABLE sch_sisauc.item_gab ADD COLUMN id_gab INTEGER;
+			ALTER TABLE sch_sisauc.item_gab
+				ADD CONSTRAINT fk_item_gab_gab FOREIGN KEY (id_gab)
+				REFERENCES sch_sisauc.gab (id) MATCH SIMPLE
+				ON UPDATE NO ACTION ON DELETE NO ACTION;
+				
+			UPDATE sch_sisauc.item_gab SET id_gab = (select id_gab from sch_sisauc.gab_itens where id_item_gab = id);
+			
+			ALTER TABLE sch_sisauc.item_gab ALTER COLUMN id_gab SET NOT NULL;
+			DROP TABLE sch_sisauc.gab_itens;			
+
+		</sql>
+	</changeSet>
+
+
+</databaseChangeLog>
+
+
+

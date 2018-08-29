@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets">
+
+  <body>
+    <p:dialog id="impressao-gab-dialog" modal="true" widgetVar="impressaoGab" height="600">
+      <h:form>
+        <p:commandButton value="Imprimir" type="button" icon="ui-icon-print" style="display:block;margin-bottom: 20px">
+          <p:printer target=":impressao-gab-form" />
+        </p:commandButton>
+      </h:form>
+      <h:form id="impressao-gab-form" styleClass="impressao-wrapper">
+         
+         <style>
+          @page {
+            margin: 1.7cm 0cm 0cm 0cm;
+          }         
+         </style>
+
+        <table class="estrutural">
+          <tr>
+            <td rowspan="2" class="text-center" width="25%">Comando da Aeronáutica<br /> Comando Geral do Pessoal<br />
+              Diretoria de Saúde<br /> <h:outputText value="#{impressaoGABBean.gab.organizacaoMilitar.sigla}"
+                style="font-size: 18px;" />
+            </td>
+            <td rowspan="2" class="text-center">GUIA DE APRESENTAÇÃO DE BENEFICIÁRIO<br /> <span
+              style="font-size: 24px;">GAB</span>
+            </td>
+            <td width="25%">Número: <h:outputText value="#{impressaoGABBean.gab.codigo}" />
+            </td>
+          </tr>
+          <tr>
+            <td>Data: <h:outputText value="#{impressaoGABBean.gab.dataEmissao}">
+                <f:convertDateTime pattern="dd/MM/yyyy" />
+              </h:outputText>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">Ao: <h:outputText value="#{impressaoGABBean.gab.credenciado.nomeFantasia}" />
+            </td>
+            <td>CPF/CNPJ: <h:outputText
+                value="#{formatterBean.credenciadoFormatter.getCpfCnpj(impressaoGABBean.gab.credenciado)}" />
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">Endereço: <h:outputText value="#{impressaoGABBean.gab.credenciado.logradouro}" />
+            </td>
+            <td>Telefone: <h:outputText value="#{impressaoGABBean.gab.credenciado.telefonePrincipal}" />
+            </td>
+          </tr>
+        </table>
+        <div class="vgap-5"></div>
+        <div class="text-center">Apresento a eguir identificado para ser submetido ao(s)
+          seguinte(s) exame(s)/Tratamento(s)</div>
+        <div class="vgap-5"></div>
+        <table class="estrutural">
+          <tr>
+            <td colspan="3">Nome do beneficiário: <h:outputText value="#{impressaoGABBean.gab.beneficiario.nome}" />
+            </td>
+            <td>SARAM: <h:outputText rendered="#{impressaoGABBean.gab.beneficiario.beneficiarioTitular != null}"
+                value="#{impressaoGABBean.gab.beneficiario.beneficiarioTitular.saram}" /> <h:outputText
+                rendered="#{impressaoGABBean.gab.beneficiario.beneficiarioTitular == null}"
+                value="#{impressaoGABBean.gab.beneficiario.saram}" />
+            </td>
+          </tr>
+          <tr>
+            <td>Grau de dependencia:</td>
+            <td>CPF: <h:outputText
+                value="#{formatterBean.beneficiarioFormatter.getCpfFormatado(impressaoGABBean.gab.beneficiario)}" />
+            </td>
+            <td>Urgente:
+              <h:outputText value="#{impressaoGABBean.gab.auditoriaProspectiva.solicitacao.urgente ? 'Sim' : 'Não'}" />
+            </td>
+            
+            <td>Internação:
+              <h:outputText value="#{impressaoGABBean.gab.auditoriaProspectiva.solicitacao.internacao ? 'Sim' : 'Não'}" />
+            </td>
+          </tr>
+          <tr>
+            <td colspan="4">Nome do titular: <h:outputText
+                rendered="#{impressaoGABBean.gab.beneficiario.beneficiarioTitular != null}"
+                value="#{impressaoGABBean.gab.beneficiario.beneficiarioTitular.nome}" /> <h:outputText
+                rendered="#{impressaoGABBean.gab.beneficiario.beneficiarioTitular == null}"
+                value="#{impressaoGABBean.gab.beneficiario.nome}" />
+            </td>
+          </tr>
+          <tr>
+            <td>Posto/Graduação/Cat: <h:outputText
+                rendered="#{impressaoGABBean.gab.beneficiario.beneficiarioTitular != null}"
+                value="#{impressaoGABBean.gab.beneficiario.beneficiarioTitular.postoGraduacao.descricao}" /> <h:outputText
+                rendered="#{impressaoGABBean.gab.beneficiario.beneficiarioTitular == null}"
+                value="#{impressaoGABBean.gab.beneficiario.postoGraduacao.descricao}" />
+            </td>
+            <td colspan="2">CPF: <h:outputText
+                rendered="#{impressaoGABBean.gab.beneficiario.beneficiarioTitular != null}"
+                value="#{formatterBean.beneficiarioFormatter.getCpfFormatado(impressaoGABBean.gab.beneficiario.beneficiarioTitular)}" />
+              <h:outputText rendered="#{impressaoGABBean.gab.beneficiario.beneficiarioTitular == null}"
+                value="#{formatterBean.beneficiarioFormatter.getCpfFormatado(impressaoGABBean.gab.beneficiario)}" />
+            </td>
+            <td>Unidade: <h:outputText rendered="#{impressaoGABBean.gab.beneficiario.beneficiarioTitular != null}"
+                value="#{impressaoGABBean.gab.beneficiario.beneficiarioTitular.organizacaoMilitar.sigla}" /> <h:outputText
+                rendered="#{impressaoGABBean.gab.beneficiario.beneficiarioTitular == null}"
+                value="#{impressaoGABBean.gab.beneficiario.organizacaoMilitar.sigla}" />
+            </td>
+          </tr>
+        </table>
+
+        <div class="vgap-10"></div>
+
+        <table class="estrutural">
+          <tr>
+            <td colspan="3" class="text-center">Especificaçãos</td>
+            <td width="25%">Observação</td>
+          </tr>
+          <tr>
+            <td colspan="3"><ui:repeat value="#{viewUtilsBean.convertSetToList(impressaoGABBean.gab.itens)}"
+                var="item">
+                <h:outputText value="#{formatterBean.itemGABFormatter.getNumeroItem(item)}" /> - 
+                <h:outputText value="(CBHPM - #{item.configuracao.procedimento.codigo})" /> -
+                <h:outputText value="#{item.configuracao.procedimento.descricao}" />
+                <h:outputText value=" - (#{item.configuracao.especialidade.nome})" rendered="#{item.configuracao.especialidade != null}" />
+                <h:outputText value=" (OPME) - #{item.descricaoOpme} - " rendered="#{item.descricaoOpme != null}" />
+                <h:outputText value="#{item.valorOpme}" rendered="#{item.descricaoOpme != null}">
+                  <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR"  />
+                </h:outputText> 
+                <br />
+              </ui:repeat> <br /></td>
+
+            <td>Não cobrar indenização ao Paciente</td>
+          </tr>
+
+          <tr>
+            <td colspan="2" width="50%" class="text-center text-top">Autorizo o(s) exames/tratamento(s) acima
+              especificado(s)</td>
+            <td colspan="2" class="text-center text-top"><span>Certifico que o(s) exame(s)/tratamento(s)
+                acima especificado(s) foi(oram realizado(s), conforme especificado nesta GAB</span>
+              <div class="vgap-50"></div></td>
+          </tr>
+
+          <tr>
+            <td colspan="2" class="text-center">Assinatura do Comandante ou Diretor</td>
+            <td colspan="2" class="text-center">Assinatura do responsável pelo paciente / paciente</td>
+          </tr>
+        </table>
+        <div class="vgap-5"></div>
+        <div class="text-center">Esta guia tem validade de 30 dias a contar da data de emissão</div>
+
+      </h:form>
+    </p:dialog>
+  </body>
+</ui:composition>

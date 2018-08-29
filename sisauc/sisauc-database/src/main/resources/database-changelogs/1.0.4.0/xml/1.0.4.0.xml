@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+         
+     <changeSet id="correcao-changelog" author="taveirajcft">
+		<sql>
+			delete from databasechangelog where id='adicior-data-atualizacao-beneficiario';
+		</sql>
+	</changeSet>
+
+	<changeSet id="atualizacao-dados-hfasp" author="taveirajcft">
+		<sql>
+			update sch_sisauc.organizacao_militar set sigla = 'HFASP' where sigla = 'HASP';
+			update sch_sisauc.organizacao_militar set nome = 'Hospital de Força Aérea de São Paulo' where sigla = 'HFASP';
+		</sql>
+	</changeSet>
+	
+	<changeSet id="adicior-data-atualizacao-beneficiario" author="taveirajcft" runOnChange="true">
+		<sql>
+			ALTER TABLE sch_sisauc.beneficiario DROP COLUMN IF EXISTS data_atualizacao_registro;
+			ALTER TABLE sch_sisauc.beneficiario ADD COLUMN data_atualizacao_registro timestamp without time zone;
+			UPDATE sch_sisauc.beneficiario set data_atualizacao_registro = '2014-11-03 00:00:00' where data_atualizacao_registro is null;
+		</sql>
+	</changeSet>
+	
+	<changeSet id="adicionar-campo-justificativa-opme" author="januarioacsj">
+		<sql>
+			ALTER TABLE sch_sisauc.resposta_procedimento_auditoria ADD COLUMN opme_justificativa text;
+		</sql>
+	</changeSet>
+
+</databaseChangeLog>

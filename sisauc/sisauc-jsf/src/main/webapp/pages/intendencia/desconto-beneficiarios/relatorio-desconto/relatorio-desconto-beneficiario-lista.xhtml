@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="/resources/template/template.xhtml">
+
+	<ui:define name="html-title">Relatórios para desconto de beneficiário</ui:define>
+
+	<ui:define name="main">
+
+		<h3>Relatórios para Desconto de Beneficiário</h3>
+
+
+		<div class="vgap-30" />
+		<h:form id="relatorio-descontos-lista-form">
+
+			<a id="criar" class="btn btn-success"
+				href="relatorio-desconto-beneficiario-geracao-relatorio"> <span
+				class="fa fa-plus"></span> <span id="criar"> Criar novo
+					Relatório</span>
+			</a>
+			<p:messages id="msg" showIcon="false" autoUpdate="true" />
+
+			<p:dataTable id="table-relatorios-desconto"
+				value="#{relatorioDescontoBeneficiarioListaBean.relatorios}"
+				var="relatorio" paginator="true" paginatorPosition="bottom"
+				rows="10" paginatorAlwaysVisible="false"
+				rowStyleClass="#{relatorio.estadoEnvioFolha.label == 'Não Autorizado' ? 'alert' : ''}">
+				<p:column headerText="Código" width="180" styleClass="text-center">
+					<h:outputText value="#{relatorio.codigo}" />
+				</p:column>
+
+				<p:column headerText="Autor">
+					<h:outputText
+						value="#{relatorio.autor.nome} (#{relatorio.autor.login})" />
+				</p:column>
+
+				<p:column headerText="Estado Envio Folha" width="180"
+					styleClass="text-center">
+					<h:outputText value="#{relatorio.estadoEnvioFolha.label} " />
+					
+				</p:column>
+
+				<p:column headerText="Envio finalizado em" width="160"
+					styleClass="text-center">
+					<h:outputText value="#{relatorio.dataFinalizacaoEnvio}">
+						<f:convertDateTime pattern="dd/MM/yy HH:mm" />
+					</h:outputText>
+				</p:column>
+				<p:column headerText="Gerado em" width="160"
+					styleClass="text-center">
+					<h:outputText value="#{relatorio.dataGeracao}">
+						<f:convertDateTime pattern="dd/MM/yy 'às' HH:mm" />
+					</h:outputText>
+				</p:column>
+
+				<p:column width="100" styleClass="text-center muted">
+					<h:panelGroup>
+					<h:outputLink id="abrir-relatorio" styleClass="btn btn-link"
+						title="Visualizar"
+						value="relatorio-desconto-beneficiario/#{relatorio.id}">
+						<span id="visualizar" class="fa fa-search"></span>
+					</h:outputLink>
+					<p:commandButton
+						action="#{relatorioDescontoBeneficiarioListaBean.selecionar(relatorio)}"
+						icon="fa fa-upload" title="Enviar p/ Folha de Pagamento"
+						rendered="#{relatorio.estadoEnvioFolha.label == 'Não Enviado'}"
+						
+						styleClass="btn btn-link" />
+						</h:panelGroup>
+						<!-- update=":relatorio-descontos-lista-form:table-relatorios-desconto" -->
+					<!--  h:outputLink id="enviar-relatorio" styleClass="btn btn-link" title="Enviar p/ Desconto"
+          value="relatorio-desconto-beneficiario/#{relatorio.id}">
+          <span id="visualizar" class="fa fa-money"></span>
+        </h:outputLink-->
+				</p:column>
+			</p:dataTable>
+		</h:form>
+
+		<!-- visualizarEnvioDialog -->
+
+
+
+
+
+	</ui:define>
+
+
+	<ui:define name="dialogs">
+		<!-- ui:include src="visualizar-envio-sisconsig.xhtml" /-->
+		<ui:include src="confirmar-envio-sisconsig.xhtml" />
+	</ui:define>
+
+
+
+</ui:composition>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" template="/resources/template/template.xhtml">
+
+  <ui:define name="html-title">Sobre</ui:define>
+
+  <ui:define name="main">
+    <h3>Sobre</h3>
+    <p:separator />
+
+    <div class="vgap-10"></div>
+
+    <p:tabView id="tabview-sobre">
+      <p:tab id="tab-notas-versao">
+        <f:facet name="title">
+          <i class="fa fa-list"></i> Notas
+        </f:facet>
+        <ui:include src="notas-versao.xhtml"></ui:include>
+      </p:tab>
+      <p:tab title="Diagramas de estado" id="tab-estado">
+        <f:facet name="title">
+          <i class="fa fa-code-fork"></i> Diagrama de Estado
+        </f:facet>
+        <ui:include src="diagramas-estado.xhtml"></ui:include>
+      </p:tab>
+      <p:tab title="Processo" id="tab-processo">
+        <f:facet name="title">
+          <i class="fa fa-map-signs"></i> Processo
+        </f:facet>
+        <ui:include src="diagramas-processo.xhtml"></ui:include>
+      </p:tab>
+      <p:tab id="tab-manual">
+        <f:facet name="title">
+          <i class="fa fa-life-buoy"></i> Manual
+        </f:facet>
+        <a href="./pages/sobre/manual/index.html" target="_blank">Clique aqui para visualizar o manual</a>
+      </p:tab>
+      
+      <!-- <p:tab title="Equipe" id="tab-equipe">
+        <f:facet name="title">
+          <i class="fa fa-hand-spock-o"></i> Equipe
+        </f:facet>
+        <ui:include src="equipe.xhtml"></ui:include>
+      </p:tab> -->
+      
+    </p:tabView>
+  </ui:define>
+
+  <ui:define name="html-body-bottom">
+  </ui:define>  
+
+</ui:composition>

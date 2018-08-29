@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" template="/resources/template/template.xhtml">
+
+  <ui:define name="html-title">Cancelamento de Auditoria Retrospectiva</ui:define>
+
+  <ui:define name="main">
+
+    <h3>Cancelamento de Auditoria Retrospectiva</h3>
+
+    <p:separator />
+
+    <div class="vgap-10" />
+
+    <h:form id="auditoria-retrospectiva-lista-form">
+      <p:messages id="msg" showIcon="false" autoUpdate="true"/>
+
+      <div class="vgap-10" />
+
+      <p:dataTable value="#{cancelamentoAuditoriaRetrospectivaBean.listaItens}" paginator="true" rows="15"
+        emptyMessage="#{msgs.no_records_found}" id="table-auditoria-retrospectiva" paginatorPosition="bottom"
+        paginatorAlwaysVisible="false" rowsPerPageTemplate="15, 20, 25"
+        paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+        var="item">
+
+        <f:facet name="header">
+            <h:outputText value="Itens de GAB Conformes"/>
+        </f:facet>
+        
+        <p:column headerText="Divisão" width="90" styleClass="text-center" filterOptions="#{viewUtilsBean.divisoesOptions()}" filterBy="#{item.gab.divisao}">
+          <a title="Divisão Médica"><h:panelGroup styleClass="fa fa-tag muted" rendered="#{item.gab.divisao == 'DIVISAO_MEDICA'}" /></a>
+          <a title="Divisão Odonológica"><h:panelGroup styleClass="fa fa-tag text-info" rendered="#{item.gab.divisao == 'DIVISAO_ODONTOLOGICA'}" /></a>
+        </p:column>
+        
+        <p:column headerText="Código Item GAB" width="220" filterMatchMode="contains" sortBy="#{item.codigo}"
+          id="codigo-item-gab" filterBy="#{item.codigo}" filterFunction="#{viewUtilsBean.filterIgnoreCase}" styleClass="text-center">
+          <h:outputText value="#{item.codigo}" title="#{item.configuracao.procedimento.descricao}" />
+        </p:column>
+
+        <p:column headerText="Credenciado" filterBy="#{item.gab.credenciado.nomeFantasia}"
+          filterMatchMode="contains" sortBy="#{item.gab.credenciado.nomeFantasia}"
+          filterFunction="#{viewUtilsBean.filterIgnoreCase}" id="credenciado">
+          <h:outputText value="#{item.gab.credenciado.nomeFantasia}" />
+        </p:column>
+
+        <p:column headerText="Data Emissão" width="120" id="data-emissao" sortBy="#{item.gab.dataEmissao}"
+          styleClass="text-center">
+          <h:outputText value="#{item.gab.dataEmissao}">
+            <f:convertDateTime pattern="dd/MM/yyyy" />
+          </h:outputText>
+        </p:column>
+
+        <p:column headerText="Estado da Auditoria" width="120" id="estado-auditoria" styleClass="text-center">
+          <h:outputText value="#{item.estadoItemGAB.label}"/>
+        </p:column>
+        
+        <p:column headerText="Nº Lote de Pagamento" width="160" styleClass="text-center">
+          <h:outputText value="#{item.numeroLote}"/>
+        </p:column>
+            
+        <p:column width="50" styleClass="text-center muted">
+          <p:commandButton action="#{cancelamentoAuditoriaRetrospectivaBean.selecionarItemGAB(item)}" icon="fa fa-times text-error" 
+            update=":acao-sdga-cancelar-auditoria-retrospectiva-form" styleClass="btn btn-link"/>
+        </p:column>
+      </p:dataTable>
+
+    </h:form>
+
+  </ui:define>
+
+  <ui:define name="dialogs">
+    <ui:include src="acao-sdga-cancelar-auditoria-retrospectiva-dialog.xhtml" />
+    <ui:include src="confirmar-cancelamento-auditoria-retrospectiva-dialog.xhtml" />
+  </ui:define>
+  
+</ui:composition>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<changeSet id="atualizacao-id-especialidades-antigas" author="januarioacsj">
+		<sql>
+			UPDATE sch_sisauc.medico_especialidade SET id_especialidade = 72 WHERE id_especialidade = 2;
+			UPDATE sch_sisauc.medico_especialidade SET id_especialidade = 75 WHERE id_especialidade = 59;
+			UPDATE sch_sisauc.medico_especialidade SET id_especialidade = 76 WHERE id_especialidade = 6;
+			UPDATE sch_sisauc.medico_especialidade SET id_especialidade = 77 WHERE id_especialidade = 67;
+			UPDATE sch_sisauc.medico_especialidade SET id_especialidade = 78 WHERE id_especialidade = 23;
+			UPDATE sch_sisauc.medico_especialidade SET id_especialidade = 79 WHERE id_especialidade = 10;
+			UPDATE sch_sisauc.medico_especialidade SET id_especialidade = 80 WHERE id_especialidade = 68;
+			UPDATE sch_sisauc.medico_especialidade SET id_especialidade = 81 WHERE id_especialidade = 24;
+			UPDATE sch_sisauc.medico_especialidade SET id_especialidade = 82 WHERE id_especialidade = 11;
+			UPDATE sch_sisauc.medico_especialidade SET id_especialidade = 84 WHERE id_especialidade = 25;
+			UPDATE sch_sisauc.medico_especialidade SET id_especialidade = 85 WHERE id_especialidade = 26;
+			UPDATE sch_sisauc.medico_especialidade SET id_especialidade = 86 WHERE id_especialidade = 27;
+			UPDATE sch_sisauc.medico_especialidade SET id_especialidade = 87 WHERE id_especialidade = 8;
+			UPDATE sch_sisauc.medico_especialidade SET id_especialidade = 88 WHERE id_especialidade = 64;
+			UPDATE sch_sisauc.medico_especialidade SET id_especialidade = 89 WHERE id_especialidade = 28;
+			UPDATE sch_sisauc.medico_especialidade SET id_especialidade = 92 WHERE id_especialidade = 17;
+			UPDATE sch_sisauc.medico_especialidade SET id_especialidade = 95 WHERE id_especialidade = 70;
+			UPDATE sch_sisauc.medico_especialidade SET id_especialidade = 98 WHERE id_especialidade = 66;
+			UPDATE sch_sisauc.medico_especialidade SET id_especialidade = 99 WHERE id_especialidade = 62;
+			UPDATE sch_sisauc.medico_especialidade SET id_especialidade = 100 WHERE id_especialidade = 29;
+			UPDATE sch_sisauc.medico_especialidade SET id_especialidade = 103 WHERE id_especialidade = 30;
+			UPDATE sch_sisauc.medico_especialidade SET id_especialidade = 104 WHERE id_especialidade = 31;
+			UPDATE sch_sisauc.medico_especialidade SET id_especialidade = 105 WHERE id_especialidade = 21;
+			UPDATE sch_sisauc.medico_especialidade SET id_especialidade = 106 WHERE id_especialidade = 20;
+			UPDATE sch_sisauc.medico_especialidade SET id_especialidade = 107 WHERE id_especialidade = 32;
+			UPDATE sch_sisauc.medico_especialidade SET id_especialidade = 108 WHERE id_especialidade = 61;
+			UPDATE sch_sisauc.medico_especialidade SET id_especialidade = 109 WHERE id_especialidade = 33;
+			UPDATE sch_sisauc.medico_especialidade SET id_especialidade = 110 WHERE id_especialidade = 34;
+			UPDATE sch_sisauc.medico_especialidade SET id_especialidade = 111 WHERE id_especialidade = 22;
+			UPDATE sch_sisauc.medico_especialidade SET id_especialidade = 112 WHERE id_especialidade = 35;
+			UPDATE sch_sisauc.medico_especialidade SET id_especialidade = 113 WHERE id_especialidade = 38;
+			UPDATE sch_sisauc.medico_especialidade SET id_especialidade = 114 WHERE id_especialidade = 14;
+			UPDATE sch_sisauc.medico_especialidade SET id_especialidade = 115 WHERE id_especialidade = 65;
+			UPDATE sch_sisauc.medico_especialidade SET id_especialidade = 116 WHERE id_especialidade = 60;			
+		</sql>
+	</changeSet>
+	
+	<changeSet id="add-coluna-observacoes-na-solicitacao-procedimento" author="ferrazlffm">
+		<sql>
+			ALTER TABLE sch_sisauc.solicitacao ADD COLUMN observacoes character varying(1024);
+		</sql>
+	</changeSet>	
+
+</databaseChangeLog>

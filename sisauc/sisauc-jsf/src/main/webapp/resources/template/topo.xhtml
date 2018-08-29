@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets">
+
+  
+  <div class="row-fluid">
+    <div class="span12 topo text-right">
+      <p:tooltip />
+      <h:form>
+        <p:commandLink action="#{viewUtilsBean.atualizarLeuNotasVersao()}" styleClass="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-left btn btn-link margin-l-30"
+          oncomplete="abrirSobre('#{authenticationContext.usuarioLogado.login}','#{request.contextPath}/sobre')">
+          <span class="ui-button-icon-left ui-icon ui-c fa fa-lightbulb-o"></span>
+          <span class="ui-button-text ui-c">
+            <h:panelGroup>Sobre</h:panelGroup>
+            <h:outputText value=" " rendered="#{!authenticationContext.usuarioLogado.leuNotasVersao}"/>
+            <h:panelGroup styleClass="badge badge-success blink" rendered="#{!authenticationContext.usuarioLogado.leuNotasVersao}">novo</h:panelGroup>
+          </span>
+        </p:commandLink>
+        <p:commandButton id="editarPerfilButton" styleClass="btn btn-link" icon="fa fa-user " type="button" value="#{authenticationContext.usuarioLogado.login}" onclick="window.location.href = '#{request.contextPath}/perfil'"/>
+        <p:tooltip id="toolTipContent" for="editarPerfilButton" trackMouse="true">
+        	<p:dataList value="#{viewUtilsBean.getPerfisUsuario()}" var="perfil" type="ordered">
+	        	#{perfil.label}
+    		</p:dataList>
+    	</p:tooltip>
+        <p:commandButton styleClass="btn btn-link" icon="fa fa-sign-out" action="#{authenticationContext.logout}" value="Sair"/>
+      </h:form>
+    </div>
+  </div>
+
+</ui:composition>

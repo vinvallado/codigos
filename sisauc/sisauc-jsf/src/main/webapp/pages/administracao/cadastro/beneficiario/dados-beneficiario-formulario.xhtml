@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="/resources/template/template.xhtml">
+
+	<ui:define name="html-title">Visualizar Beneficiários</ui:define>
+
+	<ui:define name="main">
+		<h3>Dados de beneficiário</h3>
+		<p:separator />
+		<div class="vgap-10"></div>
+		<h:form prependId="false">
+			<p:messages id="msgs" showIcon="false" />
+			<p:panelGrid>
+				<p:row>
+					<p:column>
+						<p:outputLabel value="Nome completo:" for="nome-completo" />
+					</p:column>
+					<p:column >
+						<p:inputText
+							value="#{cadastroBeneficiarioFormularioBean.beneficiario.nome}"
+							size="40" id="nome-completo" readonly="true" />
+					</p:column>
+					<p:column>
+						<p:outputLabel value="Data da Atualização:" for="nome-completo" />
+					</p:column>
+					<p:column>
+						<h:outputText value="#{cadastroBeneficiarioFormularioBean.beneficiario.dataAtualizacao}"  >
+							<f:convertDateTime pattern="dd/MM/yyyy HH:mm" readonly="true" />
+						</h:outputText>
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column>
+						<p:outputLabel value="SARAM:" for="saram" />
+					</p:column>
+					<p:column>
+						<p:inputText
+							value="#{cadastroBeneficiarioFormularioBean.beneficiario.saram}"
+							size="20" id="saram" readonly="true" />
+					</p:column>
+					<p:column>
+						<p:outputLabel value="CPF:" for="cpf" />
+					</p:column>
+					<p:column>
+						<p:inputText
+							value="#{cadastroBeneficiarioFormularioBean.beneficiario.cpf}"
+							size="20" id="cpf" readonly="true" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column>
+						<p:outputLabel value="Posto/Graduação" for="postoGraduacao" />
+					</p:column>
+					<p:column>
+						<p:inputText
+							value="#{cadastroBeneficiarioFormularioBean.beneficiario.postoGraduacao != null?cadastroBeneficiarioFormularioBean.beneficiario.postoGraduacao.descricao:''}"
+							size="20" id="postoGraduacao" readonly="true" /> 
+					</p:column>
+					<p:column>
+						<p:outputLabel value="Organização Militar:"
+							for="organizacaoMilitar" />
+					</p:column>
+					<p:column>
+						<p:inputText size="20"
+							value="#{cadastroBeneficiarioFormularioBean.beneficiario.organizacaoMilitar != null ? cadastroBeneficiarioFormularioBean.beneficiario.organizacaoMilitar.sigla:''}" 
+							id="organizacaoMilitar" readonly="true" />
+					</p:column>
+				</p:row>
+
+				<p:row>
+					<p:column>
+						<p:outputLabel value="Sexo:" for="sexo" />
+					</p:column>
+					<p:column>
+						<p:inputText
+							value="#{cadastroBeneficiarioFormularioBean.beneficiario.sexo.descricao}"
+							size="20" id="sexo" readonly="true" />
+					</p:column>
+					<p:column>
+						<p:outputLabel value="Data Nascimento:" for="dataNascimento" />
+					</p:column>
+					<p:column>
+						<p:inputText
+							value="#{cadastroBeneficiarioFormularioBean.beneficiario.dataNascimento}"
+							id="dataNascimento" readonly="true">
+							<f:convertDateTime pattern="dd/MM/yyyy" readonly="true" />
+						</p:inputText>
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column>
+						<p:outputLabel value="Convenio:" for="convenio" />
+					</p:column>
+					<p:column>
+						<p:inputText
+							value="#{cadastroBeneficiarioFormularioBean.beneficiario.convenio.sigla}"
+							id="convenio" readonly="true" />
+					</p:column>
+					<p:column>
+						<p:outputLabel value="Contribuição:" for="tipoContribuicao" />
+					</p:column>
+					<p:column>
+						<p:inputText
+							value="#{cadastroBeneficiarioFormularioBean.beneficiario.tipoContribuicao}"
+							size="20" id="tipoContribuicao" readonly="true" />
+					</p:column>
+				</p:row>
+				
+				<p:row>
+					<p:column>
+						<p:outputLabel value="Ativo:" for="ativo" />
+					</p:column>
+					<p:column>
+						<p:inputText
+							value="#{cadastroBeneficiarioFormularioBean.beneficiario.ativo ? 'Sim': 'Não'}"
+							id="ativo" readonly="true" />
+					</p:column>
+					<p:column>
+						<p:outputLabel value="Titular:" for="titular" />
+					</p:column>
+					<p:column>
+						<p:inputText
+							value="#{cadastroBeneficiarioFormularioBean.beneficiario.titular ? 'Sim': 'Não'}"
+							id="titular" readonly="true" />
+					</p:column>
+				</p:row>
+				<p:row
+					rendered="#{cadastroBeneficiarioFormularioBean.beneficiario.titular}">
+					<p:column colspan="4">
+						<h4>Dependentes</h4>
+						<p:separator />
+						<p:dataTable
+							value="#{cadastroBeneficiarioFormularioBean.dependentesBeneficiario}"
+							var="dependente" sortBy="#{dependente.nome}" paginator="true" rows="15"
+							paginatorPosition="bottom" paginatorAlwaysVisible="false"
+							rowsPerPageTemplate="10, 15, 25"
+							emptyMessage="Nenhum Dependente Cadastrado"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+							filteredValue="#{viewUtilsBean.filtrados}" filterDelay="300">
+							<p:column headerText="Nome Completo" width="150">
+								<h:outputText value="#{dependente.nome}" />
+							</p:column>
+
+							<p:column headerText="Data Nascimento" width="50">
+								<h:outputText value="#{dependente.dataNascimento}">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="Ativo" width="50" styleClass="text-center">
+								<h:outputText
+									value="#{viewUtilsBean.booleanLabel(dependente.ativo)}"
+									styleClass="#{dependente.ativo? 'text-success' : 'text-error'}" />
+							</p:column>
+
+
+						</p:dataTable>
+					</p:column>
+				</p:row>
+				<p:row
+					rendered="#{!cadastroBeneficiarioFormularioBean.beneficiario.titular}"> 
+					<p:column colspan="4">
+						<c:set var="beneficiarioTitular" value="#{cadastroBeneficiarioFormularioBean.beneficiario.beneficiarioTitular}" scope="view" />
+					
+						<h4>Responsável pelo beneficiário</h4>
+						<p:separator />
+						<p:panelGrid>
+							<p:row>
+								<p:column>
+									<p:outputLabel value="Nome completo:" for="nome-completo-titular" /> 
+								</p:column>
+								<p:column>
+									<p:inputText value="#{beneficiarioTitular.nome}" size="40"
+										id="nome-completo-titular" readonly="true" />
+								</p:column>
+								<p:column>
+									<p:outputLabel value="Data da Atualização:"  />
+								</p:column>
+								<p:column>
+									<h:outputText value="#{beneficiarioTitular.dataAtualizacao}">
+										<f:convertDateTime pattern="dd/MM/yyyy HH:mm" readonly="true" />
+									</h:outputText>
+								</p:column>
+							</p:row>
+							<p:row>
+								<p:column>
+									<p:outputLabel value="SARAM:" for="saram-titular" />
+								</p:column>
+								<p:column>
+									<p:inputText
+										value="#{beneficiarioTitular.saram}"
+										size="20" id="saram-titular" readonly="true" />
+								</p:column>
+								<p:column>
+									<p:outputLabel value="CPF:" for="cpf-titular" />
+								</p:column>
+								<p:column>
+									<p:inputText
+										value="#{beneficiarioTitular.cpf}"
+										size="20" id="cpf-titular" readonly="true" />
+								</p:column>
+							</p:row>
+							<p:row>
+								<p:column>
+									<p:outputLabel value="Posto/Graduação"
+										for="postoGraduacao-titular" />
+								</p:column>
+								<p:column>
+									<p:inputText
+										value="#{beneficiarioTitular.postoGraduacao != null? beneficiarioTitular.postoGraduacao.descricao:''}"
+										size="20" id="postoGraduacao-titular" readonly="true" />
+								</p:column>
+								<p:column>
+									<p:outputLabel value="Organização Militar:"
+										for="organizacaoMilitar-titular" />
+								</p:column>
+								<p:column>
+									<p:inputText size="20"
+										value="#{beneficiarioTitular.organizacaoMilitar != null? beneficiarioTitular.organizacaoMilitar.sigla:''}"
+										id="organizacaoMilitar-titular" readonly="true" />
+								</p:column>
+							</p:row>
+							<p:row>
+								<p:column>
+									<p:outputLabel value="Convenio:" for="convenio-titular" />
+								</p:column>
+								<p:column>
+									<p:inputText
+										value="#{beneficiarioTitular.convenio.sigla}"
+										id="convenio-titular" readonly="true" />
+								</p:column>
+								<p:column>
+									<p:outputLabel value="Contribuição:" for="tipoContribuicao-titular" />
+								</p:column>
+								<p:column>
+									<p:inputText
+										value="#{beneficiarioTitular.tipoContribuicao}"
+										size="20" id="tipoContribuicao-titular" readonly="true" />
+								</p:column>
+							</p:row>
+							<p:row>
+								<p:column>
+									<p:outputLabel value="Sexo:" for="sexo-titular" />
+								</p:column>
+								<p:column>
+									<p:inputText
+										value="#{beneficiarioTitular.sexo.descricao}"
+										size="20" id="sexo-titular" readonly="true" />
+								</p:column>
+								<p:column>
+									<p:outputLabel value="Data Nascimento:"
+										for="dataNascimento-titular" />
+								</p:column>
+								<p:column>
+									<p:inputText
+										value="#{beneficiarioTitular.dataNascimento}"
+										id="dataNascimento-titular" readonly="true">
+										<f:convertDateTime pattern="dd/MM/yyyy" readonly="true" />
+									</p:inputText>
+								</p:column>
+							</p:row>
+						</p:panelGrid>
+					</p:column>
+				</p:row>
+
+			</p:panelGrid>
+			<div class="vgap-10"></div>
+			<a href="../beneficiario" class="btn">Voltar</a>
+
+		</h:form>
+	</ui:define>
+
+</ui:composition>

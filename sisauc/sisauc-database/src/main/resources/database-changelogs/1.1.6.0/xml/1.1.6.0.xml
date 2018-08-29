@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<changeSet id="alterar-sigla-especialidade-psiquiatria" author="januarioacsj">
+		<sql>
+			UPDATE sch_sisauc.especialidade SET sigla = 'PSQ' WHERE id = 110;
+		</sql>
+	</changeSet>
+	
+	<changeSet id="incluir-novas-especialidades-medicas" author="januarioacsj">
+		<sql>
+			INSERT INTO sch_sisauc.especialidade (id,sigla,nome) VALUES (114,'FIS','FISIOTERAPIA');
+			INSERT INTO sch_sisauc.especialidade (id,sigla,nome) VALUES (115,'FON','FONOAUDIOLOGIA');
+			INSERT INTO sch_sisauc.especialidade (id,sigla,nome) VALUES (116,'PSI','PSICOLOGIA');
+		</sql>
+	</changeSet>
+
+</databaseChangeLog>

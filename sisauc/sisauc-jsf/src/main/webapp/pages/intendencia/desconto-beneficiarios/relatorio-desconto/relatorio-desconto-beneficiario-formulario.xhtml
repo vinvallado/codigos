@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" template="/resources/template/template.xhtml">
+
+  <ui:define name="html-title">Controle de Descontos do Benefiário</ui:define>
+
+  <ui:define name="main">
+
+    <h3>Controle de Descontos do Beneficiário</h3>
+
+    <p:separator />
+
+    <h:form prependId="false" id="desconto-beneficiario-form">
+
+      <p:messages id="msgs"/>
+
+      <p:panelGrid columns="9">
+        <p:outputLabel value="Apresentação da nota fiscal: " />
+        <p:calendar value="#{relatorioDescontoBeneficiarioFormBean.parametros.dataInicial}" id="inicio" size="5" locale="pt_BR"
+          navigator="true" />
+        <p:outputLabel value="até" />
+        <p:calendar value="#{relatorioDescontoBeneficiarioFormBean.parametros.dataFinal}" id="fim" size="5" locale="pt_BR"
+          navigator="true" />
+
+        <p:outputLabel value="Lote: " for="lote" />
+        <p:inputText size="16" id="lote" value="#{relatorioDescontoBeneficiarioFormBean.parametros.lote}" />
+
+        <p:outputLabel value="GAB:" for="gab" />
+        <p:inputText size="16" id="gab" value="#{relatorioDescontoBeneficiarioFormBean.parametros.gab}" />
+
+        <p:commandButton action="#{relatorioDescontoBeneficiarioFormBean.pesquisar}" update="@form" icon="fa fa-search"
+          styleClass="btn btn-primary" value="Pesquisar" />
+
+      </p:panelGrid>
+
+      <div class="vgap-30" />
+
+      <p:dataTable id="tabela" value="#{relatorioDescontoBeneficiarioFormBean.itens}" var="itemGAB" paginator="true"
+        rows="15" paginatorPosition="bottom" paginatorAlwaysVisible="false" rowsPerPageTemplate="10, 15, 25"
+        emptyMessage="#{msgs.no_records_found}"
+        paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+        filteredValue="#{viewUtilsBean.filtrados}" filterDelay="300"
+        selection="#{relatorioDescontoBeneficiarioFormBean.itensSelecionados}" rowKey="#{itemGAB.id}">
+
+        <f:facet name="header">
+          <p:column>
+            <p:commandButton value="Gerar relatório para desconto" styleClass="btn btn-success" icon="fa fa-plus"
+              action="#{relatorioDescontoBeneficiarioFormBean.validarGeracaoRelatorio}" update="msgs"/>
+          </p:column>
+        </f:facet>
+        
+        <p:column style="text-align:center" selectionMode="multiple" width="20"/>
+       
+        <p:column headerText="Código" id="codigo-item-gab" width="200">
+          <h:outputText value="#{itemGAB.codigo}"/>
+        </p:column>
+        
+        <p:column headerText="Beneficiário" id="beneficiario">
+          <h:outputText value="#{itemGAB.gab.beneficiario.nome}"/>
+        </p:column>
+
+        <p:column headerText="Beneficiário Titular" id="beneficiario-titular">
+          <h:outputText value="#{itemGAB.gab.beneficiario.beneficiarioTitular.nome}" 
+            rendered="#{itemGAB.gab.beneficiario.beneficiarioTitular.nome != null}"/>
+          <h:outputText value="#{itemGAB.gab.beneficiario.nome}" 
+            rendered="#{itemGAB.gab.beneficiario.beneficiarioTitular.nome == null}"/>
+        </p:column>
+
+        <p:column headerText="Data Emissão" width="80" id="data-emissao" sortBy="#{itemGAB.gab.dataEmissao}"
+          styleClass="text-center">
+          <h:outputText value="#{itemGAB.gab.dataEmissao}">
+            <f:convertDateTime pattern="dd/MM/yyyy" />
+          </h:outputText>
+        </p:column>
+      </p:dataTable>
+
+    </h:form>
+    
+    <div class="vgap-30" />
+    
+    <a onClick="history.back();" class="btn">Voltar</a>
+    
+  </ui:define>
+  
+  <ui:define name="dialogs">
+    <ui:include src="relatorio-desconto-beneficiario-dialog.xhtml"/>
+  </ui:define>
+
+</ui:composition>

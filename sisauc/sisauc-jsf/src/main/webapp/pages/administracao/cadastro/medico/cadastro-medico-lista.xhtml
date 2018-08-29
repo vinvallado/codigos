@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" template="/resources/template/template.xhtml">
+
+  <ui:define name="html-title">Lista de Profissionais</ui:define>
+
+  <ui:define name="main">
+
+    <h3>Cadastro de Profissionais</h3>
+
+    <p:separator />
+
+    <a class="btn btn-success" href="medico/novo" id="criar"> <span class="fa fa-plus"></span> <span>Criar
+        novo Profissional</span></a>
+
+    <div class="vgap-10" />
+
+    <h:form id="form-medicos-lista">
+
+      <p:messages id="msg" showIcon="false" />
+
+      <p:dataTable value="#{cadastroMedicoListaBean.medicos}" var="medico" id="tabela-medicos" sortBy="#{medico.nome}"
+        paginator="true" rows="15" emptyMessage="#{msgs.no_records_found}" paginatorPosition="bottom"
+        paginatorAlwaysVisible="true" rowsPerPageTemplate="10, 15, 25" widgetVar="datatable-medico"
+        paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+        filteredValue="#{viewUtilsBean.filtrados}" filterDelay="300">
+        
+        <p:column id="sigla" headerText="OM" width="110" filterBy="#{medico.organizacaoMilitar.sigla}" sortBy="#{medico.organizacaoMilitar.sigla}"
+          filterFunction="#{viewUtilsBean.filterIgnoreCase}">
+          <h:outputText value="#{medico.organizacaoMilitar.sigla}" />
+        </p:column>
+
+        <p:column id="numeroConselhoRegional" headerText="N° Cons Reg" width="150" filterBy="#{medico.numeroConselhoRegional}">
+          <h:outputText value="#{medico.numeroConselhoRegional}" />
+        </p:column>
+
+        <p:column id="nome" headerText="Nome" filterBy="#{medico.nome}" sortBy="#{medico.nome}"
+          filterFunction="#{viewUtilsBean.filterIgnoreCase}">
+          <h:outputText value="#{medico.nome}" />
+        </p:column>
+
+
+        <p:column id="esp" width="140" styleClass="text-center" headerText="Especialidade" filterBy="#{medico.especialidades}" 
+          filterFunction="#{cadastroMedicoListaBean.filtrarEspecialidades}" >
+          <p:commandButton process="@this" icon="fa fa-info" id="btn-especialidades" title="Ver Especialidades"
+            styleClass="btn btn-link" action="#{cadastroMedicoListaBean.selecionarMedicoMostrarEspecialidade(medico)}"
+            update=":especialidades-form" />
+        </p:column>
+
+        <p:column id="ativo" headerText="Ativo" width="70" styleClass="text-center" sortBy="#{medico.ativo}"
+          filterOptions="#{viewUtilsBean.booleanOptions()}" filterBy="#{viewUtilsBean.booleanLabel(medico.ativo)}">
+          <h:outputText value="#{viewUtilsBean.booleanLabel(medico.ativo)}"
+            styleClass="#{medico.ativo ? 'text-success' : 'text-error'}" />
+        </p:column>
+
+        <p:column id="btn-ativo" width="40" styleClass="text-center">
+          <p:commandButton id="ativar-desativar"
+            icon="fa #{medico.ativo ? 'fa-times text-error' : 'fa-check text-success'}"
+            title="#{medico.ativo ? 'Desativar' : 'Ativar'}" styleClass="btn btn-link"
+            action="#{cadastroMedicoListaBean.selecionarMedicoAlterarAtivo(medico)}" update=":dialog-status-form" />
+        </p:column>
+
+        <p:column width="40" styleClass="text-center muted">
+          <h:outputLink id="editar" styleClass="btn btn-link" value="medico/#{medico.id}" title="Editar">
+            <span id="editar" class="fa fa-pencil"></span>
+          </h:outputLink>
+        </p:column>
+
+      </p:dataTable>
+
+    </h:form>
+
+  </ui:define>
+
+  <ui:define name="dialogs">
+
+    <p:dialog widgetVar="especialidadesDialog" closeOnEscape="true" modal="true" id="especialidades-dialog"
+      resizable="false" header="Especialidades">
+      <h:form id="especialidades-form">
+        <p:dataTable scrollable="false" value="#{cadastroMedicoListaBean.listarEspecialidadesMedicoSelecionado()}"
+          var="especialidade" style="width:400px" emptyMessage="Este profissional não possui especialidade cadastrada">
+          <p:column>
+            <h:outputText value="#{especialidade.nome}" />
+          </p:column>
+        </p:dataTable>
+      </h:form>
+    </p:dialog>
+
+    <p:dialog header="Atenção!" id="mudar-status-medico-dialog" widgetVar="mudarStatusMedicoDialog" modal="true"
+      resizable="false">
+      <h:form id="dialog-status-form">
+        <h:outputText
+          value="Tem certeza que deseja #{cadastroMedicoListaBean.medicoSelecionado.ativo ? 'desativar' : 'ativar'} 
+          o profissional #{cadastroMedicoListaBean.medicoSelecionado.nome}?" />
+
+        <div class="vgap-30">
+          <!-- GAP 30px -->
+        </div>
+
+        <h:panelGroup styleClass="dialog-footer" layout="block">
+          <p:commandButton value="Sim" styleClass="btn btn-success" icon="fa fa-save"
+            action="#{cadastroMedicoListaBean.mudarStatusAtivoMedico}" onclick="PF('mudarStatusMedicoDialog').hide()"
+            update=":form-medicos-lista" oncomplete="PF('datatable-medico').filter();" />
+          <p:commandButton value="Cancelar" styleClass="btn" icon="fa" type="button"
+            onclick="PF('mudarStatusMedicoDialog').hide()" />
+        </h:panelGroup>
+
+      </h:form>
+    </p:dialog>
+
+  </ui:define>
+
+</ui:composition>

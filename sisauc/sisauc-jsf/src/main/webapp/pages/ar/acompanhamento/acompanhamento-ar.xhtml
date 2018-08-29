@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" template="/resources/template/template.xhtml"
+  xmlns:sec="http://www.springframework.org/security/tags">
+
+  <ui:define name="html-title">Acompanhamento de ARE</ui:define>
+
+  <ui:define name="html-head">
+    <link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/css/impressao.css?v=#{versaoInterna}" />
+  </ui:define>
+
+  <ui:define name="main">
+
+    <h3>Acompanhamento de ARE</h3>
+
+    <p:separator />
+
+    <h:form id="lista-ars-form">
+      <p:messages id="msgs" showIcon="false" />
+
+        <p:panelGrid id="grid">
+          <p:row>
+            <p:column>
+              <h4 id="num-are-visualizacao">
+                ARE nº <h:outputText value="#{acompanhamentoARBean.ar.codigo}" />
+                <span id="estado-are-visualizacao" class="muted">(#{acompanhamentoARBean.ar.estado.label})</span>
+              </h4>
+            </p:column>
+          </p:row>
+          
+          <p:row>
+            <p:column>
+              <h:outputText value="Divisão: " style="font-weight:bold;" />
+              <h:outputText value="#{acompanhamentoARBean.ar.auditoriaProspectiva.solicitacao.divisao.label}" />
+            </p:column>
+          </p:row>
+
+          <p:row>
+            <p:column id="data-geracao">
+              <h:outputText value="Data de Geração: " style="font-weight:bold;" />
+              <h:outputText value="#{acompanhamentoARBean.ar.dataGeracao}">
+                <f:convertDateTime pattern="dd/MM/yyyy" readonly="true" />
+              </h:outputText>
+            </p:column>
+          </p:row>
+
+          <p:row>
+            <p:column id="data-emissao" rendered="#{acompanhamentoARBean.ar.dataEmissao != null}">
+              <h:outputText value="Data de Emissão: " style="font-weight:bold;" />
+              <h:outputText value="#{acompanhamentoARBean.ar.dataEmissao}">
+                <f:convertDateTime pattern="dd/MM/yyyy" readonly="true" />
+              </h:outputText>
+            </p:column>
+          </p:row>
+
+          <p:row>
+            <p:column id="beneficiario-visualizacao-are">
+              <h:outputText value="Beneficiário: " style="font-weight:bold;" />
+              <h:outputText value="#{acompanhamentoARBean.ar.beneficiario.nome}" />
+            </p:column>
+          </p:row>
+
+          <p:row>
+            <p:column id="justificativa-acomp-are" rendered="#{acompanhamentoARBean.ar.justificativaCancelamentoAR != null}">
+              <h:outputText value="Justificativa de cancelamento" style="font-weight:bold;" /><br/>
+              <h:outputText value="#{acompanhamentoARBean.ar.justificativaCancelamentoAR}" />
+            </p:column>
+          </p:row>
+        </p:panelGrid>
+
+        <div class="vgap-10" />
+
+        <p:dataTable id="tabela" value="#{acompanhamentoARBean.ar.itens}" var="item" paginator="true" rows="5"
+          paginatorPosition="bottom" paginatorAlwaysVisible="false" rowsPerPageTemplate="5, 10"
+          emptyMessage="#{msgs.no_records_found}"
+          paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+          filteredValue="#{viewUtilsBean.filtrados}" filterDelay="300" widgetVar="datatable">
+
+          <f:facet name="header">
+            <h:outputText value="Itens de ARE" />
+          </f:facet>
+
+          <p:column id="procedimento" headerText="Procedimento">
+            <h:outputText
+              value="#{formatterBean.procedimentoFormatter.getCodigoDescricao(item.procedimento)}" />
+            <h:outputText rendered="#{item.especialidade.sigla != null}"
+              value=" (#{item.especialidade.sigla})" />
+            <h:outputText rendered="#{item.dente != null}" value=" - Dente #{item.dente}" />
+            <h:outputText rendered="#{item.faceDental != null}" value=" - Face #{item.faceDental.label}" />
+            <h:outputLabel id="observacao-are" styleClass="btn btn-link fa fa-info" rendered="#{item.respostaRessarcimentoAuditoria.observacaoARE != null}" />
+            <p:tooltip id="toolTipObservacaoARE" for="observacao-are" styleClass="preformatted" value="OBS: #{item.respostaRessarcimentoAuditoria.observacaoARE}" />
+          </p:column>
+
+        </p:dataTable>
+
+        <div class="vgap-20"></div>
+
+        <h:outputLink id="imprimir" styleClass="btn btn-primary"
+          value="#{request.contextPath}/chefe-funsa/ar/impressao/#{impressaoARBean.ar.id}"
+          rendered="#{acompanhamentoARBean.ar.estado == 'GERADA' || acompanhamentoARBean.ar.estado == 'EMITIDA' }"
+          target="_blank" onclick="setTimeout('location.reload();', 1000);">
+          <span class="fa fa-print" />
+          <span>#{acompanhamentoARBean.ar.estado == 'GERADA'?' Emitir ARE' : ' Reimprimir ARE' }</span>
+        </h:outputLink>
+        
+        <p:commandButton id ="imprimir-requerimento-ressarcimento" value="Imprimir Requerimento de Ressarcimento" styleClass="btn btn-primary margin-l-5"
+          icon="fa fa-print" action="#{acompanhamentoARBean.imprimirRequerimento}" ajax="false"
+          rendered="#{acompanhamentoARBean.ar.estado == 'GERADA' || acompanhamentoARBean.ar.estado == 'EMITIDA' }"/>
+        
+        <sec:authorize ifAllGranted="PERFIL_CHEFE_FUNSA">
+          <p:commandButton id="btn-cancelar-are" value="Cancelar ARE" styleClass="btn btn-danger margin-l-5" icon="fa fa-times"
+            onclick="PF('cancelarArDialog').show()"
+            rendered="#{acompanhamentoARBean.ar.estado == 'GERADA' || acompanhamentoARBean.ar.estado == 'EMITIDA'}" />
+        </sec:authorize>
+
+        <a id="btn-voltar" href="../acompanhamento" class="btn">Voltar</a>
+
+    </h:form>
+
+  </ui:define>
+
+  <ui:define name="dialogs">
+    <p:dialog header="Cancelar ARE" id="cancelarArDialog" widgetVar="cancelarArDialog" modal="true" resizable="false">
+      <h:form id="cancelar-ar-dialog">
+        <p:messages id="msgs" showIcon="false" />
+        <h:outputText value="Tem certeza que deseja CANCELAR esta ARE?" />
+        <div class="vgap-20" />
+        <h:outputText value="Para efetuar o cancelamento de uma ARE é necessária uma justificativa." />
+        <div class="vgap-10" />
+        <p:inputTextarea value="#{acompanhamentoARBean.ar.justificativaCancelamentoAR}" id="justificativa"
+          styleClass="input-block-level" required="true" autoResize="false" rows="4" maxlength="255"
+          requiredMessage="O campo justificativa é obrigatório para efetuar o cancelamento de uma ARE." />
+
+        <div class="vgap-30"></div>
+
+        <h:panelGroup styleClass="dialog-footer" layout="block">
+          <p:commandButton id="btn-cancelar-are" value="Cancelar ARE" styleClass="btn btn-danger" icon="fa fa-times"
+            action="#{acompanhamentoARBean.cancelar}" update="cancelar-ar-dialog" />
+          <p:commandButton id="btn-voltar" value="Voltar" styleClass="btn" icon="fa" type="button"
+            onclick="PF('cancelarArDialog').hide()" />
+
+        </h:panelGroup>
+
+      </h:form>
+    </p:dialog>
+
+  </ui:define>
+
+
+</ui:composition>

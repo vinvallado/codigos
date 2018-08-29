@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:sisauc="http://java.sun.com/jsf/composite/sisaucjsf">
+
+  <p:dialog header="Adicionar procedimento" id="adicionar-procedimento-dialog-auditoria-prospectiva"
+    widgetVar="adicionarProcedimentoDialog" modal="true" resizable="false" width="900">
+    <h:form id="adicionar-procedimento-auditoria-prospectiva-form" prependId="false">
+    <script>
+     	$(".naoaceitarenter").on("keypress", function(e) {
+        	  return e.keyCode != 13;
+     	});
+    </script>    
+      <p:messages id="msgs" showIcon="false" />
+      <p:panelGrid id="grid">
+        <p:row>
+          <p:column>
+            <p:panelGrid id="panel-procedimento">
+              <p:row>
+                <p:column>
+                  <p:outputLabel value="Procedimento:" for="procedimento" id="procedimento-label" />
+                </p:column>
+                <p:column>
+                  <p:autoComplete value="#{realizarAuditoriaProspectivaBean.procedimento}" id="procedimento"
+                    var="procedimento" converter="jsonConverter"
+                    completeMethod="#{viewUtilsBean.procurarProcedimentoCBHPMouCISSFA}"
+                    itemLabel="#{formatterBean.procedimentoFormatter.getCodigoDescricao(procedimento)}"
+                    itemValue="#{procedimento}" scrollHeight="300" dropdown="true" styleClass="ui-autocomplete-large naoaceitarenter" forceSelection="true">
+                    <p:ajax event="itemSelect" process="@this" update="@form" listener="#{realizarAuditoriaProspectivaBean.resetarEspecialidadeSelecionada}" />
+					<p:column>
+					 <sisauc:detalharProcedimento procedimento="#{procedimento}"/>
+					</p:column>
+                  </p:autoComplete>
+                </p:column>
+                <p:column>
+                  <p:commandButton value="Buscar" styleClass="btn btn-success" icon="fa fa-search" validateClient="true"
+                    id="adicionar" action="#{realizarAuditoriaProspectivaBean.buscarConfiguracoesPorProcedimento}"
+                    update="@form" style="margin-left:30px" />
+                </p:column>
+              </p:row>
+              <p:row rendered="#{realizarAuditoriaProspectivaBean.procedimento.subGrupo.codigo == '10101004'}">
+                <p:column>
+                  <p:outputLabel value="Especialidade:" for="especialidade" id="especialidade-label" />
+                </p:column>
+                <p:column>
+                  <p:selectOneMenu value="#{realizarAuditoriaProspectivaBean.especialidadeSelecionada}"
+                    converter="jsonConverter" style="width: 545px" filter="true" filterMatchMode="contains"
+                    id="especialidade">
+                    <f:selectItems value="#{realizarAuditoriaProspectivaBean.especialidades}" var="especialidade"
+                      itemValue="#{especialidade}" itemLabel="#{especialidade.sigla} - #{especialidade.nome}"
+                      id="sel-especialidade" />
+                  </p:selectOneMenu>
+                </p:column>
+              </p:row>
+            </p:panelGrid>
+          </p:column>
+        </p:row>
+        <p:row>
+          <p:column>
+            <div class="vgap-20"></div>
+            <p:dataTable value="#{realizarAuditoriaProspectivaBean.configuracoes}" var="configuracao"
+              rendered="#{realizarAuditoriaProspectivaBean.configuracoes != null}" id="dataTableConfiguracoes"
+              paginator="true" rows="5" emptyMessage="#{msgs.no_records_found}" paginatorPosition="bottom"
+              paginatorAlwaysVisible="false" rowsPerPageTemplate="5, 10"
+              paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página">
+              <p:column headerText="Nome Fantasia" width="280" id="nomeFantasia">
+                <h:outputText value="#{configuracao.configuracaoEditalCredenciado.credenciado.nomeFantasia}" />
+              </p:column>
+              <p:column headerText="Cidade" id="cidade">
+                <h:outputText value="#{configuracao.configuracaoEditalCredenciado.credenciado.cidade.nome}" />
+              </p:column>
+              <p:column headerText="Bairro" id="bairro">
+                <h:outputText value="#{configuracao.configuracaoEditalCredenciado.credenciado.bairro}" />
+              </p:column>
+              <p:column headerText="Valor Unit" id="valor" width="90">
+                <h:outputText
+                  value="#{formatterBean.configuracaoProcedimentoFormatter.getCredenciadoValor(configuracao)}" />
+              </p:column>
+              <p:column headerText="Tabela" width="100">
+                <h:outputText value="#{configuracao.procedimento.tabela.nome}"/>
+              </p:column>
+              <p:column headerText="" width="35" id="adicionar">
+                <p:commandButton value="" styleClass="btn btn-link" icon="fa fa-plus-circle"
+                  update=":tabview-auditoria-prospectiva:formulario-auditoria:lista-procedimentos" title="Adicionar Procedimento"
+                  action="#{realizarAuditoriaProspectivaBean.adicionarProcedimento(configuracao)}" />
+              </p:column>
+            </p:dataTable>
+          </p:column>
+        </p:row>
+      </p:panelGrid>
+
+      <div class="vgap-30">
+        <!-- GAP 30px -->
+      </div>
+
+      <h:panelGroup styleClass="dialog-footer" layout="block">
+        <p:commandButton id="btn_cancelar_adic_procedimento" value="Cancelar" styleClass="btn" icon="fa" type="button"
+          onclick="PF('adicionarProcedimentoDialog').hide()" />
+      </h:panelGroup>
+    </h:form>
+  </p:dialog>
+
+</ui:composition>

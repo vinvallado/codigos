@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      @page {
+        @top-right {
+          text-align: right;
+          font-size: 9pt;
+          content: '(FL ' counter(page)'/'counter(pages)' do ${loteRessarcimento.numero})' !important; 
+        }
+      }
+      #include("estilo-pdf.css");
+    </style>
+  </head>
+  <body>
+    <div class="text-center">
+      #include("timbre.txt")<br/>
+      <strong>MINISTÉRIO DA DEFESA</strong><br/>
+      COMANDO DA AERONÁUTICA<br/>
+      $loteRessarcimento.organizacaoMilitar.nome.toUpperCase()<br/>
+      SUBDIVISÃO DE AUDITORIA TÉCNICA
+    </div>
+    <div class="vgap-10"></div>
+    <div class="text-center">
+      <u>LOTE DE RESSARCIMENTO Nº $loteRessarcimento.numero</u>
+    </div>
+	#if($descreverEspecificacoes)
+    <div class="vgap-10"></div>
+    <div>
+    <span style="display: inline-block; width: 2.5cm">Anexo:</span>A. Extrato da auditoria retrospectiva de ressarcimento por item de ARE
+    </div>
+	#end
+    <div class="vgap-30"></div>
+    <div class="text-justify">
+      Beneficiário: $loteRessarcimento.beneficiario.saram - $eComercialEsc.escape($loteRessarcimento.beneficiario.nome)<br/>
+    </div>
+    <div class="text-justify">
+      Esta fatura foi analisada pela Subdivisão de Auditoria Técnica deste hospital e não foram encontradas inconformidades.
+    </div>
+    <div class="vgap-10"></div>
+    <table>
+      <tr class="table-header">
+        <td class="text-center text-bold" style="width: 4cm">Nº AR - Item</td>
+        <td class="text-center text-bold">Procedimento</td>
+        <td class="text-center text-bold" style="width: 2cm">Valor a Ressarcir</td>
+      </tr>
+    #foreach ($item in $itens)
+        <tr class="#if($foreach.count%2!=0) row-odd #end">
+          <td class="text-center">$item.codigo</td>
+          <td>
+            $item.procedimento.codigo - $item.procedimento.descricao 
+            #if ($item.especialidade.sigla)
+              ($item.especialidade.sigla) 
+            #end
+            #if ($item.dente)
+              - Dente $item.dente 
+            #end
+            #if ($item.faceDental)
+              - Face $item.faceDental.label 
+            #end
+            #if($item.respostaRessarcimentoAuditoria.observacaoARE)
+              - OBS: $item.respostaRessarcimentoAuditoria.observacaoARE
+            #end
+          </td>
+          <td class="text-center">$number.currency($item.auditoriaRetrospectiva.valorRessarcimento)</td>
+        </tr>
+    #end      
+      </table>
+    
+    <div class="avoid-line-break">
+      <div class="table-header" style="border: 1px solid #000; padding: 3pt;">
+        Valor Total do Lote de Ressarcimento: $number.currency($loteRessarcimento.valorTotalRessarcir)
+      </div>
+      <div class="vgap-10"></div>
+  
+      <div class="vgap-10"></div>
+      <p class="text-right">
+        #if ($configuracao.cidadeRegional)
+          #set($cidade = $configuracao.cidadeRegional.nome)
+        #else
+          #set($cidade = $loteRessarcimento.organizacaoMilitar.sigla)  
+        #end
+        $cidade, $date.format('dd' , $loteRessarcimento.dataCriacao) de $date.format('MMMM' , $loteRessarcimento.dataCriacao) de $date.format('yyyy' , $loteRessarcimento.dataCriacao).
+      </p>
+      <div class="vgap-10"></div>
+      <div class="vgap-10"></div>
+      <div class="text-center">
+        __________________________________<br/>
+        Auditor Técnico $loteRessarcimento.organizacaoMilitar.sigla
+      </div>
+    </div>
+
+	#if($descreverEspecificacoes)
+
+		<div class="page-break"><!-- quebra de página --></div>    
+	    <div class="text-center">
+	      <strong>Anexo A - Extrato da auditoria retrospectiva de ressarcimento por item de ARE</strong><br/>
+	    </div>
+	
+	    <div class="vgap-30"></div>
+	    Este anexo descreve a auditoria retrospectiva realizada em cada item de ARE inclusa neste lote. A coluna <strong>Valor Calculado</strong> representa o menor valor dentre as colunas "Valor Referência" e "Valor Apresentado".
+	    <div class="vgap-10"></div>
+	
+	
+	    #foreach ($item in $itens)
+	    <table class="#if($foreach.count%2==0) row-odd #end">
+	
+	      <tr>
+	        <td class="text-center text-bold" colspan="5">Item $item.codigo</td>
+	      </tr>
+	      <tr>
+	        <td class="text-center text-bold" style="width: 2cm">Tipo Espec.</td>
+	        <td class="text-center text-bold">Descrição</td>
+	        <td class="text-center text-bold" style="width: 2cm">Valor Referência</td>
+	        <td class="text-center text-bold" style="width: 2cm">Valor Apresentado</td>
+	        <td class="text-center text-bold" style="width: 2cm">Valor Calculado</td>
+	      </tr>
+	      
+		    #foreach ($especificacao in $item.auditoriaRetrospectiva.especificacoes)
+	        <tr>
+	          <td class="text-center">$especificacao.tipo.label</td>
+	          <td>
+                $especificacao.descricao
+                #if ($especificacao.dente)
+                  - Dente $item.dente 
+                #end
+                #if ($especificacao.faceDental)
+                  - Face $item.faceDental.label 
+                #end
+              </td>
+	          <td class="text-center">$number.currency($especificacao.valorReferencia)</td>
+	          <td class="text-center">$number.currency($especificacao.valorApresentado)</td>
+	          <td class="text-center">$number.currency($especificacao.valorCalculado)</td>
+	        </tr>
+	        #end
+		    <tr>
+		      <td colspan="5">
+		      	<span style="margin-right: 60px;"><strong>Valor calculado total: </strong>$number.currency($item.auditoriaRetrospectiva.valorCalculado)</span>
+		      	<span><strong>Valor a ressarcir: </strong>$number.currency($item.auditoriaRetrospectiva.valorRessarcimento)</span>
+		      </td>
+		    </tr>
+	        
+	      </table>
+		  <div class="vgap-10"></div>
+	    #end      
+	
+    #end
+    <div class="vgap-10"></div>
+    <p class="text-right">
+      #if ($configuracao.cidadeRegional)
+        #set($cidade = $configuracao.cidadeRegional.nome)
+      #else
+        #set($cidade = $loteRessarcimento.organizacaoMilitar.sigla)  
+      #end
+      $cidade, $date.format('dd' , $loteRessarcimento.dataCriacao) de $date.format('MMMM' , $loteRessarcimento.dataCriacao) de $date.format('yyyy' , $loteRessarcimento.dataCriacao).
+    </p>
+    <div class="vgap-10"></div>
+    <div class="vgap-10"></div>
+    <div class="text-center">
+      __________________________________<br/>
+      Auditor Técnico $loteRessarcimento.organizacaoMilitar.sigla
+    </div>   
+    
+  </body>
+</html>

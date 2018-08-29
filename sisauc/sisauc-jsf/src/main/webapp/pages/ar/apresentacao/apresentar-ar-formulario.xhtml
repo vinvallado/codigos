@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" template="/resources/template/template.xhtml">
+
+  <ui:define name="html-title">Apresentar Autorização de Ressarcimento</ui:define>
+
+  <ui:define name="main">
+    <h3 id="titulo">Apresentar Autorização de Ressarcimento</h3>
+    <p:separator />
+    <div class="vgap-10"></div>
+    <h:form prependId="false">
+      <p:messages id="msgs" showIcon="false" />
+      <div class="vgap-10"></div>
+
+      <p:panelGrid id="grid">
+
+        <p:row rendered="#{apresentacaoARFormularioBean.apresentacao.ar.estado=='INCONSISTENTE'}">
+          <p:column>
+            <p:outputLabel value="Inconsistente:" style="color:red;font-weight:bold;" />
+          </p:column>
+          <p:column>
+            <h:outputText value="#{apresentacaoARFormularioBean.apresentacao.ar.motivoInconsistencia}" />
+          </p:column>
+        </p:row>
+
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Autorização de Ressarcimento: "/>
+          </p:column>
+          <p:column>
+            <p:inputText value="#{apresentacaoARFormularioBean.apresentacao.ar.codigo}" disabled="true"/>
+          </p:column>
+        </p:row>
+
+        <p:row>
+          <p:column/>
+          <p:column>
+            <h:panelGroup style="font-size: 11px; font-weight: bold;">
+              <h:outputText value="Divisão: #{apresentacaoARFormularioBean.apresentacao.ar.auditoriaProspectiva.solicitacao.divisao.label}" /><br/> 
+              <h:outputText value="Beneficiário: #{apresentacaoARFormularioBean.apresentacao.ar.beneficiario.nome}" /><br/> 
+              <h:outputText value="Estado: #{apresentacaoARFormularioBean.apresentacao.ar.estado.label}" /><br/>
+              <h:outputText value="Data Emissão: "/> 
+              <h:outputText value="#{apresentacaoARFormularioBean.apresentacao.ar.dataEmissao}" >
+                <f:convertDateTime pattern="dd/MM/yyyy"/>
+              </h:outputText>
+            </h:panelGroup>
+          </p:column>
+        </p:row>
+        
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Nota fiscal/recibo: "/>
+          </p:column>
+                    <p:column>
+            <p:inputText value="#{apresentacaoARFormularioBean.apresentacao.numeroNotaFiscal}" 
+               id="numero" style="margin-right: 10px;">
+               <p:ajax update="btn-apresentar-ar numero-check"/>
+             </p:inputText>
+            <p:watermark value="Número" for="numero"/>
+            <h:panelGroup id="numero-check">
+              <h:panelGroup rendered="#{apresentacaoARFormularioBean.apresentacao.numeroNotaFiscal != null and apresentacaoARFormularioBean.apresentacao.numeroNotaFiscal.trim() != ''}" 
+                class="fa fa-check check-icon"/>
+            </h:panelGroup>
+           
+            <p:calendar value="#{apresentacaoARFormularioBean.apresentacao.dataNotaFiscal}" 
+              id="data" size="10" pattern="dd/MM/yyyy">
+              <p:ajax event="dateSelect" update="btn-apresentar-ar data-check"/>
+            </p:calendar>
+            <p:watermark value="Data" for="data"/>
+            <h:panelGroup id="data-check">
+              <h:panelGroup rendered="#{apresentacaoARFormularioBean.apresentacao.dataNotaFiscal != null}" 
+                class="fa fa-check check-icon"/>
+            </h:panelGroup>
+         </p:column>
+        </p:row>
+        
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Prestador: "/>
+          </p:column>
+          <p:column>
+            <p:inputText value="#{apresentacaoARFormularioBean.apresentacao.cpfCnpjPrestador}"  
+              id="cnpj" style="margin-right: 10px;" maxlength="14">
+              <p:ajax update="btn-apresentar-ar cnpj-check"/>
+            </p:inputText>
+            <p:watermark value="CNPJ/CPF" for="cnpj"/>
+            <h:panelGroup id="cnpj-check">
+              <h:panelGroup rendered="#{apresentacaoARFormularioBean.apresentacao.cpfCnpjPrestador != null 
+                                    and apresentacaoARFormularioBean.apresentacao.cpfCnpjPrestador.trim() != ''
+                                    and apresentacaoARFormularioBean.cpfCnpjPrestadorValido}" 
+                class="fa fa-check check-icon"/>
+            </h:panelGroup>
+            
+            <p:inputText value="#{apresentacaoARFormularioBean.apresentacao.nomePrestador}" id="nome" size="40">
+              <p:ajax update="btn-apresentar-ar nome-check"/>
+            </p:inputText>
+            <p:watermark value="Nome/Razão Social" for="nome "/>
+            <h:panelGroup id="nome-check">
+              <h:panelGroup rendered="#{apresentacaoARFormularioBean.apresentacao.nomePrestador != null and apresentacaoARFormularioBean.apresentacao.nomePrestador.trim() != ''}" 
+                class="fa fa-check check-icon"/>
+            </h:panelGroup>
+          </p:column>
+        </p:row>
+        
+         <p:row>
+          <p:column>
+            <p:outputLabel value="Nota fiscal/recibo: " for="nota-fiscal"/>
+          </p:column>
+          <p:column>
+            <p:fileUpload fileUploadListener="#{apresentacaoARFormularioBean.subirNotaFiscal}" mode="advanced"
+              auto="true" id="nota-fiscal" allowTypes="/(\.|\/)(pdf|PDF)$/" 
+              update="nome-arquivo-nota-fiscal btn-apresentar-ar nota-fiscal-check"
+              invalidSizeMessage="O PDF da nota fiscal deve ser menor que 2MB!" sizeLimit="2000000"
+              invalidFileMessage="O arquivo deve ser um PDF!">
+            </p:fileUpload>
+            <h:panelGroup id="nome-arquivo-nota-fiscal">
+
+              <p:commandLink styleClass="btn btn-link" ajax="false"
+                action="#{apresentacaoARFormularioBean.downloadNotaFiscal}"
+                rendered="#{apresentacaoARFormularioBean.apresentacao.arquivoNotaFiscal != null and apresentacaoARFormularioBean.apresentacao.arquivoNotaFiscal.id != null}">
+                <span class="fa fa-download"></span>
+                <span> <h:outputText
+                    value=" Arquivo: #{apresentacaoARFormularioBean.apresentacao.arquivoNotaFiscal.nome}" />
+                  <h:outputText styleClass="muted"
+                    value=" (#{apresentacaoARFormularioBean.apresentacao.arquivoNotaFiscal.tamanho} bytes)" />
+                </span>
+              </p:commandLink>
+
+              <h:outputText value="Arquivo: #{apresentacaoARFormularioBean.apresentacao.arquivoNotaFiscal.nome}"
+                rendered="#{apresentacaoARFormularioBean.apresentacao.arquivoNotaFiscal != null and apresentacaoARFormularioBean.apresentacao.arquivoNotaFiscal.id == null}" />
+              <h:outputText styleClass="muted"
+                value=" (#{apresentacaoARFormularioBean.apresentacao.arquivoNotaFiscal.tamanho} bytes)"
+                rendered="#{apresentacaoARFormularioBean.apresentacao.arquivoNotaFiscal != null and apresentacaoARFormularioBean.apresentacao.arquivoNotaFiscal.id == null}" />
+            </h:panelGroup>
+            <h:panelGroup id="nota-fiscal-check">
+              <h:panelGroup rendered="#{apresentacaoARFormularioBean.apresentacao.arquivoNotaFiscal != null}" 
+                class="fa fa-check check-icon"/>
+            </h:panelGroup>
+          </p:column>
+        </p:row>
+        
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Requerimento preenchido: " for="requerimento"/>
+          </p:column>
+          <p:column>
+            <p:fileUpload fileUploadListener="#{apresentacaoARFormularioBean.subirRequerimento}" mode="advanced"
+              auto="true" id="requerimento" allowTypes="/(\.|\/)(pdf|PDF)$/" 
+              update="nome-arquivo-requerimento btn-apresentar-ar requerimento-check"
+              invalidSizeMessage="O PDF do requerimento deve ser menor que 2MB!" sizeLimit="2000000"
+              invalidFileMessage="O arquivo deve ser um PDF!">
+            </p:fileUpload>
+            <h:panelGroup id="nome-arquivo-requerimento">
+
+              <p:commandLink styleClass="btn btn-link" ajax="false"
+                action="#{apresentacaoARFormularioBean.downloadRequerimento}"
+                rendered="#{apresentacaoARFormularioBean.apresentacao.arquivoRequerimento != null and apresentacaoARFormularioBean.apresentacao.arquivoRequerimento.id != null}">
+                <span class="fa fa-download"></span>
+                <span> <h:outputText
+                    value=" Arquivo: #{apresentacaoARFormularioBean.apresentacao.arquivoRequerimento.nome}" />
+                  <h:outputText styleClass="muted"
+                    value=" (#{apresentacaoARFormularioBean.apresentacao.arquivoRequerimento.tamanho} bytes)" />
+                </span>
+              </p:commandLink>
+
+              <h:outputText value="Arquivo: #{apresentacaoARFormularioBean.apresentacao.arquivoRequerimento.nome}"
+                rendered="#{apresentacaoARFormularioBean.apresentacao.arquivoRequerimento != null and apresentacaoARFormularioBean.apresentacao.arquivoRequerimento.id == null}" />
+              <h:outputText styleClass="muted"
+                value=" (#{apresentacaoARFormularioBean.apresentacao.arquivoRequerimento.tamanho} bytes)"
+                rendered="#{apresentacaoARFormularioBean.apresentacao.arquivoRequerimento != null and apresentacaoARFormularioBean.apresentacao.arquivoRequerimento.id == null}" />
+            </h:panelGroup>
+            <h:panelGroup id="requerimento-check">
+              <h:panelGroup rendered="#{apresentacaoARFormularioBean.apresentacao.arquivoRequerimento != null}" 
+                class="fa fa-check check-icon"/>
+            </h:panelGroup>
+          </p:column>
+        </p:row>
+        
+      </p:panelGrid>
+        
+      <div class="vgap-15"></div>
+        
+      <p:commandButton value="Apresentar Autorização de Ressarcimento" styleClass="btn btn-success" 
+        icon="fa fa-save" validateClient="true" action="#{apresentacaoARFormularioBean.apresentar}" update="@form"
+        disabled="#{!apresentacaoARFormularioBean.apresentacaoPreenchida}" id="btn-apresentar-ar">
+      </p:commandButton>
+      <a onClick="history.back();" class="btn">Voltar</a>
+    </h:form>
+  </ui:define>
+
+</ui:composition>

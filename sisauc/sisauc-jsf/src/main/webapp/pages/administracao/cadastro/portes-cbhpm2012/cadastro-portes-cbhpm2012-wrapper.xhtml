@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" template="/resources/template/template.xhtml">
+
+  <ui:define name="html-title">Cadastro de Portes CBHPM-2012</ui:define>
+
+  <ui:define name="html-body-bottom">
+    <script type="text/javascript" src="#{request.contextPath}/resources/vendor/js/jquery.maskMoney.min.js"/>
+    <script type="text/javascript">
+      $(document).ready(function(){
+        maskPrefix('R$');
+      });
+    </script>
+  </ui:define>
+  
+  <ui:define name="main">
+    <h3>Cadastro de Portes CBHPM-2012</h3>
+    <p:separator />
+
+    <div class="vgap-10"></div>
+
+    <p:tabView id="tabview-portes-cbhpm2012">
+      <p:tab title="Porte" id="tab-porte">
+        <div class="vgap-10"></div>
+        <h:form>
+          <p:messages showIcon="false" />
+          <ui:include src="porte/cadastro-porte-lista.xhtml"/>
+          <ui:include src="porte/cadastro-porte-formulario.xhtml"/>
+        </h:form>
+       </p:tab>
+
+      <p:tab title="Porte Anestésico" id="tab-porte-anestesico">
+        <div class="vgap-10"></div>
+        <h:form>
+          <ui:include src="porte-anestesico/cadastro-porte-anestesico-lista.xhtml"/>
+          <ui:include src="porte-anestesico/cadastro-porte-anestesico-formulario.xhtml"/>
+        </h:form>
+      </p:tab>
+
+    </p:tabView>
+
+  </ui:define>
+
+</ui:composition>

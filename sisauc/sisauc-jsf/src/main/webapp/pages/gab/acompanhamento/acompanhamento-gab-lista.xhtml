@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" template="/resources/template/template.xhtml">
+
+  <ui:define name="html-title">Acompanhamento de GAB</ui:define>
+
+  <ui:define name="main">
+
+    <h3 id="titulo">Acompanhamento de GAB</h3>
+
+    <p:separator />
+
+    <h:form id="lista-gabs-form">
+
+      <p:messages id="msg" showIcon="false" />
+
+      <p:dataTable id="tabela" value="#{acompanhamentoGABListaBean.gabs}" var="gab"
+        paginator="true" rows="15" paginatorPosition="bottom" rowStyleClass="#{gab.auditoriaProspectiva.solicitacao.urgente ? 'error' : ''}"
+        paginatorAlwaysVisible="false" rowsPerPageTemplate="10, 15, 25" emptyMessage="#{msgs.no_records_found}"
+        paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+        filteredValue="#{viewUtilsBean.filtrados}" filterDelay="300" widgetVar="datatable">
+
+        <p:column sortBy="#{gab.auditoriaProspectiva.solicitacao.urgente}" width="20" styleClass="text-center">
+          <a title="URGENTE">
+            <h:panelGroup styleClass="fa fa-exclamation-circle" rendered="#{gab.auditoriaProspectiva.solicitacao.urgente}"/>
+          </a>
+        </p:column>
+        <p:column id="tipo_divisao" headerText="Divisão" width="90" styleClass="text-center" filterOptions="#{viewUtilsBean.divisoesOptions()}" filterBy="#{gab.divisao}">
+          <a title="Divisão Médica"><h:panelGroup styleClass="fa fa-tag muted" rendered="#{gab.divisao == 'DIVISAO_MEDICA'}" /></a>
+          <a title="Divisão Odonológica"><h:panelGroup styleClass="fa fa-tag text-info" rendered="#{gab.divisao == 'DIVISAO_ODONTOLOGICA'}" /></a>
+        </p:column>
+        <p:column id="num-gab" headerText="Nº GAB" width="180" filterBy="#{gab.codigo}"  filterFunction="#{viewUtilsBean.filterIgnoreCase}">
+          <h:outputText value="#{gab.codigo}" style="text-align:center"/>
+        </p:column>
+        <p:column id="beneficiario" headerText="Beneficiário" filterBy="#{gab.beneficiario.nome}" filterFunction="#{viewUtilsBean.filterIgnoreCase}">
+          <h:outputText value="#{gab.beneficiario.nome}"/>
+        </p:column>
+        <p:column id="saram-titular" headerText="Saram Titular" width="70" filterBy="#{gab.beneficiario.saram != null ? gab.beneficiario.saram : gab.beneficiario.saramTitular}">
+          <h:outputText value="#{gab.beneficiario.saram != null ? gab.beneficiario.saram : gab.beneficiario.saramTitular}"/>
+        </p:column>
+        <p:column id="data-geracao-gab" headerText="Data Geração GAB" width="70" style="text-align:center" sortBy="#{gab.dataGeracao}">
+          <h:outputText value="#{gab.dataGeracao}">
+            <f:convertDateTime pattern="dd/MM/yyyy" readonly="true" />
+          </h:outputText>  
+        </p:column>
+        <p:column headerText="Estado" width="100" id="coluna-estado" sortBy="#{gab.estado}" filterBy="#{gab.estado}" filterOptions="#{viewUtilsBean.estadoGabOptions()}" 
+            filterValue="#{acompanhamentoGABListaBean.filtroEstado}" styleClass="text-center">
+          <h:outputText value="#{gab.estado.label}" />
+        </p:column>                
+        <p:column id="btn-editar" width="40" styleClass="text-center">
+          <h:outputLink id="editar" styleClass="btn btn-link" value="acompanhamento/#{gab.id}" title="Editar">
+            <span id="editar" class="fa fa-pencil"></span>
+          </h:outputLink>
+        </p:column>
+
+      </p:dataTable>
+
+    </h:form> 
+   	<script type="text/javascript">
+		jQuery(document).ready(function() {
+			PF('datatable').filter();
+		});
+	</script>
+  </ui:define>
+
+
+</ui:composition>

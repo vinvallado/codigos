@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<changeSet id="estrutura-relatorio-desconto-beneficiario" author="brunobjm">
+		<sql>
+			CREATE TABLE sch_sisauc.relatorio_desconto_beneficiario (
+  				id integer NOT NULL,
+				codigo character varying(255) NOT NULL,
+  				data_geracao timestamp without time zone NOT NULL,
+  				id_autor integer NOT NULL,
+  				CONSTRAINT relatorio_desconto_beneficiario_pkey PRIMARY KEY (id),
+  				CONSTRAINT fk_relatorio_desconto_beneficiario_autor FOREIGN KEY (id_autor)
+      				REFERENCES sch_sisauc.usuario (id) MATCH SIMPLE
+      				ON UPDATE NO ACTION ON DELETE NO ACTION,
+  				CONSTRAINT uk_codigo_relatorio_desconto_beneficiario UNIQUE (codigo)
+			)
+			WITH (
+  				OIDS=FALSE
+			);
+			ALTER TABLE sch_sisauc.relatorio_desconto_beneficiario
+  				OWNER TO sisauc;
+  			
+  			
+  			CREATE TABLE sch_sisauc.relatorio_desconto_beneficiario_itens (
+  				id_relatorio_desconto_beneficiario integer NOT NULL,
+  				id_item integer NOT NULL,
+  				CONSTRAINT relatorio_desconto_beneficiario_itens_pkey PRIMARY KEY (id_relatorio_desconto_beneficiario, id_item),
+  				CONSTRAINT fk_relatorio_desconto_beneficiario_itens_id_relatorio FOREIGN KEY (id_relatorio_desconto_beneficiario)
+      				REFERENCES sch_sisauc.relatorio_desconto_beneficiario (id) MATCH SIMPLE
+      				ON UPDATE NO ACTION ON DELETE NO ACTION,
+  				CONSTRAINT fk_relatorio_desconto_beneficiario_itens_id_item FOREIGN KEY (id_item)
+      				REFERENCES sch_sisauc.item_gab (id) MATCH SIMPLE
+      				ON UPDATE NO ACTION ON DELETE NO ACTION,
+  				CONSTRAINT uk_id_item_relatorio_desconto_beneficiario_itens UNIQUE (id_item)
+			)
+			WITH (
+  				OIDS=FALSE
+			);
+			ALTER TABLE sch_sisauc.relatorio_desconto_beneficiario_itens
+  				OWNER TO sisauc;
+  			
+  			
+  			CREATE TABLE sch_sisauc.relatorio_desconto_beneficiario_itens_isentos (
+  				id_relatorio_desconto_beneficiario integer NOT NULL,
+  				id_item integer NOT NULL,
+  				CONSTRAINT relatorio_desconto_beneficiario_itens_isentos_pkey PRIMARY KEY (id_relatorio_desconto_beneficiario, id_item),
+  				CONSTRAINT fk_relatorio_desconto_beneficiario_itens_isentos_id_relatorio FOREIGN KEY (id_relatorio_desconto_beneficiario)
+      				REFERENCES sch_sisauc.relatorio_desconto_beneficiario (id) MATCH SIMPLE
+      				ON UPDATE NO ACTION ON DELETE NO ACTION,
+  				CONSTRAINT fk_relatorio_desconto_beneficiario_itens_isentos_id_item FOREIGN KEY (id_item)
+      				REFERENCES sch_sisauc.item_gab (id) MATCH SIMPLE
+      				ON UPDATE NO ACTION ON DELETE NO ACTION,
+  				CONSTRAINT uk_id_item_relatorio_desconto_beneficiario_itens_isentos UNIQUE (id_item)
+			)
+			WITH (
+  				OIDS=FALSE
+			);
+			ALTER TABLE sch_sisauc.relatorio_desconto_beneficiario_itens_isentos
+  				OWNER TO sisauc;
+  			
+  			
+  			CREATE SEQUENCE sch_sisauc.relatorio_desconto_beneficiario_id_seq
+  				INCREMENT 1
+  				MINVALUE 1
+  				MAXVALUE 9223372036854775807
+  				START 1
+  				CACHE 1;
+			ALTER TABLE sch_sisauc.relatorio_desconto_beneficiario_id_seq
+  				OWNER TO sisauc;
+		</sql>
+	</changeSet>
+	
+	<changeSet id="alteração-coluna-tipo-item_gab" author="brunobjm">
+		<sql>
+			ALTER TABLE sch_sisauc.item_gab ALTER COLUMN estado TYPE character varying(40);
+		</sql>
+	</changeSet>
+	
+	<changeSet id="habilitar-nao-conformidade" author="tadeutbc">
+		<sql>
+			ALTER TABLE sch_sisauc.nao_conformidade ADD COLUMN habilitado boolean default true;
+			ALTER TABLE sch_sisauc.nao_conformidade ADD COLUMN ativo boolean default true;
+		</sql>
+	</changeSet>
+	
+</databaseChangeLog>

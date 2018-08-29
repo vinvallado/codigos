@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<changeSet id="adicionar-tabela-desconto-beneficiario-envio" author="taveirajcft">
+		<sql>
+			CREATE TABLE sch_sisauc.desconto_beneficiario_envio
+			(
+			  id serial NOT NULL,
+			  data_hora_inicio timestamp without time zone,
+			  data_hora_fim timestamp without time zone,
+			  estado_envio character varying(25),
+			  codigo_mensagem character varying(25),
+			  id_desconto_beneficiario integer NOT NULL,
+			  descricao_mensagem character varying(255),
+			  CONSTRAINT desconto_beneficiario_envio_pkey PRIMARY KEY (id),
+			  CONSTRAINT desconto_beneficiario_envio_id_desconto_beneficiario_fkey FOREIGN KEY (id_desconto_beneficiario)
+			      REFERENCES sch_sisauc.desconto_beneficiario (id) MATCH SIMPLE
+			      ON UPDATE NO ACTION ON DELETE NO ACTION
+			)
+			WITH (
+			  OIDS=FALSE
+			);
+			ALTER TABLE sch_sisauc.desconto_beneficiario ADD COLUMN estado_desconto_beneficiario character varying(25);
+		</sql>
+	</changeSet> 
+	
+	<changeSet id="adicionar-tabela-configuracao-ws-aerconsig" author="taveirajcft">
+		<sql>
+			CREATE TABLE sch_sisauc.metadados_configuracao_ws_aerconsig
+			(
+			  id serial NOT NULL,
+			  chave character varying(255),
+			  valor character varying(255),
+			  descricao text,
+			  CONSTRAINT metadados_configuracao_ws_aerconsig_pkey PRIMARY KEY (id),
+			  CONSTRAINT metadados_configuracao_ws_aerconsig_chave_key UNIQUE (chave)
+			) WITH (OIDS=FALSE);
+			
+			insert into sch_sisauc.metadados_configuracao_ws_aerconsig values (1,'aerconsigCliente','CCASJ','Cliente do Serviço Aerconsig');
+			insert into sch_sisauc.metadados_configuracao_ws_aerconsig values (2,'aerconsigConvenio','CCASJ-FAB_XML','Convênio do CCA-SJ');
+			insert into sch_sisauc.metadados_configuracao_ws_aerconsig values (3,'aerconsigUsuario','ccasj_xml','Usuário do CCA-SJ no Aerconsig');
+			insert into sch_sisauc.metadados_configuracao_ws_aerconsig values (4,'aerconsigSenha','cc1234','Senha do CCA-SJ no Aerconsig');
+			insert into sch_sisauc.metadados_configuracao_ws_aerconsig values (5,'aerconsigCodigoServico','888','Código do Serviço');
+			insert into sch_sisauc.metadados_configuracao_ws_aerconsig values (6,'aerconsigCodigoVerba','K99','Código da Verba');
+			insert into sch_sisauc.metadados_configuracao_ws_aerconsig values (7,'proxyUsuario','','Usuário no proxy a ser usado para acesso a internet');
+			insert into sch_sisauc.metadados_configuracao_ws_aerconsig values (8,'proxySenha','','Senha do proxy');
+			insert into sch_sisauc.metadados_configuracao_ws_aerconsig values (9,'proxyHost','','Endereço do proxy a ser usado para acesso a internet');
+			insert into sch_sisauc.metadados_configuracao_ws_aerconsig values (10,'proxyPorta','','Porta do proxy a ser usado para acesso a internet');
+			insert into sch_sisauc.metadados_configuracao_ws_aerconsig values (11,'proxyAtivo','false','Se a conexão é feita direta ou via proxy');
+			insert into sch_sisauc.metadados_configuracao_ws_aerconsig values (12,'wsdlUrl','https://www.econsig.com.br/central_homologa/services/HostaHostService?wsdl','Endereço do WSDL do serviço');
+			insert into sch_sisauc.metadados_configuracao_ws_aerconsig values (13,'qNameNamespaceURI','HostaHostService','URI do Namespace');
+			insert into sch_sisauc.metadados_configuracao_ws_aerconsig values (14,'qNameLocalPart','HostaHostService','Local Part');
+			
+		</sql>
+	</changeSet>
+
+
+</databaseChangeLog>

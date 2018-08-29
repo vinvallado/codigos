@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+         
+	<changeSet id="migracao-baan" author="tadeutbc">
+		<sqlFile relativeToChangelogFile="true" path="../sql/script-migracao-baan-gap.sql" splitStatements="false"/>
+	</changeSet>
+	
+	<changeSet id="add-om-pagadora" author="tadeutbc">
+		<sql>
+			ALTER TABLE sch_sisauc.beneficiario ADD COLUMN codigo_organizacao_militar_pagadora integer;
+			ALTER TABLE sch_sisauc.beneficiario ADD COLUMN id_organizacao_militar_pagadora integer;
+			ALTER TABLE sch_sisauc.beneficiario 
+				ADD CONSTRAINT fk_organizacao_militar_pagadora FOREIGN KEY (id_organizacao_militar_pagadora)
+				REFERENCES sch_sisauc.organizacao_militar (id);
+		</sql>
+	</changeSet>
+	
+	<changeSet id="coluna-auditor-auditoria-retrospectiva-ressarcimento" author="januarioacsj">
+		<sql>
+			ALTER TABLE sch_sisauc.auditoria_retrospectiva_ressarcimento
+  				ADD COLUMN id_auditor integer; 
+		</sql>
+	</changeSet>
+	
+	<changeSet id="desfazer-cancelamento-gab" author="andradedal">
+		<sql>
+			CREATE TABLE sch_sdga.desfazer_cancelamento_gab
+			(
+			  id integer NOT NULL,
+			  data_execucao timestamp without time zone,
+			  host character varying(255),
+			  ip character varying(255),
+			  justificativa character varying(255),
+			  nome_guerra_autor character varying(255),
+			  id_gab integer NOT NULL,
+			  id_autor integer,
+			  CONSTRAINT desfazer_cancelamento_gab_pkey PRIMARY KEY (id ),
+			  CONSTRAINT id_autor_fk FOREIGN KEY (id_autor)
+			      REFERENCES sch_sisauc.usuario (id) MATCH SIMPLE
+			      ON UPDATE NO ACTION ON DELETE NO ACTION,
+			  CONSTRAINT id_gab_fk FOREIGN KEY (id_gab)
+			      REFERENCES sch_sisauc.gab (id) MATCH SIMPLE
+			      ON UPDATE NO ACTION ON DELETE NO ACTION
+			)
+			WITH (
+			  OIDS=FALSE
+			);
+			ALTER TABLE sch_sdga.desfazer_cancelamento_gab
+			  OWNER TO sisauc;
+			  
+			CREATE SEQUENCE sch_sdga.desfazer_cancelamento_gab_seq
+			  INCREMENT 1
+			  MINVALUE 1
+			  MAXVALUE 9223372036854775807
+			  START 1
+			  CACHE 1;
+			ALTER TABLE sch_sdga.desfazer_cancelamento_gab_seq
+			  OWNER TO sisauc;		  
+		</sql>
+	</changeSet>
+
+	<changeSet id="desfazer-cancelamento-ressarcimento" author="andradedal">
+		<sql>
+			CREATE TABLE sch_sdga.desfazer_cancelamento_ressarcimento
+			(
+			id integer NOT NULL,
+			data_execucao timestamp without time zone,
+			host character varying(255),
+			ip character varying(255),
+			justificativa character varying(255),
+			nome_guerra_autor character varying(255),
+			id_ar integer NOT NULL,
+			id_autor integer,
+			CONSTRAINT desfazer_cancelamento_ar_pkey PRIMARY KEY (id ),
+			CONSTRAINT id_autor_fk FOREIGN KEY (id_autor)
+			REFERENCES sch_sisauc.usuario (id) MATCH SIMPLE
+			ON UPDATE NO ACTION ON DELETE NO ACTION,
+			CONSTRAINT id_ar_fk FOREIGN KEY (id_ar)
+			REFERENCES sch_sisauc.ar (id) MATCH SIMPLE
+			ON UPDATE NO ACTION ON DELETE NO ACTION
+			)
+			WITH (
+			OIDS=FALSE
+			);
+			ALTER TABLE sch_sdga.desfazer_cancelamento_ressarcimento
+			OWNER TO sisauc;
+
+			CREATE SEQUENCE sch_sdga.desfazer_cancelamento_ar_seq
+			INCREMENT 1
+			MINVALUE 1
+			MAXVALUE 9223372036854775807
+			START 1
+			CACHE 1;
+			ALTER TABLE sch_sdga.desfazer_cancelamento_ar_seq
+			OWNER TO sisauc;
+		</sql>
+	</changeSet>
+
+</databaseChangeLog>

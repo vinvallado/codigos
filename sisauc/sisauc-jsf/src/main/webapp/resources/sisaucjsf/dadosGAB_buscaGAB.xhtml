@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:sec="http://www.springframework.org/security/tags"
+  xmlns:composite="http://java.sun.com/jsf/composite">
+
+  <composite:interface>
+    <composite:attribute name="gab" />
+  </composite:interface>
+
+  <composite:implementation>
+
+    <p:panelGrid rendered="#{cc.attrs.gab!=null}" id="gab">
+      <p:row>
+        <p:column>
+          <h4>
+            GAB nº
+            <h:outputText value="#{cc.attrs.gab.codigo}" />
+            <span id="situacao-gab" class="muted">(#{cc.attrs.gab.estado.label})</span>
+          </h4>
+        </p:column>
+      </p:row>
+      
+      <p:row>
+        <p:column>
+          <h:outputText value="Divisão: " style="font-weight:bold;" />
+          <h:outputText value="#{cc.attrs.gab.auditoriaProspectiva.solicitacao.divisao.label}" />
+        </p:column>
+      </p:row>
+
+      <p:row>
+        <p:column>
+          <h:outputText value="Beneficiário: " style="font-weight:bold;" />
+          <h:outputText id="nome-beneficiario" value="#{cc.attrs.gab.beneficiario.nome}" />
+        </p:column>
+      </p:row>
+
+      <p:row>
+        <p:column>
+          <h:outputText value="Credenciado: " style="font-weight:bold;" />
+          <h:outputText value="#{cc.attrs.gab.credenciado.nomeFantasia}" />
+        </p:column>
+      </p:row>
+      
+        <p:row>
+          <p:column>
+            <h:outputText value="Gerada em: " style="font-weight:bold;" />
+            <h:outputText id="data-geracao-gab" value="#{cc.attrs.gab.dataGeracao}">
+              <f:convertDateTime locale="pt_BR" dateStyle="long" readonly="true" />
+            </h:outputText>
+          </p:column>
+        </p:row> 
+        
+        <p:row rendered="#{cc.attrs.gab.dataEmissao != null}">
+          <p:column>
+            <h:outputText value="Emitida em: " style="font-weight:bold;" />
+            <h:outputText value="#{cc.attrs.gab.dataEmissao}">
+              <f:convertDateTime locale="pt_BR" dateStyle="long" readonly="true" />
+            </h:outputText>
+          </p:column>
+        </p:row> 
+        
+        <p:row rendered="#{cc.attrs.gab.usuarioEmissorGab != null}">
+          <p:column>
+            <h:outputText value="Emitida por: " style="font-weight:bold;" />
+            <h:outputText value="#{cc.attrs.gab.usuarioEmissorGab.nome}" />
+          </p:column>
+        </p:row>    
+        
+        <p:row rendered="#{cc.attrs.gab.dataApresentacao != null}">
+          <p:column>
+            <h:outputText value="Apresentada em: " style="font-weight:bold;" />
+            <h:outputText value="#{cc.attrs.gab.dataApresentacao}">
+              <f:convertDateTime locale="pt_BR" dateStyle="long" readonly="true" />
+            </h:outputText>
+          </p:column>
+        </p:row>                            
+      
+      <p:row rendered="#{cc.attrs.gab.estado == 'CANCELADA'}">
+        <p:column>
+          <h:outputText value="Justificativa de cancelamento: " style="font-weight:bold;" />
+          <h:outputText value="#{cc.attrs.gab.justificativaCancelamentoGab}" />
+        </p:column>
+      </p:row>      
+
+    </p:panelGrid>
+
+    <div class="vgap-10" />
+
+    <p:dataTable id="tabela" value="#{cc.attrs.gab.itens}" var="item" paginator="true" rows="5"
+      paginatorPosition="bottom" paginatorAlwaysVisible="false" rowsPerPageTemplate="5, 10"
+      emptyMessage="#{msgs.no_records_found}"
+      paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+      filteredValue="#{viewUtilsBean.filtrados}" filterDelay="300" widgetVar="datatable">
+
+      <f:facet name="header">
+        <h:outputText value="Itens gerados pela GAB" />
+      </f:facet>
+
+      <p:column id="codigo" headerText="Código" width="190">
+        <h:outputText value="#{item.codigo}" />
+      </p:column>
+
+      <p:column id="procedimento" headerText="Procedimento">
+        <h:outputText value="#{formatterBean.procedimentoFormatter.getCodigoDescricao(item.configuracao.procedimento)}" />
+        <h:outputText rendered="#{item.configuracao.especialidade.sigla != null}"
+          value=" (#{item.configuracao.especialidade.sigla})" />
+        <h:outputLabel id="observacao-gab" styleClass="btn btn-link fa fa-info" rendered="#{item.observacaoGAB != null}" />
+        <p:tooltip id="toolTipObservacaoGAB" for="observacao-gab" styleClass="preformatted" value="OBS: #{item.observacaoGAB}" />
+      </p:column>
+
+      <p:column id="info-item" width="40" styleClass="text-center">
+        <p:commandButton id="btn-info-item" title="Visualizar Item" styleClass="btn btn-link" icon="fa fa-search"
+          action="#{buscaGabFormularioBean.selecionarItemGAB(item)}" update=":informacoes-item-gab-dialog-form" />
+      </p:column>
+
+    </p:dataTable>
+
+  </composite:implementation>
+
+</ui:composition>

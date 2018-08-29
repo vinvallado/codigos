@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:sisauc="http://java.sun.com/jsf/composite/sisaucjsf">
+
+	<h:form id="historico-form">
+		<div class="vgap-10" />
+		<p:panelGrid>
+			<p:column>
+				<p:inputText id="textoPesquisar" size="70" value="#{listarHistoricoAuditoriaProspectivaBean.procedimentoPesquisa}"
+					placeholder="Digite o código ou a descrição ou a especialidade do procedimento" style="margin-bottom: 5px;" />
+				<p:selectManyCheckbox value="#{listarHistoricoAuditoriaProspectivaBean.tiposSelecionados}" id="tipos">
+				  <f:selectItems value="#{listarHistoricoAuditoriaProspectivaBean.tipos}"/>
+				</p:selectManyCheckbox>
+			</p:column>
+			<p:column style="vertical-align: top;">
+				<p:commandButton value="Buscar" id="buscar-procedimento" styleClass="btn btn-success" icon="fa fa-search"
+					validateClient="true" action="#{listarHistoricoAuditoriaProspectivaBean.pesquisarHistorico}" update="tabela-historico" process="textoPesquisar @this tipos" />
+			</p:column>
+		</p:panelGrid>
+  </h:form>
+
+		<div class="vgap-10" />
+    
+    <script>
+	    function abrirDialog(row){
+	    	PrimeFaces.ajax.Request.handle({source:'tabela-historico:'+ row + ':subtabela:ver-detalhes', update:'historico-tab-view'});
+	    }
+    </script>
+	
+		<p:dataTable id="tabela-historico" value="#{listarHistoricoAuditoriaProspectivaBean.auditorias}" 
+		  var="auditoria" paginator="true" rows="5" paginatorPosition="bottom" rowIndexVar="row"
+			paginatorAlwaysVisible="false" rowsPerPageTemplate="5, 10" emptyMessage="#{msgs.no_records_found}"
+			paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+			filterDelay="300" widgetVar="datatableHistorico">
+      <p:columnGroup type="header">
+        <p:row>
+          <p:column headerText="Procedimento" />
+          <p:column headerText="Aprovado" width="60" />
+          <p:column headerText="Justificativa" width="80" />
+        </p:row>
+      </p:columnGroup>
+	
+			<p:subTable var="resposta" value="#{auditoria.procedimentos}" id="subtabela">
+        <f:facet name="header">
+          <div class="row-fluid">
+            <div class="span10" style="line-height: 30px;">
+              <h:outputText value=" " />
+              <a title="Solicitação de GAB"><h:panelGroup rendered="#{auditoria['class'].simpleName == 'AuditoriaProspectiva'}" styleClass="label label-info">GAB</h:panelGroup></a>
+              <a title="Solicitação de Ressarcimento"><h:panelGroup rendered="#{auditoria['class'].simpleName == 'AuditoriaProspectivaRessarcimento'}" styleClass="label">RES</h:panelGroup></a>
+              <h:outputText value=" " />
+              <h:outputText value="Auditoria realizada em " />
+              <h:outputText value="#{auditoria.dataFinalAuditoria}">
+                <f:convertDateTime pattern="dd/MM/yyyy" />
+              </h:outputText>
+              <h:outputText value=" para a #{auditoria.solicitacao.numero}" />
+            </div>
+            <div class="span2 text-right">
+              <p:commandButton action="#{listarHistoricoAuditoriaProspectivaBean.selecionarAuditoria(auditoria.id, auditoria['class'].simpleName)}" update=":historico-dialog"
+                icon="fa fa-external-link" styleClass="btn btn-link text-right" value="Ver detalhes.." id="ver-detalhes" style="display: none;"/>
+              <p:commandButton type="button" onclick="abrirDialog(#{row})"
+                icon="fa fa-external-link" styleClass="btn btn-link text-right" value="Ver detalhes.." id="ver-detalhes-btn" />
+            </div>
+          </div>
+        </f:facet>
+			
+			
+				<p:column width="790">
+					<h:panelGroup rendered="#{auditoria['class'].simpleName == 'AuditoriaProspectiva'}">
+						<h:outputText value="#{resposta.credenciado.procedimento.codigo} - "/>
+						<h:outputText value="#{resposta.credenciado.procedimento.descricao} "/>
+						<h:outputText value="(#{resposta.credenciado.especialidade.sigla})" rendered="#{resposta.credenciado.especialidade.sigla != null}"/>
+                        <h:outputLabel id="observacao-gab" styleClass="btn btn-link fa fa-info" rendered="#{resposta.observacaoGAB != null}" />
+                        <p:tooltip id="toolTipObservacaoGAB" for="observacao-gab" styleClass="preformatted" value="OBS: #{resposta.observacaoGAB}" />
+					</h:panelGroup>
+					<h:panelGroup rendered="#{auditoria['class'].simpleName == 'AuditoriaProspectivaRessarcimento'}">
+						<h:outputText value="#{resposta.procedimento.codigo} - "/>
+						<h:outputText value="#{resposta.procedimento.descricao} "/>
+						<h:outputText value="(#{resposta.especialidade.sigla})" rendered="#{resposta.especialidade.sigla != null}"/>
+                        <h:outputLabel id="observacao-are" styleClass="btn btn-link fa fa-info" rendered="#{resposta.observacaoARE != null}" />
+                        <p:tooltip id="toolTipObservacaoARE" for="observacao-are" styleClass="preformatted" value="OBS: #{resposta.observacaoARE}" />
+					</h:panelGroup>
+				</p:column>
+	
+				<p:column styleClass="text-center">
+					<h:panelGroup styleClass="fa #{resposta.aprovado ? 'fa-thumbs-o-up text-success' : 'fa-thumbs-o-down text-error'}"></h:panelGroup>
+				</p:column>
+				
+				<p:column id="justificativa" headerText="Justificativa" style="text-align:center">
+					<h:outputLabel id="justificativa-procedimento" styleClass="btn btn-link fa fa-info" rendered="#{!resposta.aprovado}"/>
+					<p:tooltip id="toolTipJustificativaGAB" for="justificativa-procedimento" value="#{resposta.justificativa}" />
+					<h:outputLabel value="Não há" styleClass="muted" rendered="#{resposta.justificativa == null}" />
+				</p:column>
+				
+			</p:subTable>
+		</p:dataTable>
+
+</ui:composition>

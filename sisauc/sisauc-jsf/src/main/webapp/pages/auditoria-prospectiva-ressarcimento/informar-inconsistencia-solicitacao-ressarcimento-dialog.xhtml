@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets">
+
+  <p:dialog header="Atenção!" id="informar-inconsistencia-solicitacao-ressarcimento-dialog" widgetVar="informarInconsistenciaSolicitacaoRessarcimentoDialog" modal="true" resizable="false">
+    <h:form id="informar-inconsistencia-solicitacao-ressarcimento-form-dialog">
+      <h:outputText value="Insira o motivo da inconsistência:" />
+      <p:messages id="msgs" showIcon="false" autoUpdate="true" />
+      <div class="vgap-15" />
+    	<p:inputTextarea value="#{realizarAuditoriaProspectivaRessarcimentoBean.auditoria.solicitacao.textoInconsistencia}" cols="54" rows="6"  styleClass="text-left" 
+			id="texto-inconsistencia" autoResize="false" required="true" requiredMessage="O motivo da inconsistência deve ser preenchido!"/>
+      <div class="vgap-15" />
+      <h:outputText value=" Ao salvar esta solicitação irá retornar ao ATENDENTE." />
+      
+
+      <div class="vgap-30" />
+
+      <h:panelGroup styleClass="dialog-footer" layout="block">
+        <p:commandButton id="salvar_inconsistencia" value="Salvar" styleClass="btn btn-success" icon="fa fa-save"
+          action="#{realizarAuditoriaProspectivaRessarcimentoBean.informarInconsistencia}" />
+        <p:commandButton id="cancelar_inconsistencia" value="Cancelar" styleClass="btn" icon="fa" type="button"
+          onclick="PF('informarInconsistenciaSolicitacaoRessarcimentoDialog').hide()" />
+      </h:panelGroup>
+
+    </h:form>
+  </p:dialog>
+
+</ui:composition>

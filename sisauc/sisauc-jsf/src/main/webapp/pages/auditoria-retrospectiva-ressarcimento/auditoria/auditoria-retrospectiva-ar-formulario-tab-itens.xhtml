@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets">
+
+  <p:messages id="msgs"/>
+  
+  <p:dataTable value="#{auditoriaRetrospectivaRessarcimentoFormularioBean.ar.itensNaoNaoAprovados}" var="item" id="table-itens">
+    
+    <p:column headerText="Procedimento">
+      <h:outputText value="#{formatterBean.procedimentoFormatter.getCodigoDescricao(item.procedimento)}" />
+      <h:outputText rendered="#{item.dente != null}" value=" - Dente #{item.dente}" />
+      <h:outputText rendered="#{item.faceDental != null}" value=" - Face #{item.faceDental.label}" />
+      <h:outputLabel id="observacao-are" styleClass="btn btn-link fa fa-info" rendered="#{item.respostaRessarcimentoAuditoria.observacaoARE != null}" />
+      <p:tooltip id="toolTipObservacaoARE" for="observacao-are" styleClass="preformatted" value="OBS: #{item.respostaRessarcimentoAuditoria.observacaoARE}" />
+    </p:column>
+    
+    <p:column headerText="Valor Calculado" width="100" styleClass="text-center">
+      <h:outputText value="#{item.auditoriaRetrospectiva.valorCalculado}" rendered="#{!item.auditoriaRetrospectiva.naoRealizado}">
+        <f:convertNumber pattern="R$ 0.00"/>
+      </h:outputText>
+      <h:outputText value="Não Realizado" rendered="#{item.auditoriaRetrospectiva.naoRealizado}"/>
+    </p:column>
+    
+    <p:column headerText="Valor Ress." width="100" styleClass="text-center">
+      <h:outputText value="#{item.auditoriaRetrospectiva.valorRessarcimento}" 
+        rendered="#{!item.auditoriaRetrospectiva.naoRealizado}">
+        <f:convertNumber pattern="R$ 0.00"/>
+      </h:outputText>
+    </p:column>
+    
+    <p:column width="30" styleClass="text-center">
+      <p:commandButton id="editar-resposta" styleClass="btn btn-link" icon="fa fa-gavel" 
+        action="#{auditoriaRetrospectivaRessarcimentoFormularioBean.selecionarItem(item)}"
+        oncomplete="PF('auditoriaItemARDialog').show()" update=":auditar-item-ar-form"/>
+    </p:column>
+  </p:dataTable>
+
+  <div class="vgap-20"/>
+  
+  <p:commandButton value="Finalizar Auditoria" id="finalizar-auditoria-ar" styleClass="btn btn-success" icon="fa fa-gavel"
+    action="#{auditoriaRetrospectivaRessarcimentoFormularioBean.confirmaFinalizacaoAuditoria}" 
+    update="msgs"/>
+
+  <p:commandButton value="Informar Inconsistência" id="finalizar-auditoria-inconsistente" styleClass="btn btn-danger margin-l-5"
+    icon="fa fa-gavel" validateClient="true" onclick="PF('finalizarInconsistenteDialog').show()"/>
+
+  <p:commandButton value="Salvar sem finalizar" id="salvar-item" styleClass="btn btn-primary margin-l-5" icon="fa fa-save"
+    oncomplete="PF('salvarAuditoriaARDialog').show()" />
+
+  <a href="../realizar-auditoria" id="cancelar" class="btn">Cancelar</a>
+
+</ui:composition>

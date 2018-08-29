@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" template="/resources/template/template.xhtml">
+
+  <ui:define name="html-title">Detalhes do Desconto</ui:define>
+
+  <ui:define name="main">
+
+    <h3>Detalhes do Desconto</h3>
+
+    <p:separator />
+
+    <div class="vgap-10" />
+
+    <h:form id="desconto-detalhes-form">
+      <p:messages id="msg" showIcon="false" />
+
+      <div class="vgap-10" />
+      <c:set var="desconto" value="#{descontoRealizadoFormBean.descontoBeneficiario}" scope="view" />
+      <p:tabView>
+        <p:tab title="Detalhes" id="tab-detalhes">
+          <p:panelGrid>
+            <p:row>
+              <p:column>
+                <h4>
+                  <h:outputText value="#{desconto.numero} do dia " />
+                  <h:outputText value="#{desconto.dataEmissao}">
+                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm" readonly="true" />
+                  </h:outputText>
+                </h4>
+              </p:column>
+            </p:row>
+            <p:row>
+              <p:column>
+                <h:outputText value="Beneficiário: " style="font-weight:bold;" />
+                <h:outputText value="#{desconto.beneficiario.saram} - " />
+                <h:outputText value="#{desconto.beneficiario.postoGraduacao.descricao} " rendered="#{desconto.beneficiario.postoGraduacao.descricao != null}" />
+                <h:outputText value="#{desconto.beneficiario.nome}" />
+                <h:outputText value=" do(a) " rendered="#{desconto.beneficiario.organizacaoMilitar.sigla != null}"/>
+                <h:outputText value="#{desconto.beneficiario.organizacaoMilitar.sigla}" 
+                  style="font-weight:bold;text-decoration: underline;" rendered="#{desconto.beneficiario.organizacaoMilitar.sigla != null}"/>
+                <h:outputText value=", "/>
+                <h:outputText value="#{formatterBean.beneficiarioFormatter.toIdadeMedica(desconto.beneficiario)} " />
+              </p:column>
+            </p:row>
+            <p:row>
+              <p:column>
+                <h:outputText value="Valor Total Desconto: " style="font-weight:bold;" />
+                <h:outputText value="#{desconto.valorTotal}">
+                  <f:convertNumber type="currency" />
+                </h:outputText>
+              </p:column>
+            </p:row>
+            <p:row>
+              <p:column>
+                <h:outputText value="Estado do Envio: " style="font-weight:bold;" />
+                <h:outputText value="#{desconto.estadoDescontoBeneficiario.label}" />
+              </p:column>
+            </p:row>
+          </p:panelGrid>
+        </p:tab>
+
+        <div class="vgap-10" />
+
+        <p:tab title="Itens Descontados" id="tab-itens-descontados">
+          <p:dataTable value="#{desconto.itensGabDescontados}" var="item" emptyMessage="Nenhum item de desconto.">
+
+            <p:column width="200" headerText="Código">
+              <p:outputLabel value="#{item.codigo}" />
+            </p:column>
+
+            <p:column width="70" headerText="Proc.">
+              <p:outputLabel value="#{item.configuracao.procedimento.codigo}" />
+            </p:column>
+
+            <p:column width="200" headerText="Credenciado">
+              <p:outputLabel value="#{item.gab.credenciado.nomeFantasia}" />
+            </p:column>
+
+            <p:column headerText="Beneficiário Atendido">
+              <p:outputLabel value="#{item.gab.beneficiario.nome}" />
+            </p:column>
+
+            <p:column width="80" headerText="Valor Item">
+              <p:outputLabel value="#{descontoRealizadoFormBean.obterValorFinalItem(item)}">
+                <f:convertNumber type="currency" />
+              </p:outputLabel>
+            </p:column>
+
+            <p:column width="80" headerText="Valor descontado">
+              <p:outputLabel value="#{descontoRealizadoFormBean.obterValorDescontoItem(item)}">
+                <f:convertNumber type="currency" />
+              </p:outputLabel>
+            </p:column>
+
+            <p:column width="40" headerText="Isento">
+              <p:outputLabel value="#{(item.gab.isento)?'Sim':'Não'}" />
+            </p:column>
+
+          </p:dataTable>
+        </p:tab>
+
+        <div class="vgap-10" />
+
+        <p:tab title="Envios ao Aerconsig" id="tab-envios-aerconsig">
+          <p:dataTable value="#{desconto.enviosDesconto}" var="envio"
+            emptyMessage="Este Desconto não foi enviado ao Aerconsig.">
+            <p:column width="70" headerText="Data Início">
+              <p:outputLabel value="#{envio.dataHoraInicioEnvio}">
+                <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+              </p:outputLabel>
+            </p:column>
+
+            <p:column width="70" headerText="Data Fim">
+              <p:outputLabel value="#{envio.dataHoraFimEnvio}">
+                <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+              </p:outputLabel>
+            </p:column>
+
+            <p:column width="70" headerText="Estado do Envio">
+              <p:outputLabel value="#{envio.estadoEnvioDesconto}">
+              </p:outputLabel>
+            </p:column>
+
+            <p:column width="70" headerText="Código da Mensagem">
+              <p:outputLabel value="#{envio.codigoMensagem}">
+              </p:outputLabel>
+            </p:column>
+
+            <p:column width="100" headerText="Descrição da Mensagem">
+              <p:outputLabel value="#{envio.descricaoMensagem}">
+              </p:outputLabel>
+            </p:column>
+          </p:dataTable>
+        </p:tab>
+      </p:tabView>
+
+      <div class="vgap-10" />
+
+      <p:commandButton value="Reativar para Envio" id="reativar-envio" styleClass="btn btn-primary" icon="fa fa-save"
+        validateClient="true" action="#{descontoRealizadoFormBean.confirmaReativacaoDesconto}"
+        rendered="#{desconto.estadoDescontoBeneficiario=='INTERROMPIDO_ERRO'}" />
+      <a href="../descontos-realizados" id="cancelar" class="btn">Voltar</a>
+    </h:form>
+
+  </ui:define>
+  <ui:define name="dialogs">
+    <p:dialog header="Reativação do Desconto do Beneficiário" id="confirmar-reativacao-dialog"
+      widgetVar="confirmaReativacaoDescontoDialog" modal="true">
+      <h:form id="dialog-form-reativar-desconto">
+        <h:outputText value="Confirma REATIVAÇÃO do Desconto do Beneficiário?" />
+        <div class="vgap-30">
+          <!-- GAP 30px -->
+        </div>
+
+        <h:panelGroup styleClass="dialog-footer" layout="block">
+          <p:commandButton value="Sim" styleClass="btn btn-success" icon="fa fa-save"
+            action="#{descontoRealizadoFormBean.reativarDescontoInterrompido}" update=":desconto-detalhes-form" />
+          <p:commandButton value="Não" styleClass="btn" icon="fa" type="button"
+            onclick="PF('confirmaReativacaoDescontoDialog').hide()" />
+        </h:panelGroup>
+
+      </h:form>
+    </p:dialog>
+
+  </ui:define>
+
+</ui:composition>

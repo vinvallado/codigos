@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" template="/resources/template/template.xhtml"
+  xmlns:sisauc="http://java.sun.com/jsf/composite/sisaucjsf">
+
+  <ui:define name="html-title">GAB</ui:define>
+
+  <ui:define name="main">
+
+    <h3>GAB: #{buscaGabFormularioBean.gab.codigo}</h3>
+
+    <p:separator />
+
+    <p:tabView id="tabview-busca-gab-formulario">
+      
+      <p:tab title="Dados da GAB" id="tab-dados-gab">
+        <div class="vgap-10" />
+        <sisauc:dadosGAB_buscaGAB gab="#{buscaGabFormularioBean.gab}" />
+      </p:tab>
+
+      <p:tab title="Auditoria Prospectiva" id="tab-auditoria-prospectiva">
+        <div class="vgap-10" />
+        <sisauc:dadosAuditoriaProspectiva auditoria="#{buscaGabFormularioBean.auditoriaProspectiva}" />
+      </p:tab>
+
+      <p:tab title="Dados da solicitação" id="tab-dados-solicitacao">
+        <sisauc:exibirSolicitacao solicitacao="#{buscaGabFormularioBean.solicitacaoProcedimento}" />
+        <div class="vgap-10"></div>
+      </p:tab>
+
+    </p:tabView>
+  </ui:define>
+  
+  <ui:define name="dialogs">
+    <ui:include src="dialog-informacoes-item-gab.xhtml" />
+    <ui:include src="dialog-ver-pdf.xhtml"/>
+  </ui:define>
+
+  <ui:define name="html-body-bottom">
+    <script type="text/javascript" src="#{request.contextPath}/resources/vendor/js/jquery.maskMoney.min.js" />
+    <script type="text/javascript" src="#{request.contextPath}/resources/vendor/js/pdfjs/pdf.js" />
+    <script type="text/javascript" src="#{request.contextPath}/resources/js/ver-pdf.js" />
+  </ui:define>
+</ui:composition>

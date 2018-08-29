@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:sisauc="http://java.sun.com/jsf/composite/sisaucjsf">
+
+  <p:dialog widgetVar="editarProcedimentoDialog" id="editar-procedimento-dialog" modal="true" resizable="false" onShow="maskPrefixOnlyPositiveNumbers('R$')" width="980"
+    header="Adicionar um procedimento para ressarcimento">
+    <h:form id="adicionar-procedimento-form">
+    
+      <p:messages id="msgs"/>
+      <p:panelGrid style="width: 941px;">
+      <p:row>
+        <p:column style="width: 77px;"><p:outputLabel value="Tabela" for="tabela"/></p:column>
+        <p:column style="width: 132px;">
+          <p:selectOneMenu id="tabela" value="#{viewUtilsBean.tipoTabelaAutocomplete}" style="width: 130px;">
+            <f:selectItem itemLabel="TRS" itemValue="TRS"/>
+            <f:selectItem itemLabel="CBHPM-2012" itemValue="CBHPM2012"/>
+            <f:selectItem itemLabel="Outros" itemValue="OUTROS"/>
+            <p:ajax event="change" process="@this" update="@form"
+              listener="#{cadastroSolicitacaoRessarcimentoFormularioBean.onSelectTabela}" 
+              oncomplete="maskPrefixOnlyPositiveNumbers('R$')"/>
+          </p:selectOneMenu>
+        </p:column>
+        <p:column style="width: 88px;"><h:outputText value="Procedimento"/></p:column>
+        <p:column>
+          <h:panelGroup id="procedimento-input">
+            <!-- Caso o usuário selecione outros -->
+            <p:inputText styleClass="input-block-level" rendered="#{viewUtilsBean.tipoTabelaAutocomplete == 'OUTROS'}" placeholder="Insira um texto com o nome do procedimento"
+               value="#{cadastroSolicitacaoRessarcimentoFormularioBean.pedido.descricaoOutros}"/>
+      
+            <!-- Caso o usuário selecione uma tabela -->
+            <p:autoComplete id="procedimento" rendered="#{viewUtilsBean.tipoTabelaAutocomplete != 'OUTROS' and viewUtilsBean.tipoTabelaAutocomplete != null}"
+              var="procedimento" converter="jsonConverter" value="#{cadastroSolicitacaoRessarcimentoFormularioBean.pedido.procedimento}"
+              completeMethod="#{viewUtilsBean.procurarProcedimentoParaAtendente}"
+              itemLabel="#{formatterBean.procedimentoFormatter.getCodigoDescricao(procedimento)}"
+              itemValue="#{procedimento}" scrollHeight="300" dropdown="true" styleClass="ui-autocomplete-large naoaceitarenter" forceSelection="true">
+                <p:ajax event="itemSelect" process="@this" update="@form" oncomplete="maskPrefixOnlyPositiveNumbers('R$')"/>
+              <p:column>
+                <sisauc:detalharProcedimento procedimento="#{procedimento}"/>
+              </p:column>
+            </p:autoComplete>
+          </h:panelGroup>
+        </p:column>
+      </p:row>
+      <p:row rendered="#{viewUtilsBean.tipoTabelaAutocomplete == 'TRS' and cadastroSolicitacaoRessarcimentoFormularioBean.pedido.procedimento.odontologico}">
+        <p:column>
+          <p:outputLabel value="Face:" for="face" id="face-label" />
+        </p:column>
+        <p:column>
+          <p:selectOneMenu value="#{cadastroSolicitacaoRessarcimentoFormularioBean.pedido.faceDental}"
+            converter="genericEnumConverter" style="width: 130px;" filter="true" filterMatchMode="contains" id="face">
+		    	    <f:selectItem itemLabel="" noSelectionOption="true" />
+              <f:selectItems value="#{cadastroSolicitacaoRessarcimentoFormularioBean.faces}"
+                var="face" itemValue="#{face}"
+                itemLabel="#{face.label}" id="sel-face" />
+          </p:selectOneMenu>
+        </p:column>
+        <p:column>
+          <p:outputLabel value="Dente:" for="dente" id="dente-label" />
+        </p:column>
+        <p:column>
+          <p:selectOneMenu value="#{cadastroSolicitacaoRessarcimentoFormularioBean.pedido.dente}" converter="javax.faces.Integer" 
+          	style="width: 130px;" filter="true" filterMatchMode="contains" id="dente">
+		    	    <f:selectItem itemLabel="" noSelectionOption="true" />
+              <f:selectItems value="#{viewUtilsBean.listarDentes()}"
+                var="dente" itemValue="#{dente}"
+                itemLabel="#{dente}" id="sel-dente" />
+          </p:selectOneMenu>
+        </p:column>
+			</p:row>
+      <p:row rendered="#{viewUtilsBean.tipoTabelaAutocomplete == 'CBHPM2012' and cadastroSolicitacaoRessarcimentoFormularioBean.pedido.procedimento.subGrupo.codigo == '10101004'}">
+        <p:column>
+          <p:outputLabel value="Especialidade:" for="especialidade" id="especialidade-label" />
+        </p:column>
+        <p:column colspan="3">
+          <p:selectOneMenu value="#{cadastroSolicitacaoRessarcimentoFormularioBean.pedido.especialidade}"
+            converter="jsonConverter" style="width: 545px" filter="true" filterMatchMode="contains" id="especialidade">
+              <f:selectItems value="#{cadastroSolicitacaoRessarcimentoFormularioBean.especialidades}"
+                var="especialidade" itemValue="#{especialidade}"
+                itemLabel="#{especialidade.sigla} - #{especialidade.nome}" id="sel-especialidade" />
+            </p:selectOneMenu>
+          </p:column>
+        </p:row>
+        <p:row>
+          <p:column><p:outputLabel value="Observação" for="observacao"/></p:column>
+          <p:column colspan="3"><p:inputTextarea id="observacao" styleClass="input-block-level" value="#{cadastroSolicitacaoRessarcimentoFormularioBean.pedido.observacao}"/></p:column>
+        </p:row>
+        <p:row>
+          <p:column><p:outputLabel value="Quantidade" for="quantidade"/></p:column>
+          <p:column colspan="3"><p:spinner id="quantidade" size="2" min="1" maxlength="2" value="#{cadastroSolicitacaoRessarcimentoFormularioBean.pedido.quantidade}"/></p:column>
+        </p:row>
+        <p:row>
+          <p:column><p:outputLabel value="Orçamento" for="orcamento"/></p:column>
+          <p:column colspan="3"><p:inputText id="orcamento" styleClass="number" converter="doubleConverter" size="9" value="#{cadastroSolicitacaoRessarcimentoFormularioBean.pedido.orcamento}"/></p:column>
+        </p:row>
+        <p:row>
+          <p:column></p:column>
+          <p:column colspan="3"></p:column>
+        </p:row>
+      </p:panelGrid>
+
+      <h:panelGroup styleClass="dialog-footer" layout="block">
+        <p:commandButton value="Salvar" styleClass="btn btn-success" id="adicionar-procedimento" action="#{cadastroSolicitacaoRessarcimentoFormularioBean.addPedido}"
+          update="msgs :formulario-solicitacao-ressarcimento:lista-procedimentos" icon="fa fa-save"/>
+        <p:commandButton value="Cancelar" styleClass="btn" type="button" id="cancelar" onclick="PF('editarProcedimentoDialog').hide()" />
+      </h:panelGroup>
+      
+    </h:form>
+  </p:dialog>
+   
+</ui:composition>

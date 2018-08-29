@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:form id="configuracao-regional">
+<p:messages id="msgs" showIcon="false" />
+<div class="vgap-20"></div>
+  <p:panelGrid>
+    <p:row>
+      <p:column>
+        <p:outputLabel value="Regional:" />
+      </p:column>
+      <p:column>
+        <h:outputLabel value="#{configuracaoRegionalBean.regional.nome} - #{configuracaoRegionalBean.regional.sigla}" />
+      </p:column>
+    </p:row>
+    <p:row>
+      <p:column>
+        <p:outputLabel value="Subordinadas: " />
+      </p:column>
+      <p:column>
+        <p:pickList id="pickListSubordinadas" value="#{configuracaoRegionalBean.dualList}" var="subordinada"
+          itemLabel="#{subordinada.sigla}" itemValue="#{subordinada}" showSourceFilter="true" showTargetFilter="true"
+          converter="jsonConverter" filterMatchMode="contains">
+          <f:facet name="sourceCaption">Disponíveis</f:facet>
+          <f:facet name="targetCaption">Selecionadas</f:facet>
+        </p:pickList>
+      </p:column>
+    </p:row>
+  </p:panelGrid>
+
+  <div class="vgap-10"></div>
+
+  <p:commandButton value="Salvar" styleClass="btn btn-success" icon="fa fa-save" validateClient="true"
+    action="#{configuracaoRegionalBean.salvar}" update="@form" id="salvar" />
+
+</h:form>
+</ui:composition>

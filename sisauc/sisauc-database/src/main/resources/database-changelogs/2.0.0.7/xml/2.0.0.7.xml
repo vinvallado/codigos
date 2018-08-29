@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<changeSet id="add-coluna-estadoItem-auditoria-retrospectiva" author="januarioacsj">
+		<sql>
+			ALTER TABLE sch_sisauc.historico_auditoria_retrospectiva
+  				ADD COLUMN estado_item_gab character varying(20);
+		</sql>
+	</changeSet>
+	
+	<changeSet id="criar-estrutura-tabela-ar" author="ferrazlffm">
+		<sql>
+			CREATE TABLE sch_sisauc.ar
+			(
+			  id serial NOT NULL,
+			  codigo character varying(255) NOT NULL,
+			  data_geracao timestamp without time zone NOT NULL,
+			  estado character varying(255) NOT NULL,
+			  id_auditoria_prospectiva integer,
+			  id_beneficiario integer NOT NULL,
+			  id_organizacao_militar integer NOT NULL,
+			  justificativa_cancelamento_ar character varying(255),
+			  data_emissao timestamp without time zone,
+			  data_apresentacao timestamp without time zone,
+			  isento boolean DEFAULT false,
+			  
+			  CONSTRAINT ar_pkey PRIMARY KEY (id),
+			  CONSTRAINT fk_ar_auditoria_prospectiva FOREIGN KEY (id_auditoria_prospectiva)
+			      REFERENCES sch_sisauc.auditoria_prospectiva_ressarcimento (id) MATCH SIMPLE
+			      ON UPDATE NO ACTION ON DELETE NO ACTION,
+			  CONSTRAINT fk_ar_beneficiario FOREIGN KEY (id_beneficiario)
+			      REFERENCES sch_sisauc.beneficiario (id) MATCH SIMPLE
+			      ON UPDATE NO ACTION ON DELETE NO ACTION,
+			  CONSTRAINT fk_ar_organizacao_militar FOREIGN KEY (id_organizacao_militar)
+			      REFERENCES sch_sisauc.organizacao_militar (id) MATCH SIMPLE
+			      ON UPDATE NO ACTION ON DELETE NO ACTION
+			)
+			WITH (
+			  OIDS=FALSE
+			);
+			ALTER TABLE sch_sisauc.ar
+			  OWNER TO sisauc;	
+		</sql>
+	</changeSet>         
+
+	<changeSet id="criar-estrutura-tabela-item-ar" author="ferrazlffm">
+		<sql>
+			CREATE TABLE sch_sisauc.item_ar
+			(
+			  id serial NOT NULL,
+			  codigo character varying(255) NOT NULL,
+			  estado character varying(20) NOT NULL,
+			  id_ar integer NOT NULL,
+			  id_procedimento integer NOT NULL,
+			  id_especialidade integer,
+			  CONSTRAINT item_ar_pkey PRIMARY KEY (id),
+			  CONSTRAINT fk_item_ar_ar FOREIGN KEY (id_ar)
+			      REFERENCES sch_sisauc.ar (id) MATCH SIMPLE
+			      ON UPDATE NO ACTION ON DELETE NO ACTION,
+			  CONSTRAINT fk_item_ar_procedimento FOREIGN KEY (id_procedimento)
+			      REFERENCES sch_sisauc.procedimento_trs (id) MATCH SIMPLE
+			      ON UPDATE NO ACTION ON DELETE NO ACTION,
+			  CONSTRAINT fk_item_ar_id_especialidade FOREIGN KEY (id_especialidade)
+			      REFERENCES sch_sisauc.especialidade (id) MATCH SIMPLE
+			      ON UPDATE NO ACTION ON DELETE NO ACTION			      			      
+			)
+			WITH (
+  				OIDS=FALSE
+			);
+			ALTER TABLE sch_sisauc.item_ar
+  				OWNER TO sisauc;	
+		</sql>
+	</changeSet>
+	
+	<changeSet id="criar-sequences-auditoria-prospectiva" author="ferrazlffm">
+		<sql>
+			CREATE SEQUENCE sch_sisauc.auditoria_prospectiva_ressarcimento_id_seq
+			    START WITH 1
+			    INCREMENT BY 1
+			    NO MINVALUE
+			    NO MAXVALUE
+			    CACHE 1;
+			ALTER TABLE sch_sisauc.auditoria_prospectiva_ressarcimento_id_seq OWNER TO sisauc;
+			
+			CREATE SEQUENCE sch_sisauc.resposta_ressarcimento_auditoria_id_seq
+			    START WITH 1
+			    INCREMENT BY 1
+			    NO MINVALUE
+			    NO MAXVALUE
+			    CACHE 1;
+			ALTER TABLE sch_sisauc.resposta_ressarcimento_auditoria_id_seq OWNER TO sisauc;			
+		</sql>
+	</changeSet>		
+	
+</databaseChangeLog>

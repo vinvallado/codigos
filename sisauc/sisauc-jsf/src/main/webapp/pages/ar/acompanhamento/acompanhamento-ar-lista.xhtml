@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" template="/resources/template/template.xhtml">
+
+  <ui:define name="html-title">Acompanhamento de ARE</ui:define>
+
+  <ui:define name="main">
+
+    <h3>Acompanhamento de ARE</h3>
+
+    <p:separator />
+
+    <h:form id="lista-ars-form">
+
+      <p:messages id="msg" showIcon="false" />
+
+      <p:dataTable id="tabela" value="#{acompanhamentoARListaBean.ars}" var="ar"
+        paginator="true" rows="15" paginatorPosition="bottom"
+        paginatorAlwaysVisible="false" rowsPerPageTemplate="10, 15, 25" emptyMessage="#{msgs.no_records_found}"
+        paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+        filteredValue="#{viewUtilsBean.filtrados}" filterDelay="300" widgetVar="datatable">
+
+        <p:column headerText="Divisão" width="90" styleClass="text-center" filterOptions="#{viewUtilsBean.divisoesOptions()}" filterBy="#{ar.divisao}">
+          <a title="Divisão Médica"><h:panelGroup styleClass="fa fa-tag muted" rendered="#{ar.divisao == 'DIVISAO_MEDICA'}" /></a>
+          <a title="Divisão Odonológica"><h:panelGroup styleClass="fa fa-tag text-info" rendered="#{ar.divisao == 'DIVISAO_ODONTOLOGICA'}" /></a>
+        </p:column>
+
+        <p:column  headerText="Nº ARE" id="numero_are" width="150" filterBy="#{ar.codigo}" filterFunction="#{viewUtilsBean.filterIgnoreCase}">
+          <h:outputText value="#{ar.codigo}" style="text-align:center"/>
+        </p:column>
+        <p:column headerText="Beneficiário" id="beneficiario" filterBy="#{ar.beneficiario.nome}" filterFunction="#{viewUtilsBean.filterIgnoreCase}">
+          <h:outputText value="#{ar.beneficiario.nome}"/>
+        </p:column>
+        <p:column headerText="Saram Titular" id="saram-titular" width="70" filterBy="#{ar.beneficiario.saram != null ? ar.beneficiario.saram : ar.beneficiario.saramTitular}">
+          <h:outputText value="#{ar.beneficiario.saram != null ? ar.beneficiario.saram : ar.beneficiario.saramTitular}"/>
+        </p:column>
+        <p:column headerText="Data Geração" id="data-geracao" width="70" style="text-align:center" sortBy="#{ar.dataGeracao}">
+          <h:outputText value="#{ar.dataGeracao}">
+            <f:convertDateTime pattern="dd/MM/yyyy" readonly="true" />
+          </h:outputText>  
+        </p:column>
+        <p:column headerText="Estado" id="estado-are" width="100" sortBy="#{ar.estado}" filterBy="#{ar.estado}" filterOptions="#{viewUtilsBean.estadoArOptions()}" 
+            filterValue="#{acompanhamentoARListaBean.filtroEstado}" styleClass="text-center">
+          <h:outputText value="#{ar.estado.label}" />
+        </p:column>                
+        <p:column id="btn-editar" width="40" styleClass="text-center">
+          <h:outputLink id="editar" styleClass="btn btn-link" value="acompanhamento/#{ar.id}" title="Editar">
+            <span id="editar" class="fa fa-pencil"></span>
+          </h:outputLink>
+        </p:column>
+
+      </p:dataTable>
+
+    </h:form> 
+   	<script type="text/javascript">
+			jQuery(document).ready(function() {
+				PF('datatable').filter();
+			});
+		</script>
+  </ui:define>
+
+
+</ui:composition>

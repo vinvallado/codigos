@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:p="http://primefaces.org/ui" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:pt="http://java.sun.com/jsf/passthrough">
+
+<h:head>
+  <title>SISAUC</title>
+  <link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/vendor/css/bootstrap.css?v=#{versaoInterna}" />
+  <link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/vendor/css/font-awesome.css?v=#{versaoInterna}" />
+  <link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/css/correcoes.css?v=#{versaoInterna}" />
+  <link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/css/estrutura.css?v=#{versaoInterna}" />
+  <link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/css/gaps.css?v=#{versaoInterna}" />
+  <link rel="shortcut icon" type="image/x-icon" href="#{request.contextPath}/resources/imagens/favicon.ico"/>
+  <script>
+  	$(document).ready(function(){
+  		$('#j_username').focus()
+  	});
+  </script>
+</h:head>
+<h:body styleClass="login">
+  <div class="container-fluid">
+    <div class="row-fluid">
+      <div class="span4 offset4 text-center logo">
+        <img src="#{request.contextPath}/resources/imagens/logo-sisauc.png"/>
+      </div>
+    </div>
+    <div class="vgap-10"></div>
+    <div class="vgap-10"></div>
+    <form class="form-horizontal" id="login_form" action='#{request.contextPath}/j_spring_security_check' method="post">
+      <div class="row-fluid">
+        <div class="span4 offset4 text-center">
+          <h:panelGroup styleClass="inner-addon left-addon">
+            <span class="fa fa-user"></span>
+            <p:inputText widgetVar="j_username" id="j_username" placeholder="Nome de usuário"/>
+          </h:panelGroup>
+        </div>
+      </div>
+      <div class="vgap-5"></div>
+      <div class="row-fluid">
+        <div class="span4 offset4 text-center">
+          <div>
+            <h:panelGroup styleClass="inner-addon left-addon">
+              <span class="fa fa-key"> </span>
+              <p:password widgetVar="j_password" id="j_password" placeholder="Senha" onkeypress="isCapslock(event)"/>
+            </h:panelGroup>
+          </div>
+          <span class="label label-warning capslock-alert" style="display: none;">
+            Caps lock pressionado.
+          </span>
+          <h:panelGroup rendered="#{param.erro != null}">
+            <div class="vgap-5"></div>
+            <div class="label label-important text-center" id="error">${sessionScope.SPRING_SECURITY_LAST_EXCEPTION.message}</div>
+          </h:panelGroup>
+        </div>
+      </div>
+      <div class="vgap-5"></div>
+      <div class="row-fluid">
+        <div class="span4 offset4 text-center">
+          <button type="submit" id="entrar" class="btn btn-primary">
+            <span class="fa fa-sign-in"/>
+            Entrar
+          </button>
+        </div>
+      </div>
+
+    </form>
+    <div class="vgap-10"></div>
+    <div class="row-fluid">
+      <div class="span6 offset3 text-center">
+        <small class="muted">Versão: #{versaoExterna}</small>
+      </div>
+    </div>
+
+    <div class="bottom">
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <div class="span6 offset3 text-center">
+            <img src="#{request.contextPath}/resources/imagens/fab.png"/>
+          </div>
+        </div>
+        <div class="vgap-10"></div>
+        <div  align="center">
+          <!-- div class="span2 offset4 text-center">
+            <a href="http://www.ccasj.intraer/" title="CCA SJ" target="_blank">
+              <img src="#{request.contextPath}/resources/imagens/ccasj.png"/><br/>
+            </a>
+            <small>Desenvolvido por</small>
+          </div-->
+          <div  align="center">
+            <a href="http://www.comgep.intraer/" title="COMGEP" target="_blank">
+              <img src="#{request.contextPath}/resources/imagens/comgep.png"/><br/>
+            </a>
+            <small>Oferecido por</small>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    
+  </div>
+  <script type="text/javascript" src="#{request.contextPath}/resources/js/sisauc.js?v=#{versaoInterna}"/>
+
+</h:body>
+</html>

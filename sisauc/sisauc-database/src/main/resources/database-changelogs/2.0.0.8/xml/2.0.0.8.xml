@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<changeSet id="criar-estrutura-tabela-apresentacao-ar" author="brunobjm">
+		<sql>
+			CREATE TABLE sch_sisauc.apresentacao_ar
+			(
+  				id integer NOT NULL,
+  				cpf_cnpj_prestador character varying(255) NOT NULL,
+  				data_nota_fiscal date NOT NULL,
+  				nome_prestador character varying(255) NOT NULL,
+  				numero_nota_fiscal character varying(255) NOT NULL,
+  				id_ar integer NOT NULL,
+  				id_arquivo_nota_fiscal integer NOT NULL,
+  				id_arquivo_requerimento integer NOT NULL,
+  				CONSTRAINT apresentacao_ar_pkey PRIMARY KEY (id),
+  				CONSTRAINT fk_apresentacao_ar_ar FOREIGN KEY (id_ar)
+      				REFERENCES sch_sisauc.ar (id) MATCH SIMPLE
+      				ON UPDATE NO ACTION ON DELETE NO ACTION,
+  				CONSTRAINT fk_apresentacao_ar_arquivo_nota_fiscal FOREIGN KEY (id_arquivo_nota_fiscal)
+      				REFERENCES sch_sisauc.arquivo (id) MATCH SIMPLE
+      				ON UPDATE NO ACTION ON DELETE NO ACTION,
+  				CONSTRAINT fk_apresentacao_ar_arquivo_requerimento FOREIGN KEY (id_arquivo_requerimento)
+      				REFERENCES sch_sisauc.arquivo (id) MATCH SIMPLE
+      				ON UPDATE NO ACTION ON DELETE NO ACTION,
+  				CONSTRAINT uk_apresentacao_ar_id_ar UNIQUE (id_ar),
+  				CONSTRAINT uk_apresentacao_ar_id_arquivo_nota_fiscal UNIQUE (id_arquivo_nota_fiscal),
+  				CONSTRAINT uk_apresentacao_ar_id_arquivo_requerimento UNIQUE (id_arquivo_requerimento)
+			)
+			WITH (
+  				OIDS=FALSE
+			);
+			ALTER TABLE sch_sisauc.apresentacao_ar
+  				OWNER TO sisauc;
+
+			
+			CREATE SEQUENCE sch_sisauc.apresentacao_ar_id_seq
+ 				INCREMENT 1
+  				MINVALUE 1
+  				MAXVALUE 9223372036854775807
+  				START 1
+  				CACHE 1;
+			ALTER TABLE sch_sisauc.apresentacao_ar_id_seq
+  				OWNER TO sisauc;
+
+		</sql>
+	</changeSet> 
+	     
+	<changeSet id="atualizacao-codigo-gab-e-codigo-itemGab" author="januarioacsj">
+		<sql>
+			UPDATE sch_sisauc.gab SET codigo = CONCAT ('GAB', codigo);
+			UPDATE sch_sisauc.item_gab SET codigo = CONCAT ('GAB', codigo);
+		</sql>
+	</changeSet>   
+
+</databaseChangeLog>

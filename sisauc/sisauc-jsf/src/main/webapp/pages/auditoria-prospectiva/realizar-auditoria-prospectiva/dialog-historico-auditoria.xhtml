@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:sisauc="http://java.sun.com/jsf/composite/sisaucjsf">
+
+  <p:dialog header="Histórico" id="historico-dialog" widgetVar="historicoDialog" modal="true" resizable="false"
+    width="940" position="top">
+    <h:form id="historico-form">
+      <p:tabView>
+        <p:tab title="Solicitação">
+          <sisauc:exibirSolicitacao solicitacao="#{realizarAuditoriaProspectivaBean.auditoriaHistorico.solicitacao}" />
+        </p:tab>
+        <p:tab title="Auditoria">
+          <p:panelGrid id="grid-historico-auditoria">
+            <p:row>
+              <p:column>
+                <h:outputText value="Auditor: " styleClass="text-bold" />
+                <h:outputText value="#{realizarAuditoriaProspectivaBean.auditoriaHistorico.auditor.nome}" />
+              </p:column>
+            </p:row>
+            <p:row>
+              <p:column>
+                <h:outputText value="Data: " styleClass="text-bold" />
+                <h:outputText value="#{realizarAuditoriaProspectivaBean.auditoriaHistorico.dataFinalAuditoria}">
+                  <f:convertDateTime pattern="dd/MM/yyyy" />
+                </h:outputText>
+              </p:column>
+            </p:row>
+            <p:row>
+              <p:column>
+                <h:outputText value="Estado: " styleClass="text-bold" />
+                <h:outputText value="#{realizarAuditoriaProspectivaBean.auditoriaHistorico.estado.label}" />
+              </p:column>
+            </p:row>
+            <p:row>
+              <p:column>
+                <h:outputText value="Observações" styleClass="text-bold" />
+                <br />
+                <h:outputText value="#{realizarAuditoriaProspectivaBean.auditoriaHistorico.observacoes}" rendered="#{realizarAuditoriaProspectivaBean.auditoriaHistorico.observacoes != null}"/>
+                <h:outputText value="Não há observação" styleClass="muted" rendered="#{realizarAuditoriaProspectivaBean.auditoriaHistorico.observacoes == null}" />
+              </p:column>
+            </p:row>
+          </p:panelGrid>
+
+          <div class="vgap-20"></div>
+          <p:dataTable value="#{realizarAuditoriaProspectivaBean.auditoriaHistorico.procedimentos}" paginator="true"
+            rows="5" emptyMessage="#{msgs.no_records_found}" paginatorPosition="bottom" paginatorAlwaysVisible="false"
+            rowsPerPageTemplate="5, 10"
+            paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+            var="procedimento" id="lista-procedimentos-historico">
+
+            <p:column headerText="Procedimento">
+              <h:outputText
+                value="#{formatterBean.configuracaoProcedimentoFormatter.getDescricaoConfiguracao(procedimento.credenciado)}" />
+            </p:column>
+
+            <p:column headerText="Aprov." width="60" styleClass="text-center">
+              <h:panelGroup
+                styleClass="fa #{procedimento.aprovado ? 'fa-thumbs-o-up text-success' : 'fa-thumbs-o-down text-error'}"></h:panelGroup>
+            </p:column>
+
+            <p:column id="justificativa" headerText="Just." width="60" style="text-align:center">
+              <h:outputLabel id="justificativa-procedimento" styleClass="btn btn-link fa fa-info"
+                rendered="#{!procedimento.aprovado}" />
+              <p:tooltip id="toolTipJustificativaGAB" for="justificativa-procedimento"
+                value="#{procedimento.justificativa}" />
+              <h:outputLabel value="Não há" styleClass="muted" rendered="#{procedimento.justificativa == null}" />
+            </p:column>
+
+            <p:column headerText="OPME" width="50" styleClass="text-center">
+              <h:outputText value="#{procedimento.opme ? 'Sim' : 'Não'}" />
+            </p:column>
+
+          </p:dataTable>
+
+
+        </p:tab>
+        <p:tab title="GAB geradas">
+
+          <p:dataTable value="#{realizarAuditoriaProspectivaBean.gabs}" paginator="true" rows="5"
+            emptyMessage="#{msgs.no_records_found}" paginatorPosition="bottom" paginatorAlwaysVisible="false"
+            rowsPerPageTemplate="5, 10"
+            paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+            var="gab" id="lista-gabs-historico">
+
+            <p:column headerText="Nº GAB" width="120">
+              <h:outputText value="#{gab.codigo}" style="text-align:center" />
+            </p:column>
+            <p:column headerText="Data Geração GAB" width="70" styleClass="text-center">
+              <h:outputText value="#{gab.dataGeracao}">
+                <f:convertDateTime pattern="dd/MM/yyyy" readonly="true" />
+              </h:outputText>
+            </p:column>
+            <p:column headerText="Estado" width="100" styleClass="text-center">
+              <h:outputText value="#{gab.estado.label}" />
+            </p:column>
+
+            <p:column id="justificativa" headerText="Justificativa cancelamento" width="30" style="text-align:center">
+              <h:outputLabel id="btn-justificativa" styleClass="btn btn-link fa fa-info"
+                rendered="#{gab.justificativaCancelamentoGab != null}" />
+              <p:tooltip id="toolTipJustificativaGAB" for="btn-justificativa"
+                value="#{gab.justificativaCancelamentoGab}" />
+              <h:outputLabel value="Não há" styleClass="muted" rendered="#{gab.justificativaCancelamentoGab == null}" />
+            </p:column>
+            <!-- <p:column id="btn-editar" width="40" styleClass="text-center">
+              <p:commandButton type="button" onclick="window.open('#{request.contextPath}/geral/gab/impressao/#{gab.id}');"
+                styleClass="btn btn-link" icon="fa fa-search"/>
+            </p:column> -->
+
+          </p:dataTable>
+
+        </p:tab>
+      </p:tabView>
+
+    </h:form>
+  </p:dialog>
+
+</ui:composition>

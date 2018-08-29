@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<!-- Correção pois houve um commit após subir versão no hfasp -->
+	<changeSet id="adicior-data-atualizacao-beneficiario" author="tadeutbc">
+		<sql>
+			UPDATE sch_sisauc.beneficiario set data_atualizacao_registro =
+			'2014-11-03 00:00:00' where data_atualizacao_registro is null or
+			data_atualizacao_registro = '2011-11-03 00:00:00';
+		</sql>
+	</changeSet>
+
+	<changeSet id="adicionar-coluna-data-apresentacao-gab"
+		author="tadeutbc">
+		<sql>
+			ALTER TABLE sch_sisauc.gab ADD COLUMN data_apresentacao timestamp
+			without time zone;
+		</sql>
+	</changeSet>
+
+	<changeSet id="criar-tabela-especificacao-isencao-cobranca"
+		author="zaccaromvgcamz">
+		<sql>
+			CREATE TABLE sch_sisauc.especificacao_isencao_cobranca (
+			id serial NOT NULL,
+			tipo_cobranca character varying(110),
+			ativo boolean DEFAULT TRUE,
+			CONSTRAINT especificacao_isencao_cobranca_pkey PRIMARY KEY (id)
+			);
+		</sql>
+	</changeSet>
+
+	<changeSet id="adicionar-tipo-cobranca" author="zaccaromvgcamz">
+		<sql>
+			INSERT INTO sch_sisauc.especificacao_isencao_cobranca
+			(tipo_cobranca) values ('Militar não contribuinte');
+			INSERT INTO
+			sch_sisauc.especificacao_isencao_cobranca (tipo_cobranca) values
+			('Inspeção de saúde, quando interesse do serviço');
+			INSERT INTO
+			sch_sisauc.especificacao_isencao_cobranca (tipo_cobranca) values
+			('Perícias médico-legais determinadas por autoridade competente');
+			INSERT INTO sch_sisauc.especificacao_isencao_cobranca (tipo_cobranca)
+			values ('Medidas profiláticas determinadas por autoridade
+			competente');
+			INSERT INTO sch_sisauc.especificacao_isencao_cobranca
+			(tipo_cobranca) values ('Evacuações médicas determinadas por
+			autoridade competente');
+			INSERT INTO
+			sch_sisauc.especificacao_isencao_cobranca (tipo_cobranca) values
+			('Ferimento em campanha');
+			INSERT INTO
+			sch_sisauc.especificacao_isencao_cobranca (tipo_cobranca) values
+			('Ferimento na manutenção da ordem pública');
+			INSERT INTO
+			sch_sisauc.especificacao_isencao_cobranca (tipo_cobranca) values
+			('Doença contraída em campanha');
+			INSERT INTO
+			sch_sisauc.especificacao_isencao_cobranca (tipo_cobranca) values
+			('Doença contraída na manutenção da ordem pública');
+			INSERT INTO
+			sch_sisauc.especificacao_isencao_cobranca (tipo_cobranca) values
+			('Acidente de serviço');
+			INSERT INTO
+			sch_sisauc.especificacao_isencao_cobranca (tipo_cobranca) values
+			('Doença adquirida com relação de causa e efeito com o serviço');
+		</sql>
+	</changeSet>
+
+	<changeSet id="adicionar-coluna-solicitacao-especificacao-cobranca"
+		author="zaccaromvgcamz">
+		<sql>
+			ALTER TABLE sch_sisauc.solicitacao ADD COLUMN isento boolean
+			DEFAULT FALSE;
+			ALTER TABLE sch_sisauc.solicitacao ADD COLUMN
+			id_especificacao_isencao_cobranca integer;
+			ALTER TABLE
+			sch_sisauc.solicitacao ADD CONSTRAINT
+			fk_solicitacao_especificacao_tipo
+			foreign key (id_especificacao_isencao_cobranca) references
+			sch_sisauc.especificacao_isencao_cobranca (id);
+		</sql>
+	</changeSet>
+
+	<changeSet id="update-inspsau-isencao-tipo" author="zaccaromvgcamz">
+		<sql>
+			UPDATE sch_sisauc.solicitacao SET isento=true where
+			inspecao_saude=true;
+			UPDATE sch_sisauc.solicitacao SET
+			id_especificacao_isencao_cobranca=2 where inspecao_saude=true;
+		</sql>
+	</changeSet>
+
+	<changeSet id="adicionar-coluna-auditoria-prospectiva-especificacao-cobranca"
+		author="zaccaromvgcamz">
+		<sql>
+			ALTER TABLE sch_sisauc.auditoria_prospectiva ADD COLUMN isento boolean
+			DEFAULT FALSE;
+			ALTER TABLE sch_sisauc.auditoria_prospectiva ADD COLUMN
+			id_especificacao_isencao_cobranca integer;
+			ALTER TABLE
+			sch_sisauc.solicitacao ADD CONSTRAINT
+			fk_auditoria_prospectiva_especificacao_tipo
+			foreign key (id_especificacao_isencao_cobranca) references
+			sch_sisauc.especificacao_isencao_cobranca (id);
+		</sql>
+	</changeSet>
+	
+		<changeSet id="adicionar-coluna-gab-especificacao-cobranca"
+		author="zaccaromvgcamz">
+		<sql>
+			ALTER TABLE sch_sisauc.gab ADD COLUMN isento boolean
+			DEFAULT FALSE;
+			ALTER TABLE sch_sisauc.gab ADD COLUMN
+			id_especificacao_isencao_cobranca integer;
+			ALTER TABLE
+			sch_sisauc.gab ADD CONSTRAINT
+			fk_auditoria_prospectiva_especificacao_tipo
+			foreign key (id_especificacao_isencao_cobranca) references
+			sch_sisauc.especificacao_isencao_cobranca (id);
+		</sql>
+	</changeSet>
+
+</databaseChangeLog>

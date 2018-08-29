@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+         
+	<changeSet id="insert-cissfa-faltantes" author="januarioacsj">
+		<sqlFile relativeToChangelogFile="true" path="../sql/script_cissfa_sisauc-inserts-faltantes.sql" />
+	</changeSet>
+	
+	<changeSet id="lote-ressarcimento" author="januarioacsj">
+		<sql>
+		
+			CREATE TABLE sch_sisauc.lote_ressarcimento (
+			  id serial NOT NULL,
+			  numero character varying(255) NOT NULL,
+			  id_beneficiario integer NOT NULL,
+			  valor_total_ressarcir double precision,  
+			  id_organizacao_militar integer NOT NULL,
+			  data_criacao timestamp without time zone NOT NULL,
+			  CONSTRAINT lote_ressarcimento_pkey PRIMARY KEY (id),
+			  CONSTRAINT fk_lote_ressarcimento_beneficiario FOREIGN KEY (id_beneficiario)
+			      REFERENCES sch_sisauc.beneficiario (id) MATCH SIMPLE
+			      ON UPDATE NO ACTION ON DELETE NO ACTION
+			)
+			WITH (
+			  OIDS=FALSE
+			);
+			ALTER TABLE sch_sisauc.lote_ressarcimento
+			  OWNER TO sisauc;
+			
+			CREATE TABLE sch_sisauc.lote_ressarcimento_itens_ar (
+			  id_lote_ressarcimento integer NOT NULL,
+			  id_item_ar integer NOT NULL,
+			  CONSTRAINT lote_ressarcimento_itens_ar_pkey PRIMARY KEY (id_lote_ressarcimento, id_item_ar),
+			  CONSTRAINT fk_id_item_ar FOREIGN KEY (id_item_ar)
+			      REFERENCES sch_sisauc.item_ar (id) MATCH SIMPLE
+			      ON UPDATE NO ACTION ON DELETE NO ACTION,
+			  CONSTRAINT fk_lote_ressarcimento_itens_ar FOREIGN KEY (id_lote_ressarcimento)
+			      REFERENCES sch_sisauc.lote_ressarcimento (id) MATCH SIMPLE
+			      ON UPDATE NO ACTION ON DELETE NO ACTION
+			)
+			WITH (
+			  OIDS=FALSE
+			);
+			ALTER TABLE sch_sisauc.lote_ressarcimento_itens_ar
+			  OWNER TO sisauc;
+			  
+		</sql>
+	</changeSet>
+
+	<changeSet id="criar-tabela-historico-auditoria-retrospectiva-ressarcimento" author="douglasdpr">
+		<sql>
+			CREATE TABLE sch_sisauc.historico_auditoria_retrospectiva_ressarcimento (
+			id integer NOT NULL,
+			valor_apresentado double precision,
+			valor_auditado double precision,
+			valor_final double precision,
+			procedimento_realizado boolean NOT NULL,
+			justificativa_valor_final text,
+			justificativa_valor_auditado text,
+			id_auditoria_retrospectiva_ressarcimento integer NOT NULL,
+			data_alteracao timestamp without time zone NOT NULL,
+			id_usuario integer NOT NULL,
+			observacao_apresentacao text,
+			estado_item_ar character varying(20) NOT NULL
+			);
+		</sql>
+	</changeSet>
+
+	<changeSet id="historico_auditoria_retrospectiva_ar_id_seq" author="douglasdpr">
+		<sql>
+			CREATE SEQUENCE sch_sisauc.historico_auditoria_retrospectiva_ar_id_seq
+			START WITH 1
+			INCREMENT BY 1
+			NO MINVALUE
+			NO MAXVALUE
+			CACHE 1;
+		</sql>
+	</changeSet>
+
+	<changeSet id="criar-tabela-metadado-valor-auditoria-retrospectiva-ressarcimento" author="douglasdpr">
+		<sql>
+			CREATE TABLE sch_sisauc.metadado_valor_auditoria_retrospectiva_ressarcimento (
+    		id integer NOT NULL,
+    		valor double precision NOT NULL,
+    		chave character varying(255) NOT NULL,
+    		descricao character varying(255) NOT NULL
+			);
+		</sql>
+	</changeSet>
+	
+	<changeSet id="metadado_valor_auditoria_retrospectiva_ressarcimento_id_seq" author="douglasdpr">
+		<sql>
+			CREATE SEQUENCE sch_sisauc.metadado_valor_auditoria_retrospectiva_ressarcimento_id_seq
+    		START WITH 1
+    		INCREMENT BY 1
+    		NO MINVALUE
+    		NO MAXVALUE
+    		CACHE 1;
+		</sql>
+	</changeSet>
+	
+	<changeSet id="criar-tabela-auditoria-retrospectiva-metadado-valor-auditoria-retrospectiva-ressarcimento" author="douglasdpr">
+		<sql>
+			CREATE TABLE sch_sisauc.auditoria_retrospectiva_metadado_valor_auditoria_retrospectiva_ressarcimento (
+    		id_auditoria_retrospectiva_ressarcimento integer NOT NULL,
+    		id_metadado_valor_auditoria_retrospectiva_ressarcimento integer NOT NULL
+			);
+		</sql>
+	</changeSet>
+	
+
+</databaseChangeLog>

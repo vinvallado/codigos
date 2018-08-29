@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets">
+
+  <p:dialog header="Taxas do Item de GAB" id="entrar-dialog-valores-extras" onShow="maskPrefix('R$ ')"
+    widgetVar="entrarValoresExtraItemGabDialog" modal="true" resizable="false">
+    <h:form id="form-dialog-valores-extras">
+      <p:messages id="msgs" showIcon="false" autoUpdate="true" />
+      <p:panelGrid id="grid" style="margin: 0 auto;" rendered="#{apresentacaoGabFormularioBean.valoresMap != null}">
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Sala: " for="taxa-sala"></p:outputLabel>
+          </p:column>
+          <p:column>
+            <h:inputText id="taxa-sala" styleClass="number" converter="doubleConverter" onfocus="maskPrefixOnlyPositiveNumbers('R$ ')"
+              value="#{apresentacaoGabFormularioBean.valoresMap['taxaSala'].valor}" />
+          </p:column>
+        </p:row>
+        <p:row>
+          <p:column>
+            <p:outputLabel id="curativos" value="Curativos: "></p:outputLabel>
+          </p:column>
+          <p:column>
+            <h:inputText id="taxa-curativos" styleClass="number" converter="doubleConverter" onfocus="maskPrefixOnlyPositiveNumbers('R$ ')"
+              value="#{apresentacaoGabFormularioBean.valoresMap['taxaCurativos'].valor}" />
+          </p:column>
+        </p:row>
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Diária Hospitalar: "></p:outputLabel>
+          </p:column>
+          <p:column>
+            <h:inputText id="taxa-diaria" styleClass="number" converter="doubleConverter" onfocus="maskPrefixOnlyPositiveNumbers('R$ ')"
+              value="#{apresentacaoGabFormularioBean.valoresMap['taxaDiariaHospitalar'].valor}" />
+          </p:column>
+        </p:row>
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Materiais/Medicamentos: "></p:outputLabel>
+          </p:column>
+          <p:column>
+            <h:inputText id="taxa-material-medicamentos" styleClass="number" converter="doubleConverter" onfocus="maskPrefixOnlyPositiveNumbers('R$ ')"
+              value="#{apresentacaoGabFormularioBean.valoresMap['taxaMaterialMedico'].valor}" />
+          </p:column>
+        </p:row>
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Outros: "></p:outputLabel>
+          </p:column>
+          <p:column>
+            <h:inputText id="taxa-outros" styleClass="number" converter="doubleConverter" onfocus="maskPrefixOnlyPositiveNumbers('R$ ')"
+              value="#{apresentacaoGabFormularioBean.valoresMap['taxaOutros'].valor}" />
+          </p:column>
+        </p:row>
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Descrição Outros: "></p:outputLabel>
+          </p:column>
+          <p:column>
+            <p:inputTextarea id="descricao-outros" rows="4" cols="20"
+              value="#{apresentacaoGabFormularioBean.valoresMap['taxaOutros'].descricao}" autoResize="false" />
+          </p:column>
+        </p:row>
+        <p:row>
+          <p:column colspan="2">
+            <p:commandButton id="btn-sim-taxas-item" value="Sim" styleClass="btn btn-success" icon="fa fa-save"
+              action="#{apresentacaoGabFormularioBean.salvarMetadadosEdicao}" update=":form-detalhes-gab" />
+            <p:commandButton id="btn-cancelar-taxas-item" value="Cancelar" styleClass="btn" icon="fa" type="button"
+              onclick="PF('entrarValoresExtraItemGabDialog').hide()" />
+          </p:column>
+        </p:row>
+      </p:panelGrid>
+
+
+    </h:form>
+  </p:dialog>
+
+
+</ui:composition>

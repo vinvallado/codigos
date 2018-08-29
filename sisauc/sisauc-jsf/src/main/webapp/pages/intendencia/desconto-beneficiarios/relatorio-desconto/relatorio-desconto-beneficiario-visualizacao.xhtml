@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" template="/resources/template/template.xhtml">
+
+  <ui:define name="html-title">Relatórios para desconto de beneficiário</ui:define>
+
+  <ui:define name="main">
+
+    <h3>Relatórios para Desconto de Beneficiários</h3>
+
+    <p:separator />
+    
+    <p:messages/>
+
+    <h4>
+      <h:outputText value="#{relatorioDescontoBeneficiarioVisualizacaoBean.relatorio.codigo} do dia " />
+      <h:outputText value="#{relatorioDescontoBeneficiarioVisualizacaoBean.relatorio.dataGeracao}">
+        <f:convertDateTime pattern="dd/MM/yyyy 'às' HH:mm" />
+      </h:outputText>
+    </h4>
+
+    <h:outputText value="Criado por: " />
+    <h:outputText value=" #{relatorioDescontoBeneficiarioVisualizacaoBean.relatorio.autor.nome}" />
+    <h:outputText value="  (#{relatorioDescontoBeneficiarioVisualizacaoBean.relatorio.autor.login})" />
+
+    <br />
+    <br />
+
+    <h:form>
+      <p:commandLink styleClass="btn btn-link" ajax="false" action="#{relatorioDescontoBeneficiarioVisualizacaoBean.imprimirPDF}"
+        style="margin-right: 20px;">
+        <span class="fa fa-file-pdf-o"></span>
+        <span>Baixar Relatório de Desconto (PDF)</span>
+      </p:commandLink>
+      
+      <p:commandLink styleClass="btn btn-link" ajax="false">
+        <span class="fa fa-file-excel-o"></span>
+        <span>Baixar Relatório de Desconto (XLS)</span>
+        <p:fileDownload value="#{relatorioDescontoBeneficiarioVisualizacaoBean.relatorioXLS}" />
+      </p:commandLink>
+    </h:form>
+
+    <div class="vgap-20" />
+
+    <p:dataTable id="tabela" value="#{relatorioDescontoBeneficiarioVisualizacaoBean.relatorio.itens}" var="item"
+      paginator="true" rows="10" paginatorPosition="bottom" paginatorAlwaysVisible="false"
+      emptyMessage="#{msgs.no_records_found}">
+      <f:facet name="header">
+        <p:column>
+          <h:outputText value="Itens descontados" />
+        </p:column>
+      </f:facet>
+
+      <p:column headerText="Código" id="codigo-item-gab" width="200">
+        <h:outputText value="#{item.itemGab.codigo}" />
+      </p:column>
+      
+       <p:column headerText="Titular" id="titular">
+        <h:outputText value="#{item.itemGab.gab.beneficiario.beneficiarioTitular.nome}" 
+          rendered="#{item.itemGab.gab.beneficiario.beneficiarioTitular != null}"/>
+        <h:outputText value="#{item.itemGab.gab.beneficiario.nome}"
+          rendered="#{item.itemGab.gab.beneficiario.beneficiarioTitular == null}"/>
+      </p:column>
+      
+      <p:column headerText="Valor Item" width="160" styleClass="text-center">
+        <h:outputText value="#{item.itemGab.auditoriaRetrospectiva.valorFinal}">
+          <f:convertNumber type="currency"/>
+        </h:outputText>
+      </p:column>
+      
+      <p:column headerText="Valor Descontado" width="160" styleClass="text-center">
+        <h:outputText value="#{item.itemGab.valorADescontar}">
+          <f:convertNumber type="currency"/>
+        </h:outputText>
+      </p:column>
+    </p:dataTable>
+
+    <div class="vgap-20" />
+
+    <p:dataTable id="tabela-isentos" value="#{relatorioDescontoBeneficiarioVisualizacaoBean.relatorio.itensIsentos}" var="item"
+      paginator="true" rows="10" paginatorPosition="bottom" paginatorAlwaysVisible="false"
+      emptyMessage="#{msgs.no_records_found}">
+      <f:facet name="header">
+        <p:column>
+          <h:outputText value="Itens isentos" />
+        </p:column>
+      </f:facet>
+
+      <p:column headerText="Código" id="codigo-item-gab" width="200">
+        <h:outputText value="#{item.codigo}" />
+      </p:column>
+      
+      <p:column headerText="Titular" id="titular">
+        <h:outputText value="#{item.gab.beneficiario.beneficiarioTitular.nome}" 
+          rendered="#{item.gab.beneficiario.beneficiarioTitular != null}"/>
+        <h:outputText value="#{item.gab.beneficiario.nome}"
+          rendered="#{item.gab.beneficiario.beneficiarioTitular == null}"/>
+      </p:column>
+      
+       <p:column headerText="Valor Item" width="160" styleClass="text-center">
+        <h:outputText value="#{item.auditoriaRetrospectiva.valorFinal}">
+          <f:convertNumber type="currency"/>
+        </h:outputText>
+      </p:column>
+    </p:dataTable>
+
+  </ui:define>
+
+</ui:composition>

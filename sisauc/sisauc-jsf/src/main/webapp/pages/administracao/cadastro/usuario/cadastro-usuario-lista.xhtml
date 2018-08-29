@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" template="/resources/template/template.xhtml">
+
+  <ui:define name="html-title">Lista de Usuários</ui:define>
+
+  <ui:define name="main">
+
+    <h3>Cadastro de Usuários</h3>
+
+    <p:separator />
+
+    <a id="criar" class="btn btn-success" href="usuario/novo"> <span class="fa fa-plus"></span> <span>Criar
+        novo Usuário</span></a>
+
+    <div class="vgap-10" />
+
+    <h:form id="lista-usuarios-form">
+
+      <p:messages id="msg" showIcon="false"/>
+
+      <p:dataTable id="tabela" value="#{cadastroUsuarioListaBean.usuarios}" var="usuario"
+        sortBy="#{usuario.organizacaoMilitar.sigla}" paginator="true" rows="15" paginatorPosition="bottom"
+        paginatorAlwaysVisible="true" rowsPerPageTemplate="10, 15, 25" emptyMessage="#{msgs.no_records_found}"
+        paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+        filteredValue="#{viewUtilsBean.filtrados}" filterDelay="300" widgetVar="datatable">
+
+        <p:column id="sigla" headerText="OM" width="110" filterBy="#{usuario.organizacaoMilitar.sigla}" filterFunction="#{viewUtilsBean.filterIgnoreCase}"
+          sortBy="#{usuario.organizacaoMilitar.sigla}" >
+          <h:outputText value="#{usuario.organizacaoMilitar.sigla}" />
+        </p:column>
+
+        <p:column id="login" headerText="Login" width="150" filterBy="#{usuario.login}" sortBy="#{usuario.login}" filterFunction="#{viewUtilsBean.filterIgnoreCase}">
+          <h:outputText value="#{usuario.login}" />
+        </p:column>
+
+        <p:column id="nome" headerText="Nome Completo" filterBy="#{usuario.nome}" sortBy="#{usuario.nome}" filterFunction="#{viewUtilsBean.filterIgnoreCase}">
+          <h:outputText value="#{usuario.nome}" />
+        </p:column>
+        
+         <p:column id="perfis" headerText="Perfis" width="170" styleClass="text-center"
+          filterOptions="#{viewUtilsBean.perfisOptions()}" filterBy="#{usuario.perfis}" filterMatchMode="contains">
+          <p:commandButton process="@this" icon="fa fa-info" id="btn-perfil" title="Ver Perfis"
+            styleClass="btn btn-link" action="#{cadastroUsuarioListaBean.selecionarUsuarioMostrarPerfis(usuario)}"
+            update=":perfis-form" />
+        </p:column>
+
+        <p:column id="ativo" headerText="Ativo" width="70" styleClass="text-center" sortBy="#{usuario.ativo}"
+          filterOptions="#{viewUtilsBean.booleanOptions()}" filterBy="#{viewUtilsBean.booleanLabel(usuario.ativo)}">
+          <h:outputText value="#{viewUtilsBean.booleanLabel(usuario.ativo)}"
+            styleClass="#{usuario.ativo ? 'text-success' : 'text-error'}" />
+        </p:column>
+
+        <p:column id="btn-ativo" width="40" styleClass="text-center">
+          <p:commandButton id="ativar-desativar"
+            icon="fa #{usuario.ativo ? 'fa-times text-error' : 'fa-check text-success'}"
+            title="#{usuario.ativo ? 'Desativar' : 'Ativar'}" styleClass="btn btn-link"
+            action="#{cadastroUsuarioListaBean.selectionarUsuario(usuario)}" update=":dialog-status-form @form" />
+        </p:column>
+
+        <p:column id="btn-editar" width="40" styleClass="text-center">
+          <h:outputLink id="editar" styleClass="btn btn-link" value="usuario/#{usuario.id}" title="Editar">
+            <span id="editar" class="fa fa-pencil"></span>
+          </h:outputLink>
+        </p:column>
+
+      </p:dataTable>
+
+    </h:form>
+
+  </ui:define>
+
+  <ui:define name="dialogs">
+  
+   <p:dialog widgetVar="perfisDialog" closeOnEscape="true" modal="true" id="perfis-dialog"
+      resizable="false" header="Perfis">
+      <h:form id="perfis-form">
+        <p:dataTable scrollable="false" value="#{cadastroUsuarioListaBean.listarPerfisUsuarioSelecionado()}"
+          var="perfil" style="width:400px" emptyMessage="Este usuário não possui perfil cadastrado.">
+          <p:column>
+            <h:outputText value="#{perfil.label}" />
+          </p:column>
+        </p:dataTable>
+      </h:form>
+    </p:dialog>
+  
+    <p:dialog header="Atenção!" id="mudar-status-usuario-dialog" widgetVar="mudarStatusUsuarioDialog" modal="true"
+      resizable="false">
+      <h:form id="dialog-status-form">
+        <h:outputText
+          value="Tem certeza que deseja #{cadastroUsuarioListaBean.usuario.ativo ? 'desativar' : 'ativar'} 
+          o usuário #{cadastroUsuarioListaBean.usuario.nome}?" />
+
+        <div class="vgap-30">
+          <!-- GAP 30px -->
+        </div>
+
+        <h:panelGroup styleClass="dialog-footer" layout="block">
+          <p:commandButton value="Sim" styleClass="btn btn-success" id="confirmar" icon="fa fa-save"
+            action="#{cadastroUsuarioListaBean.mudarStatusAtivoUsuario}" update=":lista-usuarios-form" 
+            onclick="PF('mudarStatusUsuarioDialog').hide()"
+            oncomplete="PF('datatable').filter();"/>
+          <p:commandButton value="Cancelar" id="cancelar" styleClass="btn" icon="fa" type="button"
+            onclick="PF('mudarStatusUsuarioDialog').hide()" />
+        </h:panelGroup>
+
+      </h:form>
+    </p:dialog>
+  </ui:define>
+
+
+</ui:composition>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" template="/resources/template/template.xhtml">
+
+  <ui:define name="html-title">Lista de Editais</ui:define>
+
+  <ui:define name="main">
+
+    <h3>Configurar Edital de Credenciamento</h3>
+
+    <p:separator />
+
+    <div class="vgap-10"></div>
+
+    <h:form id="lista-editais-form">
+
+      <p:messages id="msg" showIcon="false" />
+
+      <p:dataTable value="#{cadastroConfiguracaoEditalListaBean.editais}" var="edital"
+        sortBy="#{edital.numero}" id="table-editais" paginator="true" rows="15"
+        paginatorPosition="bottom" paginatorAlwaysVisible="false" rowsPerPageTemplate="10, 15, 25"
+        emptyMessage="#{msgs.no_records_found}"
+        paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+        filteredValue="#{viewUtilsBean.filtrados}" filterDelay="300">
+
+        <p:column headerText="Número" filterBy="#{edital.numero}" sortBy="#{edital.numero}" id="col_numero"
+          filterFunction="#{viewUtilsBean.filterIgnoreCase}">
+          <h:outputText value="#{edital.numero}"/>
+        </p:column>
+        
+        <p:column headerText="Tabela" filterBy="#{edital.tabela.nome}" sortBy="#{edital.tabela.nome}" id="col_tabela"
+          filterFunction="#{viewUtilsBean.filterIgnoreCase}" width="100">
+          <h:outputText value="#{edital.tabela.nome}"/>
+        </p:column>
+
+        <p:column headerText="Início" width="100" styleClass="text-center" sortBy="#{edital.inicio}" id="col_inicio">
+          <h:outputText value="#{edital.inicio}">
+            <f:convertDateTime pattern="dd/MM/yyyy"/>
+          </h:outputText>
+        </p:column>
+
+        <p:column headerText="Fim" width="100" styleClass="text-center" sortBy="#{edital.fim}" id="col_fim">
+          <h:outputText value="#{edital.fim}">
+            <f:convertDateTime pattern="dd/MM/yyyy"/>
+          </h:outputText>
+        </p:column>
+
+        <p:column width="40" styleClass="text-center" id="col_editar">
+          <h:outputLink id="editar" styleClass="btn btn-link" value="configuracao-edital/#{edital.id}" title="Editar">
+            <span id="editar" class="fa fa-pencil"></span>
+          </h:outputLink>
+        </p:column>
+
+      </p:dataTable>
+
+    </h:form>
+
+  </ui:define>
+  
+</ui:composition>

@@ -1,0 +1,228 @@
+/* -- UI Tabs -- */
+
+ul.dynatree-container {
+	line-height: 1.5em;
+}
+
+.ui-tabs {
+	position: static;
+}
+
+#toc_header {
+	padding-bottom: 0;
+}
+
+#tabs .ui-tabs-nav {
+	border: 0;
+	border-bottom: 1px solid #ccc;
+	padding-top: 19px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+}
+
+#tabs .ui-widget-header{
+	background: #fff url(../img/header-bg.png) left bottom repeat-x;
+}
+
+#tabs .ui-tabs-panel {
+	overflow: auto;
+	position: absolute;
+	top: 43px;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+
+/* Search */
+
+#search_value {
+	width: 140px;
+}
+
+#search_results {
+	padding-top: 10px;
+}
+
+/* -- Tree -- */
+
+ul.dynatree-container {
+	border: 0;
+	font-family: sans-serif;
+	overflow: visible;
+	padding: 0;
+}
+
+/* Selection color */
+span.dynatree-active a {
+    background-color: #999999;
+}
+
+/* Remove folder boldness */
+span.dynatree-folder a {
+	font-weight: normal;
+}
+
+.conteudo {
+	font-size: 12pt;
+	font-family: 'Times New Roman', 'Times', serif;
+	color: #000;
+}
+.imagens {
+	text-align: center;
+	margin-top:10px;
+}
+
+.desc_img {
+	text-align: center;
+	font-style: italic;
+	font-size: 11pt;
+	font-family: 'Times New Roman', 'Times', serif;
+	color: #000;
+	margin-bottom: 10px;
+}
+
+.rodape {
+	text-align: center;
+	color: #989898;
+	font-size: 9pt;
+	font-family: 'Times New Roman', 'Times', serif;
+}
+.rodape img {
+	width: 64px;
+	height: 78px;
+}
+
+.img_menu {
+	margin:10px auto;
+}
+
+.titulo {
+	color: #005E91;
+    font-size: 16pt;
+	margin-top: 20px;
+	margin-bottom: 15px;
+    text-decoration: underline;
+    font-family: sans-serif;
+}
+
+.subtitulo {
+	color: #005E91;
+    font-size: 12pt;
+	margin-left: 20px;
+    text-decoration: underline;
+    font-family: sans-serif;
+}
+
+.obs {
+	font-size: 11pt;
+	font-style: italic;
+}
+
+#tabela1 {
+	border-color: #000;
+	border-style: solid;
+	padding: 1px;
+}
+
+#titulo_tabela {
+	text-align: center;
+}
+
+.importante {
+	color: F00;
+}
+
+#lista-empenho {
+	text-indent: 0px;
+	margin-left: 0px;
+	list-style-position: inside;
+	list-style-type: disc;
+}
+
+.capa {
+	text-align: center;
+	font-style: uppercase;
+	font-size: 25px;
+	font-family: 'Times New Roman', 'Times', serif;
+	color: #000;
+	margin-bottom: 5px;
+}
+
+.capa img {
+	margin-bottom: 40px;
+	margin-top: 40px;
+}
+
+.versao {
+	margin-top: 120px;
+}
+
+.botoes {
+	width: 110;
+	height: 25;
+	padding: 1px;
+	margin-bottom: -10;
+	margin-top: 4;
+}
+
+.icones {
+margin-bottom: -6;
+}
+
+.tableAtencao {
+    border-radius: 7px;
+    border:2px solid red; 
+    text-align: center; 
+    margin-left: auto; 
+    margin-right: auto;
+    color: red;
+}
+
+.tableObs {
+    border-radius: 7px; 
+    border:2px solid; 
+    text-align: center; 
+    margin-left: auto; 
+    margin-right: auto;
+}
+
+td{
+    padding: 10px 30px;
+}
+
+
+p{
+    font-family: sans-serif;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+h1{
+    font-family: sans-serif;
+}
+
+h2{
+    font-family: sans-serif;
+    margin-left: 10px;
+}
+
+h3{
+    font-family: sans-serif;
+}
+
+li{
+    margin-left: 45px;
+    font-family: sans-serif
+}
+
+a{
+    color: blue;
+    text-decoration-line: none; 
+    }
+
+a:hover{
+    color: darkviolet;
+    text-decoration-line: underline;
+}

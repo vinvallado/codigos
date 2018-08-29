@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" template="/resources/template/template.xhtml">
+
+  <ui:define name="html-title">Cadastro de Edital</ui:define>
+  
+  <ui:define name="html-body-bottom">
+    <script type="text/javascript" src="#{request.contextPath}/resources/vendor/js/jquery.maskMoney.min.js"/>
+  </ui:define>
+
+  <ui:define name="dialogs">
+    <ui:include src="cadastro-edital-credenciamento-dialog-credenciado.xhtml"/>
+  </ui:define>
+
+  <ui:define name="main">
+
+    <p:panel style="border:0px" rendered="#{cadastroEditalCredenciamentoFormularioBean.editalCredenciamento.numero != null}"><h3>Formulário de Termo de credenciamento</h3></p:panel>
+    <p:panel style="border:0px" rendered="#{cadastroEditalCredenciamentoFormularioBean.editalCredenciamento.numero == null}"><h3>Formulário de Cadastro de credenciamento</h3></p:panel>
+
+    <p:separator />
+
+    <h:form id="formulario-edital-form">
+      <p:messages id="msgs" redisplay="false" showIcon="false"/>
+      <p:panelGrid>
+        <p:row>
+          <p:column><p:outputLabel value="Número:" for="numero"/></p:column>
+          <p:column><p:inputText id="numero" value="#{cadastroEditalCredenciamentoFormularioBean.editalCredenciamento.numero}" required="true" maxlength="50"/></p:column>
+          <p:column><p:outputLabel value="Início:" for="inicio"/></p:column>
+          <p:column>
+            <p:calendar value="#{cadastroEditalCredenciamentoFormularioBean.editalCredenciamento.inicio}" id="inicio" 
+              size="8" locale="pt_BR" navigator="true" required="true">
+              <p:ajax event="change" update="fim"/>
+              <p:ajax event="dateSelect" update="fim"/>
+            </p:calendar>
+          </p:column>
+          <p:column><p:outputLabel value="Fim:" for="fim"/></p:column>
+          <p:column>
+            <p:calendar value="#{cadastroEditalCredenciamentoFormularioBean.editalCredenciamento.fim}" id="fim" 
+              size="8" locale="pt_BR" navigator="true" required="true" mindate="#{cadastroEditalCredenciamentoFormularioBean.editalCredenciamento.inicio}" />
+          </p:column>
+          <p:column><p:outputLabel value="Ativo:" for="ativo"/></p:column>
+          <p:column><p:selectBooleanCheckbox id="ativo" value="#{cadastroEditalCredenciamentoFormularioBean.editalCredenciamento.ativo}"/></p:column>
+        </p:row>
+        
+        <p:row>
+          <p:column><p:outputLabel value="Descrição:" for="descricao"/></p:column>
+          <p:column colspan="5"><p:inputText required="true" id="descricao" styleClass="input-block-level" value="#{cadastroEditalCredenciamentoFormularioBean.editalCredenciamento.descricao}" maxlength="255"/></p:column>
+          <p:column><p:outputLabel value="Tabela:" for="ativo"/></p:column>
+          <p:column>
+	          <p:selectOneMenu id="tabela" value="#{cadastroEditalCredenciamentoFormularioBean.editalCredenciamento.tabela}" 
+                style="width: 130px;" disabled="#{!empty cadastroEditalCredenciamentoFormularioBean.configuracoes}">
+                <p:ajax update="lista-credenciados"/>
+	            <f:selectItem itemLabel="CBHPM-2012" itemValue="CBHPM2012"/>
+	            <f:selectItem itemLabel="CISSFA" itemValue="CISSFA"/>
+	          </p:selectOneMenu>
+          </p:column>
+          
+          <p:column style="padding-left:0;">
+              <h:panelGroup id="info-container">
+                <h:panelGroup id="info" rendered="#{!empty cadastroEditalCredenciamentoFormularioBean.configuracoes}">
+                  <i class="fa fa-info-circle text-error"></i>
+                </h:panelGroup>
+                <p:tooltip for="info" value="Não é possível alterar a tabela pois este edital possui credenciados associados."/>
+              </h:panelGroup>
+          </p:column>
+        </p:row>
+                
+      </p:panelGrid>
+      
+      <div class="vgap-15"></div>
+
+      <h:panelGroup styleClass="muted" rendered="#{cadastroEditalCredenciamentoFormularioBean.editalCredenciamento.id == null}">
+        OBS: Para que você possa adicionar credenciados a um edital, é necessário que o mesmo seja salvo ao menos uma vez.
+      </h:panelGroup>
+      
+      <p:dataTable value="#{cadastroEditalCredenciamentoFormularioBean.configuracoes}"
+        rendered="#{cadastroEditalCredenciamentoFormularioBean.editalCredenciamento.id != null}"
+        paginator="true" rows="5" emptyMessage="#{msgs.no_records_found}" paginatorPosition="bottom"
+        paginatorAlwaysVisible="false" rowsPerPageTemplate="5, 10"
+        paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+        var="configuracao" id="lista-credenciados">
+        <f:facet name="header">
+          <p:commandButton action="#{cadastroEditalCredenciamentoFormularioBean.prepararNovaConfiguracao}" id="btn-adicionar-credenciado"
+            update=":adicionar-credenciado-form" icon="fa fa-plus" styleClass="btn btn-primary" value="Associar credenciado" process="@this"/>
+        </f:facet>
+        <p:column headerText="Credenciado">
+          <h:outputText value="#{configuracao.credenciado.nomeFantasia}">
+            <f:convertNumber groupingUsed="#{true}" maxFractionDigits="2" minFractionDigits="2"/>
+          </h:outputText>
+        </p:column>
+        <p:column width="100" headerText="Def. / Inf. Porte" 
+          rendered="#{cadastroEditalCredenciamentoFormularioBean.editalCredenciamento.tabela == 'CBHPM2012'}">
+          <h:outputText value="#{configuracao.indiceReajustePorte}%">
+            <f:convertNumber groupingUsed="#{true}" maxFractionDigits="2" minFractionDigits="2"/>
+          </h:outputText>
+        </p:column>
+        <p:column width="100" headerText="Def. / Inf. Porte Anest."
+          rendered="#{cadastroEditalCredenciamentoFormularioBean.editalCredenciamento.tabela == 'CBHPM2012'}">
+          <h:outputText value="#{configuracao.indiceReajustePorteAnestesico}%">
+            <f:convertNumber groupingUsed="#{true}" maxFractionDigits="2" minFractionDigits="2"/>
+          </h:outputText>
+        </p:column>
+        <p:column width="100" headerText="Def. / Inf. Custo Op"
+          rendered="#{cadastroEditalCredenciamentoFormularioBean.editalCredenciamento.tabela == 'CBHPM2012'}">
+          <h:outputText value="#{configuracao.indiceReajusteCustoOperacional}%">
+            <f:convertNumber groupingUsed="#{true}" maxFractionDigits="2" minFractionDigits="2" />
+          </h:outputText>
+        </p:column>
+        <p:column width="100" headerText="Def. / Inf. Aux."
+          rendered="#{cadastroEditalCredenciamentoFormularioBean.editalCredenciamento.tabela == 'CBHPM2012'}">
+          <h:outputText value="#{configuracao.indiceReajusteAuxiliares}%">
+            <f:convertNumber groupingUsed="#{true}" maxFractionDigits="2" minFractionDigits="2"/>
+          </h:outputText>
+        </p:column>
+        <p:column width="40" styleClass="text-center"
+          rendered="#{cadastroEditalCredenciamentoFormularioBean.editalCredenciamento.tabela == 'CBHPM2012'}">
+          <p:commandButton id="editar-configuracao" styleClass="btn btn-link" title="Editar credenciado" icon="fa fa-pencil" 
+            action="#{cadastroEditalCredenciamentoFormularioBean.editarConfiguracao(configuracao.id)}"
+            process="@this" update=":adicionar-credenciado-form"/>
+        </p:column>
+        <p:column width="40" styleClass="text-center">
+          <p:commandButton id="excluir-configuracao" styleClass="btn btn-link" title="Excluir credenciado" icon="fa fa-times text-error" 
+            action="#{cadastroEditalCredenciamentoFormularioBean.selecionarConfiguracao(configuracao)}"
+            process="@this" update=":remover-credenciado-form-dialog @form:tabela @form:info-container"/>
+        </p:column>
+      </p:dataTable>
+      <div class="vgap-15"></div>
+      
+      <p:commandButton value="Salvar" styleClass="btn btn-success" icon="fa fa-save" validateClient="true"
+        action="#{cadastroEditalCredenciamentoFormularioBean.salvar}" update="@form" id="salvar"  />
+      <a href="../edital-credenciamento" class="btn" id="voltar">Voltar</a>
+      
+    </h:form>
+
+  </ui:define>
+  
+</ui:composition>

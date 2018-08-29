@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	<p:dialog header="Finalizar Auditoria do Item de GAB"
+		id="finalizar-conforme"
+		widgetVar="finalizarConformeDialog" modal="true"
+		onHide="maskPrefix('R$ ')" resizable="false">
+		<h:form id="finalizar-conforme-form">
+			<h:outputText value="Deseja FINALIZAR a auditoria do item de GAB como CONFORME?" />
+            <div class="vgap-10"></div>
+            <h:outputText value="Após a confirmação, a auditoria deste item não poderá ser refeita." />
+			<div class="vgap-30">
+				<!-- GAP 30px -->
+			</div>
+
+			<h:panelGroup styleClass="dialog-footer" layout="block">
+				<p:commandButton value="Sim" styleClass="btn btn-success"
+					icon="fa fa-save"
+					action="#{auditoriaRetrospectivaFormularioBean.finalizarItemConforme(auditoria)}"
+					update=":form-auditoria-item-gab"
+                    onclick="PF('finalizarConformeDialog').hide()" />
+				<p:commandButton value="Cancelar" styleClass="btn" icon="fa"
+					type="button"
+					onclick="PF('finalizarConformeDialog').hide()" />
+			</h:panelGroup>
+
+		</h:form>
+	</p:dialog>
+
+
+
+</ui:composition>

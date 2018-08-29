@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets">
+
+
+  <p:dialog header="Atenção!" id="gerar-desconto-beneficiarios" widgetVar="descontoBeneficiariosDialog" modal="true" resizable="false">
+    <h:form id="gerar-desconto-beneficiarios-form">
+      <p:messages id="msgs" showIcon="false" autoUpdate="true" />
+
+      <h:outputText value="Tem certeza deseja que gerar um relatório de desconto com estes itens?" />
+
+      <div class="vgap-30" />
+
+      <h:panelGroup styleClass="dialog-footer" layout="block">
+        <p:commandButton value="Sim" styleClass="btn btn-success" id="confirmar" icon="fa fa-save"
+          action="#{gerarDescontoBeneficiariosBean.salvar}" update=":desconto-beneficiario-form" process="@this" />
+        <p:commandButton value="Cancelar" id="cancelar" styleClass="btn" icon="fa" type="button"
+          onclick="PF('descontoBeneficiariosDialog').hide()" />
+      </h:panelGroup>
+
+    </h:form>
+  </p:dialog>
+
+</ui:composition>

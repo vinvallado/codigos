@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" template="/resources/template/template.xhtml">
+
+  <ui:define name="html-title">Buscar Solicitações</ui:define>
+
+  <ui:define name="main">
+    <h3>Buscar Solicitações</h3>
+    <p:separator />
+    <div class="vgap-10"></div>
+    <h:form prependId="false">
+      <p:messages id="msgs" showIcon="false" />
+
+      <p:panelGrid>
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Código da Solicitação:" for="codigo" />
+          </p:column>
+          <p:column>
+             <p:inputText id="codigo" size="20" />
+          </p:column>
+        </p:row>
+        <p:row>
+          <p:column>
+            <p:outputLabel value="CPF do Titular:" for="cpf" />
+          </p:column>
+          <p:column>
+            <p:inputMask size="20" id="cpf" maxlength="11" mask="?99999999999" />
+          </p:column>
+        </p:row>
+        <p:row>
+          <p:column>
+            <p:outputLabel value="SARAM do Titular:" for="saram" />
+          </p:column>
+          <p:column>
+            <p:inputMask size="20" id="saram" maxlenght="7" mask="9999999" />
+          </p:column>
+        </p:row>
+        <p:row>
+          <p:column colspan="2">
+            <p:commandButton value="Buscar" id="buscar-solicitacao" styleClass="btn btn-success" icon="fa fa-search"
+              validateClient="true" action="#{cadastroSolicitacaoMedicaBuscaBean.buscarSolicitacaoSaram}" update="@form" />
+            <a href="../cadastro/solicitacao" id="voltar" class="btn">Voltar</a>
+          </p:column>
+        </p:row>
+      </p:panelGrid>
+      <div class="vgap-10"></div>
+
+
+      <p:separator />
+      
+      <h:outputText value="" rendered="#{cadastroSolicitacaoMedicaBuscaBean.exibeMsgListaVazia == false}"/>
+
+      <p:dataTable id="tabela" value="#{cadastroSolicitacaoMedicaBuscaBean.solicitacoes}" var="solicitacao" sortBy="#{solicitacao.id}"
+        paginator="true" rows="15" paginatorPosition="bottom" paginatorAlwaysVisible="false"
+        rowsPerPageTemplate="10, 15, 25" emptyMessage="#{msgs.no_records_found}" rendered="#{cadastroSolicitacaoMedicaBuscaBean.exibeMsgListaVazia == true}"
+        paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+        filteredValue="#{viewUtilsBean.filtrados}" filterDelay="300">
+
+        <p:column headerText="Solicitação" filterMatchMode="contains" width="95"
+          filterFunction="#{viewUtilsBean.filterIgnoreCase}" sortBy="#{solicitacao.numero}">
+          <h:outputText value="Procedimento" rendered="#{fn:contains(solicitacao.numero, 'SP')}"/>
+          <h:outputText value="Ressarcimento" rendered="#{fn:contains(solicitacao.numero, 'SR')}"/>
+        </p:column>
+        
+        <p:column id="filtro_codigo" headerText="Código" width="180" filterBy="#{solicitacao.numero}"  filterFunction="#{viewUtilsBean.filterIgnoreCase}"
+          sortBy="#{solicitacao.numero}">
+          <h:outputText id="codigo" value="#{solicitacao.numero}" />
+        </p:column>
+        
+        <p:column id="filtro_nome_beneficiario" headerText="Nome Beneficiario" filterBy="#{solicitacao.beneficiario.nome}" 
+          filterMatchMode="contains"  filterFunction="#{viewUtilsBean.filterIgnoreCase}" sortBy="#{solicitacao.beneficiario.nome}">
+          <h:outputText id="nome_beneficiario" value="#{solicitacao.beneficiario.nome}" />
+        </p:column>
+
+        <p:column headerText="Profissional Solicitante" sortBy="#{solicitacao.nomeMedicoSolicitante}">
+          <h:outputText value="#{solicitacao.nomeMedicoSolicitante}" />
+          <h:outputText value="Não existente" styleClass="muted" rendered="#{solicitacao.nomeMedicoSolicitante == null}"/>
+        </p:column>
+
+        <p:column headerText="Data Inserção" width="80" sortBy="#{solicitacao.dataInsercaoSistema}">
+          <h:outputText value="#{solicitacao.dataInsercaoSistema}">
+            <f:convertDateTime pattern="dd/MM/yyyy" />
+          </h:outputText>
+        </p:column>
+
+        <p:column headerText="Estado" width="150" sortBy="#{solicitacao.estado.label}">
+          <h:outputText value="#{solicitacao.estado.label}" />
+        </p:column>
+
+        <p:column id="btn-editar" width="40" styleClass="text-center">
+          
+          <h:outputLink id="editar-gab" styleClass="btn btn-link" value="../cadastro/solicitacao/#{solicitacao.id}"
+            title="Editar" rendered="#{fn:contains(solicitacao.numero, 'SP') and solicitacao.organizacaoMilitarSolicitante.id == authenticationContext.usuarioLogado.organizacaoMilitar.id}">
+            <span id="editar" class="fa fa-pencil"></span>
+          </h:outputLink>
+           
+          <p:outputLabel id="nao-editar-gab" title="Só solicitações da mesma OM do atendente podem ser editadas"
+            rendered="#{fn:contains(solicitacao.numero, 'SP') and solicitacao.organizacaoMilitarSolicitante.id != authenticationContext.usuarioLogado.organizacaoMilitar.id}">
+            <span class="fa fa-ban"></span>
+          </p:outputLabel>
+            
+          <h:outputLink id="editar-ressarcimento" styleClass="btn btn-link" value="../cadastro/solicitacao-ressarcimento/#{solicitacao.id}"
+            title="Editar" rendered="#{fn:contains(solicitacao.numero, 'SR') and solicitacao.organizacaoMilitarSolicitante.id == authenticationContext.usuarioLogado.organizacaoMilitar.id}">
+            <span id="editar" class="fa fa-pencil"></span>
+          </h:outputLink>
+            
+          <p:outputLabel id="nao-editar-ressarcimento" title="Só solicitações da mesma OM do atendente podem ser editadas"
+            rendered="#{fn:contains(solicitacao.numero, 'SR') and solicitacao.organizacaoMilitarSolicitante.id != authenticationContext.usuarioLogado.organizacaoMilitar.id}">
+            <span class="fa fa-ban"></span>
+          </p:outputLabel>
+          
+        </p:column>
+
+      </p:dataTable>
+
+    </h:form>
+  </ui:define>
+
+</ui:composition>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets">
+
+  <p:panelGrid style="align:center;width:90%;">
+	<p:row>
+      <p:column styleClass="text-center">
+        <h:outputText value="Valor Total Estimado" styleClass="text-bold"/><br/>
+        <h3>
+          <h:outputText value="#{auditoriaRetrospectivaFormularioBean.itemGAB.valorTotal}">
+            <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR"  />
+          </h:outputText>
+        </h3>
+      </p:column>
+      <p:column styleClass="text-center">
+        <h:outputText value="Valor Total Apresentado" styleClass="text-bold"/><br/>
+        <h3>
+          <h:outputText value="#{auditoria.valorApresentado}">
+            <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR"  />
+          </h:outputText>
+        </h3>
+      </p:column>
+    </p:row>
+    <p:row>
+      <p:column style="align:center;width:50%;vertical-align:top;">
+        <p:dataTable value="#{auditoriaRetrospectivaFormularioBean.itemGAB.valores}" var="valores"
+          emptyMessage="Este procedimento não contém valores adicionais.">
+          <f:facet name="header">
+            <h:outputText value="Valores Adicionais ao Procedimento"></h:outputText>
+          </f:facet>
+          <p:column width="200">
+            <p:outputLabel value="#{valores.descricao}">
+            <h:outputLabel id="descricao-OPME" styleClass="btn btn-link fa fa-info"
+              rendered="#{valores.chave.equals('valorOPME')}" />
+            <p:tooltip id="toolTipDescricaoOPME" for="descricao-OPME" styleClass="preformatted"
+              value="Descrição: #{auditoriaRetrospectivaFormularioBean.itemGAB.descricaoOpme}" /> 
+            </p:outputLabel>  
+          </p:column>
+          <p:column width="70">
+            <h:outputText value="#{valores.valor}" rendered="#{!valores.chave.equals('qtdUsmProcedimento')}">
+              <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR"  />
+            </h:outputText>
+            <h:outputText value="#{valores.valor}" rendered="#{valores.chave.equals('qtdUsmProcedimento')}">
+              <f:convertNumber integerOnly="true"/>
+            </h:outputText>
+          </p:column>
+        </p:dataTable>
+      </p:column>
+      <p:column style="align:center;width:50%;vertical-align:top;">
+        <p:dataTable value="#{auditoriaRetrospectivaFormularioBean.valoresAuditoriaFiltrado}"
+          var="valores" emptyMessage="Este procedimento não possui valores adicionais.">
+          <f:facet name="header">
+            <h:outputText value="Valores Adicionais ao Procedimento"></h:outputText>
+          </f:facet>
+          <p:column>
+            <p:outputLabel value="#{valores.descricao}" rendered="#{!empty valores.descricao}" />
+          </p:column>
+          <p:column>
+            <h:outputText value="#{valores.valor}" rendered="#{!empty valores.descricao}" >
+              <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR"  />
+            </h:outputText>
+          </p:column>
+
+        </p:dataTable>
+      </p:column>
+    </p:row>
+  </p:panelGrid>
+
+
+
+
+</ui:composition>

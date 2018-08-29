@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:sec="http://www.springframework.org/security/tags"
+  xmlns:composite="http://java.sun.com/jsf/composite">
+
+  <composite:interface>
+    <composite:attribute name="auditoria" />
+  </composite:interface>
+
+  <composite:implementation>
+
+    <p:panelGrid rendered="#{cc.attrs.auditoria!=null}">
+
+      <p:row>
+        <p:column>
+          <h:outputText value="Nome do Auditor: " style="font-weight:bold;" />
+          <h:outputText value="#{cc.attrs.auditoria.auditor.nome}" />
+        </p:column>
+      </p:row>
+
+      <p:row>
+        <p:column>
+          <h:outputText value="Observações do Auditor Prospectivo: " style="font-weight:bold;" />
+          <h:outputText value="#{cc.attrs.auditoria.observacoes}" rendered="#{cc.attrs.auditoria.observacoes != null}" />
+          <h:outputText value="Não há observação" styleClass="muted" rendered="#{cc.attrs.auditoria.observacoes == ''}" />
+          <h:outputText value="Não há observação" styleClass="muted"
+            rendered="#{cc.attrs.auditoria.observacoes == null}" />
+        </p:column>
+      </p:row>
+
+      <p:row>
+        <p:column>
+          <h:outputText value="Data Final da Auditoria: " style="font-weight:bold;" />
+          <h:outputText value="#{cc.attrs.auditoria.dataFinalAuditoria}">
+            <f:convertDateTime locale="pt_BR" dateStyle="long" readonly="true" />
+          </h:outputText>
+        </p:column>
+      </p:row>
+
+      <p:row>
+        <p:column>
+          <h:outputText value="Isento: " style="font-weight:bold;" rendered="#{cc.attrs.auditoria.isento == false}" />
+          <h:outputText value="Isento: " style="font-weight:bold;color:red;"
+            rendered="#{cc.attrs.auditoria.isento == true}" />
+          <h:outputText value="#{cc.attrs.auditoria.isento ? 'SIM' : 'NÃO'}" />
+          <h:outputText value=" (#{cc.attrs.auditoria.especificacao.tipoCobranca})"
+            rendered="#{cc.attrs.auditoria.isento == true}" />
+        </p:column>
+      </p:row>
+      
+      <p:row>
+        <p:column>
+          <h:outputText value="Internação: " style="font-weight:bold;" />
+          <h:outputText value="#{cc.attrs.auditoria.internacao ? 'SIM' : 'NÃO'}" />
+          <h:outputText value=" (#{cc.attrs.auditoria.localInternacao.label})"
+            rendered="#{cc.attrs.auditoria.internacao == true}" />
+        </p:column>
+      </p:row>
+
+    </p:panelGrid>
+
+    <div class="vgap-10" />
+
+    <p:dataTable id="tabela-procedimentos-nao-aprovados" value="#{cc.attrs.auditoria.procedimentos}" var="procedimento"
+      paginator="true" rows="5" paginatorPosition="bottom" paginatorAlwaysVisible="false" rowsPerPageTemplate="5, 10"
+      emptyMessage="#{msgs.no_records_found}"
+      paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+      filteredValue="#{viewUtilsBean.filtrados}" filterDelay="300" widgetVar="datatablex">
+
+      <f:facet name="header">
+        <h:outputText value="Procedimentos Auditados" />
+      </f:facet>
+
+      <p:column id="procedimento-x" headerText="Procedimento">
+        <h:outputText value="#{formatterBean.procedimentoFormatter.getCodigoDescricao(procedimento.procedimento)}" />
+        <h:outputText rendered="#{procedimento.especialidade.sigla != null}"
+          value=" (#{procedimento.especialidade.sigla})" />
+        <h:outputText rendered="#{procedimento.dente != null}" value=" - Dente #{procedimento.dente}" />
+        <h:outputText rendered="#{procedimento.faceDental != null}" value=" - Face #{procedimento.faceDental.label}" />
+        <h:outputLabel id="observacao-are" styleClass="btn btn-link fa fa-info" rendered="#{procedimento.observacaoARE != null}" />
+        <p:tooltip id="toolTipObservacaoARE" for="observacao-are" styleClass="preformatted" value="OBS: #{procedimento.observacaoARE}" />
+      </p:column>
+
+      <p:column id="aprovado" headerText="Aprovado" width="60" style="text-align:center">
+        <h:outputText value="#{viewUtilsBean.booleanLabel(procedimento.aprovado)}"
+          styleClass="#{procedimento.aprovado ? 'text-success' : 'text-error'}" />
+      </p:column>
+
+      <p:column id="justificativa" headerText="Justificativa" width="100" style="text-align:center">
+        <h:outputLabel id="justificativa-auditoria" styleClass="btn btn-link fa fa-info"
+          rendered="#{procedimento.justificativa != null}" />
+        <p:tooltip id="toolTipJustificativaAuditoria" for="justificativa-auditoria"
+          value="#{procedimento.justificativa}" />
+        <h:outputLabel value="Não há" styleClass="muted" rendered="#{procedimento.justificativa == null}" />
+      </p:column>
+
+    </p:dataTable>
+
+
+  </composite:implementation>
+
+</ui:composition>

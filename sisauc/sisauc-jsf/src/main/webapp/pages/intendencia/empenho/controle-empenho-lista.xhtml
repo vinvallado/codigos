@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" template="/resources/template/template.xhtml">
+
+  <ui:define name="html-title">Controle de Empenhos</ui:define>
+
+  <ui:define name="main">
+
+    <h3>Controle de Empenhos</h3>
+
+    <p:separator />
+
+    <a class="btn btn-success" href="./empenho/novo" id="novo"> <span class="fa fa-plus"></span> <span>Cadastrar novo Empenho</span></a>
+
+    <div class="vgap-10"/>
+
+    <h:form id="form-credenciados-lista">
+
+      <p:messages id="msg" showIcon="false" />
+
+      <p:dataTable id="tabela" value="#{controleEmpenhoListaBean.empenhos}" var="empenho"
+        sortBy="#{empenho.numero}" paginator="true" rows="15"
+        paginatorPosition="bottom" paginatorAlwaysVisible="false" rowsPerPageTemplate="10, 15, 25"
+        emptyMessage="#{msgs.no_records_found}"
+        paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+        filteredValue="#{viewUtilsBean.filtrados}" filterDelay="300">
+
+        <p:column id="numero" headerText="Número do empenho" width="100" filterBy="#{empenho.numero}"
+          filterOptions="" filterFunction="#{viewUtilsBean.filterIgnoreCase}">
+         	<h:outputText value="#{empenho.numero}" />
+        </p:column>
+        
+        <p:column id="verba" headerText="Célula orçamentária" width="100" filterBy="#{empenho.verba}"
+          filterOptions="" filterFunction="#{viewUtilsBean.filterIgnoreCase}">
+         	<h:outputText value="#{empenho.verba}" />
+        </p:column>
+        
+         <p:column id="credenciado" headerText="Razão Social do Credenciado" width="160" filterBy="#{empenho.credenciado.razaoSocial}"
+          filterOptions="" filterFunction="#{viewUtilsBean.filterIgnoreCase}" sortBy="#{empenho.credenciado.razaoSocial}">
+         	<h:outputText value="#{empenho.credenciado.razaoSocial}" />
+        </p:column>
+        
+        
+        <p:column id="valor" headerText="Valor" width="60" filterOptions="">
+         	<h:outputText value="#{empenho.valor}" >
+         	   <f:convertNumber type="currency"/>
+         	</h:outputText>
+        </p:column>
+        
+         <p:column headerText="Data do empenho" width="60" styleClass="text-center" sortBy="#{empenho.dataCriacao}">
+          <h:outputText value="#{empenho.dataCriacao}">
+            <f:convertDateTime pattern="dd/MM/yyyy"/>
+          </h:outputText>
+        </p:column>
+
+        <p:column headerText="Data limite do empenho" width="60" styleClass="text-center" sortBy="#{empenho.dataLimite}">
+          <h:outputText value="#{empenho.dataLimite}">
+            <f:convertDateTime pattern="dd/MM/yyyy"/>
+          </h:outputText>
+        </p:column>
+         
+        <p:column headerText="Finalizado" width="60" styleClass="text-center" sortBy="#{empenho.finalizado}" 
+         filterOptions="#{viewUtilsBean.booleanOptions()}" filterBy="#{viewUtilsBean.booleanLabel(empenho.finalizado)}">
+          <h:outputText value="#{viewUtilsBean.booleanLabel(empenho.finalizado)}" styleClass="#{empenho.finalizado ? 'text-success' : 'text-error'}" />
+        </p:column>
+        
+
+        <p:column id="btn-editar" width="40" styleClass="text-center">
+          <h:outputLink id="editar" styleClass="btn btn-link" value="./empenho/#{empenho.id}" title="Vizualizar Empenho">
+            <span id="editar" class="fa fa-pencil"></span>
+          </h:outputLink>
+        </p:column>
+
+      </p:dataTable>
+
+    </h:form>
+
+  </ui:define>
+  
+  <ui:define name="lista-empenhos">
+
+  </ui:define>
+
+</ui:composition>

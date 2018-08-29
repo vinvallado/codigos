@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets">
+
+  <p:dialog header="Atenção!" id="remover-resultado-dialog" widgetVar="removerResultadoDialog" modal="true"
+    resizable="false">
+    <h:form id="remover-resultado-form-dialog">
+      <h:outputText value="Tem certeza que deseja remover este procedimento?" />
+      
+      <div class="vgap-30" />
+
+      <h:panelGroup styleClass="dialog-footer" layout="block">
+        <p:commandButton id="btn_sim" value="Sim" styleClass="btn btn-success" icon="fa fa-save"
+          action="#{realizarAuditoriaProspectivaRessarcimentoBean.removerResultado}"
+          update=":tabview-auditoria-prospectiva:formulario-auditoria:lista-procedimentos" />
+        <p:commandButton value="Cancelar" styleClass="btn" icon="fa" type="button" onclick="PF('removerResultadoDialog').hide()" />
+      </h:panelGroup>
+
+    </h:form>
+  </p:dialog>
+
+</ui:composition>

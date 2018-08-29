@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" template="/resources/template/template.xhtml"
+  xmlns:sec="http://www.springframework.org/security/tags">
+
+  <ui:define name="html-title">Acompanhamento de GAB</ui:define>
+
+  <ui:define name="html-head">
+    <link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/css/impressao.css?v=#{versaoInterna}" />
+  </ui:define>
+
+  <ui:define name="main">
+
+    <h3 id="titulo">Acompanhamento de GAB</h3>
+
+    <p:separator />
+
+    <h:form id="lista-gabs-form">
+      <p:messages id="msgs" showIcon="false" />
+
+        <p:panelGrid id="grid">
+          <p:row>
+            <p:column>
+              <h4 id="numero-gab">
+                GAB nº <h:outputText value="#{acompanhamentoGABBean.gab.codigo}" />
+                <span id="estado-gab" class="muted">(#{acompanhamentoGABBean.gab.estado.label})</span>
+              </h4>
+            </p:column>
+          </p:row>
+          
+          <p:row>
+            <p:column>
+              <h:outputText value="Divisão: " style="font-weight:bold;" />
+              <h:outputText id="tipo_divisao" value="#{acompanhamentoGABBean.gab.auditoriaProspectiva.solicitacao.divisao.label}" />
+            </p:column>
+          </p:row>
+
+          <p:row>
+            <p:column id="data-geracao">
+              <h:outputText value="Data de Geração: " style="font-weight:bold;" />
+              <h:outputText value="#{acompanhamentoGABBean.gab.dataGeracao}">
+                <f:convertDateTime pattern="dd/MM/yyyy" readonly="true" />
+              </h:outputText>
+            </p:column>
+          </p:row>
+
+          <p:row>
+            <p:column id="data-emissao" rendered="#{acompanhamentoGABBean.gab.dataEmissao != null}">
+              <h:outputText value="Data de Emissão: " style="font-weight:bold;" />
+              <h:outputText value="#{acompanhamentoGABBean.gab.dataEmissao}">
+                <f:convertDateTime pattern="dd/MM/yyyy" readonly="true" />
+              </h:outputText>
+            </p:column>
+          </p:row>
+
+          <p:row>
+            <p:column id="beneficiario">
+              <h:outputText value="Beneficiário: " style="font-weight:bold;" />
+              <h:outputText value="#{acompanhamentoGABBean.gab.beneficiario.nome}" />
+            </p:column>
+          </p:row>
+
+          <p:row>
+            <p:column id="credenciado-titulo">
+              <h:outputText value="Credenciado: " style="font-weight:bold;" />
+              <h:outputText value="#{acompanhamentoGABBean.gab.credenciado.nomeFantasia}" />
+            </p:column>
+          </p:row>
+
+          <p:row>
+            <p:column id="justificativa-cancelamento-gab" rendered="#{acompanhamentoGABBean.gab.justificativaCancelamentoGab != null}">
+              <h:outputText value="Justificativa de cancelamento" style="font-weight:bold;" /><br/>
+              <h:outputText value="#{acompanhamentoGABBean.gab.justificativaCancelamentoGab}" />
+            </p:column>
+          </p:row>
+        </p:panelGrid>
+
+        <div class="vgap-10" />
+
+        <p:dataTable id="tabela" value="#{acompanhamentoGABBean.gab.itens}" var="item" paginator="true" rows="5"
+          paginatorPosition="bottom" paginatorAlwaysVisible="false" rowsPerPageTemplate="5, 10"
+          emptyMessage="#{msgs.no_records_found}"
+          paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+          filteredValue="#{viewUtilsBean.filtrados}" filterDelay="300" widgetVar="datatable">
+
+          <f:facet name="header">
+            <h:outputText value="Itens da GAB" />
+          </f:facet>
+
+          <p:column id="procedimento" headerText="Procedimento">
+            <h:outputText
+              value="#{formatterBean.procedimentoFormatter.getCodigoDescricao(item.configuracao.procedimento)}" />
+            <h:outputText rendered="#{item.configuracao.especialidade.sigla != null}"
+              value=" (#{item.configuracao.especialidade.sigla})" />
+            <h:outputLabel id="observacao-gab" styleClass="btn btn-link fa fa-info" rendered="#{item.observacaoGAB != null}" />
+            <p:tooltip id="toolTipObservacaoGAB" for="observacao-gab" styleClass="preformatted" value="OBS: #{item.observacaoGAB}" />
+          </p:column>
+
+          <p:column id="credenciado" headerText="Credenciado" width="400">
+            <h:outputText value="#{item.configuracao.configuracaoEditalCredenciado.credenciado.nomeFantasia}" />
+          </p:column>
+
+          <p:column id="valor" headerText="Valor" width="100">
+            <h:outputText value="#{item.valorTotal}">
+              <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR"  />
+            </h:outputText>
+          </p:column>
+
+          <f:facet name="footer">
+            <div class="text-right">
+              <h:outputText value="Valor Total: " />
+              <h:outputText value="#{formatterBean.gabFormatter.getValorTotal(acompanhamentoGABBean.gab)}">
+                <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR"  />
+              </h:outputText>
+            </div>
+          </f:facet>
+
+        </p:dataTable>
+
+        <div class="vgap-20"></div>
+
+        <h:outputLink id="imprimir" styleClass="btn btn-primary"
+          value="#{request.contextPath}/chefe-funsa/gab/impressao/#{impressaoGABBean.gab.id}"
+          rendered="#{acompanhamentoGABBean.gab.estado == 'GERADA' || acompanhamentoGABBean.gab.estado == 'EMITIDA' }"
+          target="_blank" onclick="setTimeout('location.reload();', 1000);">
+          <span class="fa fa-print" />
+          <span id="emitir_e_reimprimir_gab">#{acompanhamentoGABBean.gab.estado == 'GERADA'?' Emitir GAB' : ' Reimprimir GAB' }</span>
+        </h:outputLink>
+
+        <sec:authorize ifAllGranted="PERFIL_CHEFE_FUNSA">
+          <p:commandButton id="btn-cancelar-gab" value="Cancelar GAB" styleClass="btn btn-danger margin-l-5" icon="fa fa-times"
+            onclick="PF('cancelarGabDialog').show()"
+            rendered="#{(acompanhamentoGABBean.gab.estado != 'CANCELADA') and (acompanhamentoGABBean.gab.estado != 'APRESENTADA')
+              and (acompanhamentoGABBean.gab.estado != 'EM_AUDITORIA') and (acompanhamentoGABBean.gab.estado != 'AUDITADA')}" />
+        </sec:authorize>
+
+        <a id="btn-voltar" href="../acompanhamento" class="btn">Voltar</a>
+
+    </h:form>
+
+  </ui:define>
+
+  <ui:define name="dialogs">
+    <p:dialog header="Cancelar GAB" id="cancelarGabDialog" widgetVar="cancelarGabDialog" modal="true" resizable="false">
+      <h:form id="cancelar-gab-dialog">
+        <p:messages id="msgs" showIcon="false" />
+        <h:outputText value="Tem certeza que deseja CANCELAR esta GAB?" />
+        <div class="vgap-20" />
+        <h:outputText value="Para efetuar o cancelamento de uma GAB é necessária uma justificativa." />
+        <div class="vgap-10" />
+        <p:inputTextarea value="#{acompanhamentoGABBean.gab.justificativaCancelamentoGab}" id="justificativa"
+          styleClass="input-block-level" required="true" autoResize="false" rows="4" maxlength="255"
+          requiredMessage="O campo justificativa é obrigatório para efetuar o cancelamento de uma GAB." />
+
+        <div class="vgap-30"></div>
+
+        <h:panelGroup styleClass="dialog-footer" layout="block">
+          <p:commandButton id="btn-cancelar-dialog" value="Cancelar GAB" styleClass="btn btn-danger" icon="fa fa-times"
+            action="#{acompanhamentoGABBean.cancelar}" update="cancelar-gab-dialog" />
+          <p:commandButton id="btn-voltar-cancelarGAB-dialog" value="Voltar" styleClass="btn" icon="fa" type="button"
+            onclick="PF('cancelarGabDialog').hide()" />
+
+        </h:panelGroup>
+
+      </h:form>
+    </p:dialog>
+
+  </ui:define>
+
+
+</ui:composition>

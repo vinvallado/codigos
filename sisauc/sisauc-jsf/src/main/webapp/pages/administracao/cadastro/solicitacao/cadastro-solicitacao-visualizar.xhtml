@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets">
+
+  <h:form id="formulario-solicitacao-bloqueado"
+    rendered="#{cadastroSolicitacaoFormularioBean.solicitacao.estado == 'ENVIADA_PARA_AUDITORIA' || cadastroSolicitacaoFormularioBean.solicitacao.estado == 'AUDITADA'}"
+    enctype="multipart/form-data">
+
+    <p:tabView id="tabview-visualizar-solicitacao">
+      <p:tab title="Dados da Solicitação" id="tab-dados-solicitacao">
+        <p:panelGrid id="grid">
+          <p:row>
+            <p:column>
+              <h4>
+                <h:outputText value="#{cadastroSolicitacaoFormularioBean.solicitacao.numero} do dia " />
+                <h:outputText value="#{cadastroSolicitacaoFormularioBean.solicitacao.dataSolicitacaoSistema}">
+                  <f:convertDateTime pattern="dd/MM/yyyy" readonly="true" />
+                </h:outputText>
+                <h:outputText value=" -" rendered="#{cadastroSolicitacaoFormularioBean.solicitacao.urgente == true}" />
+                <h:outputText value=" URGENTE" style="color:red;"
+                  rendered="#{cadastroSolicitacaoFormularioBean.solicitacao.urgente == true}" />
+              </h4>
+            </p:column>
+          </p:row>
+          
+          <p:row>
+            <p:column>
+              <h:outputText value="Divisão: " style="font-weight:bold;" />
+              <h:outputText value="#{cadastroSolicitacaoFormularioBean.solicitacao.divisao.label}" />
+            </p:column>
+          </p:row>
+
+          <p:row>
+            <p:column>
+              <h:outputText value="Enviada por: " style="font-weight:bold;" />
+              <h:outputText value="#{cadastroSolicitacaoFormularioBean.solicitacao.autorSolicitacaoSistema.nome}" />
+            </p:column>
+          </p:row>
+
+          <p:row>
+            <p:column>
+              <h:outputText value="Beneficiário: " style="font-weight:bold;" />
+              <h:outputText
+                value="#{cadastroSolicitacaoFormularioBean.solicitacao.beneficiario.postoGraduacao.descricao} "
+                rendered="#{cadastroSolicitacaoFormularioBean.solicitacao.beneficiario.postoGraduacao.descricao != null}" />
+              <h:outputText value="#{cadastroSolicitacaoFormularioBean.solicitacao.beneficiario.nome}" />
+              <h:outputText value=" do(a) "
+                rendered="#{cadastroSolicitacaoFormularioBean.solicitacao.beneficiario.postoGraduacao.descricao != null}" />
+              <h:outputText
+                value="#{cadastroSolicitacaoFormularioBean.solicitacao.beneficiario.organizacaoMilitar.sigla}"
+                style="font-weight:bold;text-decoration: underline;"
+                rendered="#{cadastroSolicitacaoFormularioBean.solicitacao.beneficiario.postoGraduacao.descricao != null}" />
+              <h:outputText value=", " />
+              <h:outputText
+                value="#{formatterBean.beneficiarioFormatter.toIdadeMedica(cadastroSolicitacaoFormularioBean.solicitacao.beneficiario)}" />
+            </p:column>
+          </p:row>
+
+          <p:row
+            rendered="#{cadastroSolicitacaoFormularioBean.solicitacao.beneficiario.beneficiarioTitular.nome != null}">
+            <p:column>
+              <h:outputText value="Responsável: " style="font-weight:bold;" />
+              <h:outputText
+                value="#{cadastroSolicitacaoFormularioBean.solicitacao.beneficiario.beneficiarioTitular.postoGraduacao.descricao} " />
+              <h:outputText
+                value="#{cadastroSolicitacaoFormularioBean.solicitacao.beneficiario.beneficiarioTitular.nome} do(a) " />
+              <h:outputText
+                value="#{cadastroSolicitacaoFormularioBean.solicitacao.beneficiario.beneficiarioTitular.organizacaoMilitar.sigla}"
+                style="font-weight:bold;text-decoration: underline;" />
+            </p:column>
+          </p:row>
+
+          <p:row>
+            <p:column>
+              <h:outputText value="Isento: " style="font-weight:bold;" rendered="#{cadastroSolicitacaoFormularioBean.solicitacao.isento == false}" />
+              <h:outputText value="Isento: " style="font-weight:bold;color:red;" rendered="#{cadastroSolicitacaoFormularioBean.solicitacao.isento == true}" />
+              <h:outputText value="#{cadastroSolicitacaoFormularioBean.solicitacao.isento ? 'SIM' : 'NÃO'}" />
+              <h:outputText value=" (#{cadastroSolicitacaoFormularioBean.solicitacao.especificacao.tipoCobranca})"
+                rendered="#{cadastroSolicitacaoFormularioBean.solicitacao.isento == true}" />
+            </p:column>
+          </p:row>
+
+          <p:row>
+            <p:column>
+              <h:outputText value="Internação: " style="font-weight:bold;" />
+              <h:outputText value="#{cadastroSolicitacaoFormularioBean.solicitacao.internacao ? 'SIM' : 'NÃO'}" />
+              <h:outputText value=" (#{cadastroSolicitacaoFormularioBean.solicitacao.localInternacao.label})"
+                rendered="#{cadastroSolicitacaoFormularioBean.solicitacao.internacao == true}" />
+            </p:column>
+          </p:row>
+
+          <p:row rendered="#{cadastroSolicitacaoFormularioBean.solicitacao.hipoteseDiagnostica != null}">
+            <p:column>
+              <h:outputText value="Hipótese Diagnóstica (CID): " style="font-weight:bold;" />
+              <h:outputText value="#{cadastroSolicitacaoFormularioBean.solicitacao.hipoteseDiagnostica.descricao}" />
+            </p:column>
+          </p:row>
+
+          <p:row>
+            <p:column>
+              <h:outputText value="Profissional Solicitante: " style="font-weight:bold;" />
+              <h:outputText value="#{cadastroSolicitacaoFormularioBean.solicitacao.medicoSolicitante.nome}" />
+            </p:column>
+          </p:row>
+
+          <p:row rendered="#{cadastroSolicitacaoFormularioBean.solicitacao.inspecaoSaude} != null">
+            <p:column>
+              <h:outputText value="Inspeção de Saúde: " style="font-weight:bold;" />
+              <p:selectBooleanCheckbox value="#{cadastroSolicitacaoFormularioBean.solicitacao.inspecaoSaude}"
+                disabled="true" />
+            </p:column>
+          </p:row>
+
+          <p:row>
+            <p:column>
+              <h:outputText value="Dados Clínicos" style="font-weight:bold;" />
+              <br />
+              <h:outputText value="#{cadastroSolicitacaoFormularioBean.solicitacao.dadosClinicos}" />
+            </p:column>
+          </p:row>
+          
+          <p:row>
+            <p:column>
+              <h:outputText value="Observações" style="font-weight:bold;" /><br/>
+              <h:outputText value="#{cadastroSolicitacaoFormularioBean.solicitacao.observacoes}" rendered="#{cadastroSolicitacaoFormularioBean.solicitacao.observacoes != null}"/>
+              <h:outputText value="Não há observação" styleClass="muted" rendered="#{cadastroSolicitacaoFormularioBean.solicitacao.observacoes == null}"/>
+            </p:column>
+          </p:row>
+          
+          <p:row>
+            <p:column rendered="#{cadastroSolicitacaoFormularioBean.solicitacao.arquivo != null}">
+              <h:outputText value="Arquivo" style="font-weight:bold;" /><br/>
+              <a href="#{request.contextPath}/download/solicitacao/#{cadastroSolicitacaoFormularioBean.solicitacao.id}" class="btn btn-link">
+              <span class="fa fa-download" ></span> <span>Download</span>
+              </a>
+               ou
+              <p:commandButton value="Visualizar" onclick="PF('verPdf').show()" styleClass="btn btn-link" icon="fa fa-file-pdf-o" style="margin:0px" />
+            </p:column>
+          </p:row>
+
+        </p:panelGrid>
+
+        <div class="vgap-10" />
+
+        <p:dataTable id="tabela" value="#{cadastroSolicitacaoFormularioBean.solicitacao.procedimentos}" var="pedido"
+          paginator="true" rows="5" paginatorPosition="bottom" paginatorAlwaysVisible="false"
+          rowsPerPageTemplate="5, 10" emptyMessage="#{msgs.no_records_found}"
+          paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+          filteredValue="#{viewUtilsBean.filtrados}" filterDelay="300" widgetVar="datatable">
+
+          <f:facet name="header">
+            <h:outputText value="Procedimentos solicitados" />
+          </f:facet>
+
+          <p:column id="tabela" headerText="Tabela">
+            <h:outputText value="#{pedido.credenciado.procedimento.tabela.nome}" />
+          </p:column>
+
+          <p:column id="procedimento" headerText="Procedimento">
+            <h:outputText
+              value="#{formatterBean.procedimentoFormatter.getCodigoDescricao(pedido.credenciado.procedimento)}" />
+            <h:outputText rendered="#{pedido.credenciado.especialidade.sigla != null}"
+              value=" (#{pedido.credenciado.especialidade.sigla})" />
+          </p:column>
+
+          <p:column id="credenciado" headerText="Credenciado" width="250">
+            <h:outputText value="#{pedido.credenciado.configuracaoEditalCredenciado.credenciado.nomeFantasia}" />
+          </p:column>
+          
+          <p:column id="valor" headerText="Valor unitário" width="100" style="text-align:center">
+            <h:outputText
+              value="#{formatterBean.configuracaoProcedimentoFormatter.obterValorProcedimento(pedido.credenciado)}">
+              <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR"  />
+            </h:outputText>
+          </p:column>
+
+          <p:column id="quantidade" headerText="Qtde" width="40" style="text-align:center">
+            <h:outputText value="#{pedido.quantidade}" />
+          </p:column>
+        </p:dataTable>
+
+      </p:tab>
+
+      <p:tab title="Auditoria Prospectiva" id="tab-auditoria-prospectiva"
+        rendered="#{(cadastroSolicitacaoFormularioBean.auditoriaProspectiva != null)}">
+        <div class="vgap-20" />
+
+        <p:panelGrid id="grid-auditoria">
+          <p:row>
+            <p:column>
+              <h:outputText value="Estado Auditoria: " style="font-weight:bold;" />
+              <h:outputText value="#{cadastroSolicitacaoFormularioBean.auditoriaProspectiva.estado.label}" />
+            </p:column>
+          </p:row>
+          <p:row>
+            <p:column>
+              <h:outputText value="Data: " style="font-weight:bold;" />
+              <h:outputText value="#{cadastroSolicitacaoFormularioBean.auditoriaProspectiva.dataFinalAuditoria}">
+                <f:convertDateTime pattern="dd/MM/yyyy" />
+              </h:outputText>
+            </p:column>
+          </p:row>
+          <p:row>
+            <p:column>
+              <h:outputText value="Observações: " style="font-weight:bold;" />
+              <h:outputText value="#{cadastroSolicitacaoFormularioBean.auditoriaProspectiva.observacoes}"
+                rendered="#{cadastroSolicitacaoFormularioBean.auditoriaProspectiva.observacoes != null}" />
+              <h:outputText value="Não há observação" styleClass="muted" rendered="#{cadastroSolicitacaoFormularioBean.auditoriaProspectiva.observacoes == null}" />
+              <h:outputText value="Não há observação" styleClass="muted" rendered="#{cadastroSolicitacaoFormularioBean.auditoriaProspectiva.observacoes == ''}" />  
+            </p:column>
+          </p:row>
+        </p:panelGrid>
+
+        <p:dataTable id="tabela-procedimentos-nao-aprovados"
+          value="#{cadastroSolicitacaoFormularioBean.auditoriaProspectiva.procedimentos}" var="procedimento"
+          paginator="true" rows="5" paginatorPosition="bottom" paginatorAlwaysVisible="false"
+          rowsPerPageTemplate="5, 10" emptyMessage="#{msgs.no_records_found}"
+          paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+          filteredValue="#{viewUtilsBean.filtrados}" filterDelay="300" widgetVar="datatablex">
+
+          <f:facet name="header">
+            <h:outputText value="Procedimentos Auditados" />
+          </f:facet>
+
+          <p:column id="procedimento-x" headerText="Procedimento">
+            <h:outputText
+              value="#{formatterBean.procedimentoFormatter.getCodigoDescricao(procedimento.credenciado.procedimento)}" />
+            <h:outputText rendered="#{procedimento.credenciado.especialidade.sigla != null}"
+              value=" (#{procedimento.credenciado.especialidade.sigla})" />
+            <h:outputLabel id="observacao-gab" styleClass="btn btn-link fa fa-info" rendered="#{procedimento.observacaoGAB != null}" />
+            <p:tooltip id="toolTipObservacaoGAB" for="observacao-gab" styleClass="preformatted" value="OBS: #{procedimento.observacaoGAB}" />
+          </p:column>
+
+          <p:column id="credenciado" headerText="Credenciado" width="250">
+            <h:outputText value="#{procedimento.credenciado.configuracaoEditalCredenciado.credenciado.nomeFantasia}" />
+          </p:column>
+          
+          <p:column id="valor" headerText="Valor unitário" width="100" style="text-align:center">
+            <h:outputText
+              value="#{formatterBean.configuracaoProcedimentoFormatter.obterValorProcedimento(procedimento.credenciado)}">
+              <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR"  />
+            </h:outputText>
+          </p:column>
+
+          <p:column id="aprovado" headerText="Aprovado" width="60" style="text-align:center">
+            <h:outputText value="#{viewUtilsBean.booleanLabel(procedimento.aprovado)}"
+              styleClass="#{procedimento.aprovado ? 'text-success' : 'text-error'}" />
+          </p:column>
+
+          <p:column id="justificativa" headerText="Justificativa" width="100" style="text-align:center">
+            <h:outputLabel id="justificativa-auditoria" styleClass="btn btn-link fa fa-info"
+              rendered="#{procedimento.justificativa != null}" />
+            <p:tooltip id="toolTipJustificativaAuditoria" for="justificativa-auditoria"
+              value="#{procedimento.justificativa}" />
+            <h:outputLabel value="Não há" styleClass="muted" rendered="#{procedimento.justificativa == null}" />
+          </p:column>
+
+        </p:dataTable>
+
+        <div class="vgap-10" />
+
+        <p:panel style="text-align:center" rendered="#{cadastroSolicitacaoFormularioBean.solicitacao.arquivo != null}">
+          <p:commandButton type="button" value="Visualizar cópia da solicitação" onclick="PF('verPdf').show()"
+            styleClass="btn" icon="fa fa-file-pdf-o" />
+          <br />
+          <a href="#{request.contextPath}/download/solicitacao/#{cadastroSolicitacaoFormularioBean.solicitacao.id}"
+            class="btn btn-link"> <SPAN class="fa fa-download" /> <span>Clique aqui para baixar o arquivo</span>
+          </a>
+        </p:panel>
+      </p:tab>
+
+      <p:tab title="GABs geradas" id="tab-gabs-geradas"
+        rendered="#{(cadastroSolicitacaoFormularioBean.gabsGeradas != null and !cadastroSolicitacaoFormularioBean.gabsGeradas.isEmpty())}">
+        <div class="vgap-10" />
+
+        <p:dataTable value="#{cadastroSolicitacaoFormularioBean.gabsGeradas}" paginator="true" rows="5"
+          emptyMessage="#{msgs.no_records_found}" paginatorPosition="bottom" paginatorAlwaysVisible="false"
+          rowsPerPageTemplate="5, 10"
+          paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+          var="gab" id="lista-gabs-historico">
+
+          <p:column headerText="Nº GAB" width="120">
+            <h:outputText value="#{gab.codigo}" style="text-align:center" />
+          </p:column>
+          <p:column headerText="Data Geração GAB" width="70" styleClass="text-center">
+            <h:outputText value="#{gab.dataGeracao}">
+              <f:convertDateTime pattern="dd/MM/yyyy" readonly="true" />
+            </h:outputText>
+          </p:column>
+          <p:column headerText="Estado" width="100" styleClass="text-center">
+            <h:outputText value="#{gab.estado.label}" />
+          </p:column>
+          <p:column id="justificativa" headerText="Justificativa cancelamento" width="30" style="text-align:center">
+            <h:outputLabel id="btn-justificativa" styleClass="btn btn-link fa fa-info"
+              rendered="#{gab.justificativaCancelamentoGab != null}" />
+            <p:tooltip id="toolTipJustificativaGAB" for="btn-justificativa" value="#{gab.justificativaCancelamentoGab}" />
+            <h:outputLabel value="Não há" styleClass="muted" rendered="#{gab.justificativaCancelamentoGab == null}" />
+          </p:column>
+        </p:dataTable>
+
+      </p:tab>
+
+      <div class="vgap-20" />
+
+    </p:tabView>
+
+    <a onClick="history.back();" class="btn">Voltar</a>
+  </h:form>
+
+
+</ui:composition>

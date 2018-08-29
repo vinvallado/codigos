@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" template="/resources/template/template.xhtml">
+
+  <ui:define name="html-title">Lista Organizações Militares</ui:define>
+
+  <ui:define name="main">
+
+    <h3>Lista de Organizações Militares</h3>
+
+    <p:separator />
+
+    <div class="vgap-10" />
+
+    <h:form prependId="false">
+
+      <p:messages id="msg" showIcon="false"/>
+
+      <p:dataTable id="tabela" value="#{cadastroOrganizacaoMilitarListaBean.oms}" var="om" sortBy="#{om.sigla}" paginator="true" rows="15"
+        paginatorPosition="bottom" paginatorAlwaysVisible="false" rowsPerPageTemplate="10, 15, 25"
+        emptyMessage="#{msgs.no_records_found}"
+        paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+        filteredValue="#{viewUtilsBean.filtrados}" filterDelay="300">
+
+        <p:column headerText="Sigla" width="110" filterBy="#{om.sigla}" id="sigla"
+        filterFunction="#{viewUtilsBean.filterIgnoreCase}" filterMatchMode="contains">
+          <h:outputText value="#{om.sigla}" />
+        </p:column>
+
+        <p:column headerText="Nome" filterBy="#{om.nome}" id="nome" sortBy="#{om.nome}" 
+        filterMatchMode="contains"  filterFunction="#{viewUtilsBean.filterIgnoreCase}" >
+          <h:outputText value="#{om.nome}" />
+        </p:column>
+
+      </p:dataTable>
+
+    </h:form>
+
+  </ui:define>
+
+</ui:composition>

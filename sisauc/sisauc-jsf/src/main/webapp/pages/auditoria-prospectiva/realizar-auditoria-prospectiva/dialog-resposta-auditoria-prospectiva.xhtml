@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets">
+
+  <p:dialog header="Auditar procedimento" id="auditar-procedimento-dialog" widgetVar="respostaDialog" modal="true"
+    resizable="false" onShow="maskPrefix('R$ ')" width="800">
+    <h:form id="auditar-procedimento-form">
+      <p:messages id="msgs" showIcon="false" autoUpdate="true" />
+      <p:panelGrid id="grid" columns="2">
+        <p:outputLabel value="Procedimento:" id="procedimento-label" />
+        <p:outputLabel style="text-align:left"
+          value="#{formatterBean.procedimentoFormatter.getCodigoDescricao(realizarAuditoriaProspectivaBean.resposta.credenciado.procedimento)}
+           #{realizarAuditoriaProspectivaBean.resposta.credenciado.especialidade != null ? (realizarAuditoriaProspectivaBean.resposta.credenciado.especialidade.sigla) : ''} " />
+        <p:outputLabel value="OPME/Medicamento:" id="opme-label" for="opme" />
+        <p:selectBooleanCheckbox value="#{realizarAuditoriaProspectivaBean.resposta.opme}" id="opme">
+          <p:ajax event="change" immediate="true" update="@(.mostrar-opme)" oncomplete="maskPrefix('R$ ')" />
+        </p:selectBooleanCheckbox>
+
+        <h:panelGroup styleClass="mostrar-opme" id="coluna-descricao-opme-label">
+          <p:outputLabel value="Descrição OPME/Medicamento:" for="descricao-opme" id="descricao-opme-label"
+            rendered="#{realizarAuditoriaProspectivaBean.resposta.opme}" />
+        </h:panelGroup>
+        <h:panelGroup styleClass="mostrar-opme" id="coluna-descricao-opme-input">
+          <p:inputTextarea value="#{realizarAuditoriaProspectivaBean.resposta.opmeDescricao}"
+            styleClass="input-block-level" id="descricao-opme"
+            required="#{realizarAuditoriaProspectivaBean.resposta.opme}" maxlength="500"
+            requiredMessage="O campo Descrição OPME/Medicamento é obrigatório." cols="20" rows="3" autoResize="false"
+            rendered="#{realizarAuditoriaProspectivaBean.resposta.opme}" />
+        </h:panelGroup>
+
+        <h:panelGroup styleClass="mostrar-opme" id="coluna-valor-opme-label">
+          <p:outputLabel value="Valor OPME/Medicamento:" for="valor-opme" id="valor-opme-label"
+            rendered="#{realizarAuditoriaProspectivaBean.resposta.opme}" />
+        </h:panelGroup>
+
+        <h:panelGroup styleClass="mostrar-opme" id="coluna-valor-opme-input">
+          <p:inputText value="#{realizarAuditoriaProspectivaBean.resposta.opmeValor}" styleClass="number"
+            id="valor-opme" converter="doubleConverter" required="#{realizarAuditoriaProspectivaBean.resposta.opme}"
+            requiredMessage="O campo Valor OPME/Medicamento é obrigatório."
+            onfocus="maskPrefixOnlyPositiveNumbers('R$ ')" rendered="#{realizarAuditoriaProspectivaBean.resposta.opme}" />
+        </h:panelGroup>
+
+        <h:panelGroup styleClass="mostrar-opme" id="coluna-justificativa-opme-label">
+          <p:outputLabel value="Justificativa do OPME/Medicamento:" for="justificativa-opme"
+            id="justificativa-opme-label" rendered="#{realizarAuditoriaProspectivaBean.resposta.opme}" />
+        </h:panelGroup>
+
+        <h:panelGroup styleClass="mostrar-opme" id="coluna-justificativa-opme-input">
+          <p:inputTextarea value="#{realizarAuditoriaProspectivaBean.resposta.opmeJustificativa}"
+            id="justificativa-opme" styleClass="input-block-level" cols="20" rows="3" autoResize="false"
+            required="#{realizarAuditoriaProspectivaBean.resposta.opme}"
+            requiredMessage="O campo Justificativa do OPME/Medicamento é obrigatório."
+            rendered="#{realizarAuditoriaProspectivaBean.resposta.opme}" />
+        </h:panelGroup>
+
+        <p:outputLabel value="Aprovado:" id="aprovado-label" for="aprovado" />
+        <p:selectBooleanCheckbox value="#{realizarAuditoriaProspectivaBean.resposta.aprovado}" id="aprovado">
+          <p:ajax event="change" update="@(.esconder-justificativa)" immediate="true" oncomplete="maskPrefix('R$ ')" />
+        </p:selectBooleanCheckbox>
+
+        <h:panelGroup styleClass="esconder-justificativa" id="coluna-justificativa-label">
+          <p:outputLabel value="Justificativa da Reprovação:" for="justificativa" id="justificativa-label"
+            rendered="#{!realizarAuditoriaProspectivaBean.resposta.aprovado}" />
+        </h:panelGroup>
+
+        <h:panelGroup styleClass="esconder-justificativa" id="coluna-justificativa-input">
+          <p:inputTextarea value="#{realizarAuditoriaProspectivaBean.resposta.justificativa}" id="justificativa"
+            styleClass="input-block-level" required="#{!realizarAuditoriaProspectivaBean.resposta.aprovado}" cols="20"
+            rows="3" autoResize="false"
+            requiredMessage="O campo justificativa é obrigatório para procedimentos reprovados."
+            rendered="#{!realizarAuditoriaProspectivaBean.resposta.aprovado}" />
+        </h:panelGroup>
+        
+        <h:panelGroup id="coluna-observacao-gab-label">
+          <p:outputLabel value="Observação da GAB:" for="observacaoGAB-input" id="observacaoGAB-label" 
+            title="Observação que será impressa na GAB" />
+        </h:panelGroup>        
+        
+        <h:panelGroup id="coluna-observao-gab-input">
+          <p:inputTextarea value="#{realizarAuditoriaProspectivaBean.resposta.observacaoGAB}" id="observacaoGAB-input"
+            styleClass="input-block-level" cols="20" rows="3" autoResize="false" />
+        </h:panelGroup>        
+
+      </p:panelGrid>
+
+      <h:panelGroup styleClass="dialog-footer" layout="block">
+        <p:commandButton value="Salvar" styleClass="btn btn-success" icon="fa fa-save" validateClient="true"
+          id="adicionar" action="#{realizarAuditoriaProspectivaBean.adicionarResultado}"
+          rendered="#{!realizarAuditoriaProspectivaBean.auditoriaEmLote}"
+          update=":tabview-auditoria-prospectiva:formulario-auditoria:lista-procedimentos :tabview-auditoria-prospectiva:formulario-auditoria:msgs msgs" />
+
+        <p:commandButton value="Auditar em lote" styleClass="btn btn-success" icon="fa fa-save" validateClient="true"
+          id="adicionar-em-lote" action="#{realizarAuditoriaProspectivaBean.adicionarResultadoEmLote}"
+          rendered="#{realizarAuditoriaProspectivaBean.auditoriaEmLote}"
+          update=":tabview-auditoria-prospectiva:formulario-auditoria:lista-procedimentos :tabview-auditoria-prospectiva:formulario-auditoria:msgs msgs" />
+      </h:panelGroup>
+    </h:form>
+  </p:dialog>
+
+</ui:composition>

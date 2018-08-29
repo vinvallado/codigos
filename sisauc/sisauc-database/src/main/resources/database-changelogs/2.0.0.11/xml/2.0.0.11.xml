@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<changeSet id="dados-internacao-auditoria-prospectiva-de-ressarcimento" author="brunobjm">
+		<sql>
+			ALTER TABLE sch_sisauc.auditoria_prospectiva_ressarcimento ADD COLUMN internacao BOOLEAN DEFAULT FALSE;
+			ALTER TABLE sch_sisauc.auditoria_prospectiva_ressarcimento ADD COLUMN local_internacao character varying(40);
+		</sql>
+	</changeSet>
+	
+	<changeSet id="solicitacao-ressarcimento-nao-eletiva" author="brunobjm">
+		<sql>
+			ALTER TABLE sch_sisauc.solicitacao ADD COLUMN nao_eletiva BOOLEAN NOT NULL DEFAULT false;
+			
+			ALTER TABLE sch_sisauc.solicitacao ADD COLUMN id_apresentacao INTEGER;
+			ALTER TABLE sch_sisauc.solicitacao ADD CONSTRAINT fk_solicitacao_ressarcimento_apresentacao 
+				FOREIGN KEY (id_apresentacao) REFERENCES sch_sisauc.apresentacao_ar (id);
+			
+			ALTER TABLE sch_sisauc.apresentacao_ar ALTER COLUMN cpf_cnpj_prestador DROP NOT NULL;
+			ALTER TABLE sch_sisauc.apresentacao_ar ALTER COLUMN data_nota_fiscal DROP NOT NULL;
+			ALTER TABLE sch_sisauc.apresentacao_ar ALTER COLUMN nome_prestador DROP NOT NULL;
+			ALTER TABLE sch_sisauc.apresentacao_ar ALTER COLUMN numero_nota_fiscal DROP NOT NULL;
+			ALTER TABLE sch_sisauc.apresentacao_ar ALTER COLUMN id_ar DROP NOT NULL;
+			ALTER TABLE sch_sisauc.apresentacao_ar ALTER COLUMN id_arquivo_nota_fiscal DROP NOT NULL;
+			ALTER TABLE sch_sisauc.apresentacao_ar ALTER COLUMN id_arquivo_requerimento DROP NOT NULL;
+		</sql>
+	</changeSet>
+	
+	<changeSet id="ajustes-auditoria-retrospectiva-ressarcimento-ar-item-ar" author="januarioacsj">
+		<sql>
+			UPDATE sch_sisauc.item_ar SET id_auditoria_retrospectiva = null;
+			DELETE FROM sch_sisauc.auditoria_retrospectiva_ressarcimento;
+			UPDATE sch_sisauc.ar SET estado = 'APRESENTADA' WHERE estado = 'AUDITADA';
+			UPDATE sch_sisauc.item_ar SET estado = 'APROVADO' WHERE estado = 'REALIZADO';
+		</sql>
+	</changeSet>
+	
+	<changeSet id="adicionar-coluna-id-resposta-ressarcimento-auditoria-origem" author="januarioacsj">
+		<sql>
+			ALTER TABLE sch_sisauc.item_ar
+  				ADD COLUMN id_resposta_ressarcimento_auditoria_origem integer;
+		</sql>
+	</changeSet>
+	
+	<changeSet id="criacao-tabela-especificacao-item-are" author="januarioacsj">
+		<sql>
+			CREATE TABLE sch_sisauc.especificacao_item_are(
+  				id integer NOT NULL,
+  				descricao character varying(255) NOT NULL,
+  				tipo character varying(255) NOT NULL,
+  				valor_apresentado double precision NOT NULL,
+  				valor_referencia double precision NOT NULL,
+  				id_auditoria_retrospectiva_ressarcimento integer NOT NULL,
+  				CONSTRAINT especificacao_item_are_pkey PRIMARY KEY (id),
+  				CONSTRAINT fk_nfcd2yflvaqvvq21253jh674b FOREIGN KEY (id_auditoria_retrospectiva_ressarcimento)
+      				REFERENCES sch_sisauc.auditoria_retrospectiva_ressarcimento (id) MATCH SIMPLE
+      				ON UPDATE NO ACTION ON DELETE NO ACTION
+			)
+			WITH (
+  				OIDS=FALSE
+			);
+			ALTER TABLE sch_sisauc.especificacao_item_are
+  			OWNER TO sisauc;
+		</sql>
+	</changeSet>
+	
+	<changeSet id="seq_especificacao_item_are" author="brunobjm">
+		<sql>
+			CREATE SEQUENCE sch_sisauc.especificacao_item_are_id_seq
+				  INCREMENT 1
+				  MINVALUE 1
+				  MAXVALUE 9223372036854775807
+				  START 1
+				  CACHE 1;
+				ALTER TABLE sch_sisauc.especificacao_item_are_id_seq
+				  OWNER TO sisauc;
+		</sql>
+	</changeSet>
+	
+	<changeSet id="ajustes-auditoria-retrospectiva-ressarcimento-especificacoes" author="brunobjm">
+		<sql>
+			UPDATE sch_sisauc.ar SET id_auditoria_prospectiva = null;
+			DELETE FROM sch_sisauc.resposta_ressarcimento_auditoria;
+			DELETE FROM sch_sisauc.auditoria_prospectiva_ressarcimento;
+			DELETE FROM sch_sisauc.solicitacao_pedidos_procedimento_ressarcimento;
+			DELETE FROM sch_sisauc.solicitacao WHERE tipo = 'RESSARCIMENTO';
+			DELETE FROM sch_sisauc.apresentacao_ar;
+			DELETE FROM sch_sisauc.item_ar;
+			DELETE FROM sch_sisauc.ar;
+		</sql>
+	</changeSet>
+	
+	<changeSet id="justificativa-auditoria-retrospectiva-ressarcimento" author="brunobjm">
+		<sql>
+			ALTER TABLE sch_sisauc.auditoria_retrospectiva_ressarcimento ADD COLUMN justificativa character varying(255);
+		</sql>
+	</changeSet>
+	
+</databaseChangeLog>

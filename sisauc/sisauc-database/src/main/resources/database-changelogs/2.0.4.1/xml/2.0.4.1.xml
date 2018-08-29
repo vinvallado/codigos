@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+         
+	
+	<changeSet id="add-fk-table-lote" author="januarioacsj">
+		<sql>
+			ALTER TABLE sch_sisauc.lote
+  				ADD CONSTRAINT fk_lote_organizacao_militar FOREIGN KEY (id_organizacao_militar) 
+  				REFERENCES sch_sisauc.organizacao_militar (id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION;
+		</sql>
+	</changeSet>
+	
+	<changeSet id="add-fk-table-lote_ressarcimento" author="januarioacsj">
+		<sql>
+			ALTER TABLE sch_sisauc.lote_ressarcimento
+  				ADD CONSTRAINT fk_lote_ressarcimento_organizacao_militar FOREIGN KEY (id_organizacao_militar) 
+  				REFERENCES sch_sisauc.organizacao_militar (id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION;
+		</sql>
+	</changeSet>
+	
+	<changeSet id="add-fk-table-auditoria_retrospectiva" author="januarioacsj">
+		<sql>
+			ALTER TABLE sch_sisauc.auditoria_retrospectiva
+  				ADD CONSTRAINT fk_auditoria_retrospectiva_auditor FOREIGN KEY (id_auditor) 
+  				REFERENCES sch_sisauc.usuario (id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION;			
+		</sql>
+	</changeSet>
+	
+	<changeSet id="add-fk-table-auditoria_retrospectiva_ressarcimento" author="januarioacsj">
+		<sql>
+			ALTER TABLE sch_sisauc.auditoria_retrospectiva_ressarcimento
+  				ADD CONSTRAINT fk_auditoria_retrospectiva_ressarcimento_auditor FOREIGN KEY (id_auditor) 
+  				REFERENCES sch_sisauc.usuario (id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION;
+		</sql>
+	</changeSet>
+	
+	<changeSet id="atualizar-notas-2.0.4" author="januarioacsj">
+		<sql>
+			UPDATE sch_sisauc.usuario set leu_notas_versao = false;
+		</sql>
+	</changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+
+	<changeSet id="criar-estrutura-basica-para-novas-tabelas" author="tadeutbc">
+		<sql>
+
+			CREATE TABLE sch_sisauc.procedimento_base
+			(
+			  id integer NOT NULL,
+			  codigo character varying(20) NOT NULL,
+			  descricao character varying(512) NOT NULL,
+			  tabela character varying(20) NOT NULL,
+			  CONSTRAINT procedimento_base_pkey PRIMARY KEY (id)
+			)
+			WITH (
+			  OIDS=FALSE
+			);
+			ALTER TABLE sch_sisauc.procedimento_base
+			  OWNER TO sisauc;
+
+			ALTER TABLE sch_sisauc.procedimento_base ADD CONSTRAINT verificar_tabelas CHECK (tabela IN ('CBHPM2012','TRS'));
+
+			CREATE TABLE sch_sisauc.procedimento_cbhpm_2012
+			(
+			  custo_operacional double precision,
+			  deflator_porte double precision,
+			  incidencias integer,
+			  numero_auxiliares integer,
+			  quantidade_filme double precision,
+			  id integer NOT NULL,
+			  id_porte integer,
+			  id_porte_anestesico integer,
+			  id_subgrupo integer,
+			  CONSTRAINT procedimento_cbhpm_2012_pkey PRIMARY KEY (id),
+			  CONSTRAINT fk_procedimento_cbhpm_2012_porte FOREIGN KEY (id_porte)
+			      REFERENCES sch_sisauc.porte (id) MATCH SIMPLE
+			      ON UPDATE NO ACTION ON DELETE NO ACTION,
+			  CONSTRAINT fk_procedimento_cbhpm_2012_subgrupo FOREIGN KEY (id_subgrupo)
+			      REFERENCES sch_sisauc.subgrupo (id) MATCH SIMPLE
+			      ON UPDATE NO ACTION ON DELETE NO ACTION,
+			  CONSTRAINT fk_procedimento_cbhpm_2012_porte_anestesico FOREIGN KEY (id_porte_anestesico)
+			      REFERENCES sch_sisauc.porte_anestesico (id) MATCH SIMPLE
+			      ON UPDATE NO ACTION ON DELETE NO ACTION,
+			  CONSTRAINT fk_procedimento_cbhpm_2012_procedimento_base FOREIGN KEY (id)
+			      REFERENCES sch_sisauc.procedimento_base (id) MATCH SIMPLE
+			      ON UPDATE NO ACTION ON DELETE NO ACTION
+			)
+			WITH (
+			  OIDS=FALSE
+			);
+			ALTER TABLE sch_sisauc.procedimento_cbhpm_2012
+			  OWNER TO sisauc;
+
+
+			--copiando os dados atuais para a tabela procedimento_base
+			INSERT INTO sch_sisauc.procedimento_base(id, codigo, descricao, tabela) select id, codigo, descricao, 'CBHPM2012' from sch_sisauc.procedimento order by id;
+
+			--copiando os dados atuais para a tabela procedimento_cbhpm_2012
+			INSERT INTO sch_sisauc.procedimento_cbhpm_2012(
+			            custo_operacional, deflator_porte, incidencias, 
+			            numero_auxiliares, quantidade_filme, id, id_porte, id_porte_anestesico, 
+			            id_subgrupo)
+			select custo_operacional, deflator_porte, incidencias, 
+			            numero_auxiliares, quantidade_filme, id, id_porte, id_porte_anestesico, 
+			            id_subgrupo from sch_sisauc.procedimento;
+
+			-- corrigindo os tipos de dados de grupo e subgrupo
+			alter table sch_sisauc.grupo alter column codigo type character varying(10) ;
+			alter table sch_sisauc.subgrupo alter column codigo type character varying(10) ;
+
+			-- corrigindo as foreign keys (excluindo as velhas e criando as novas)
+			ALTER TABLE sch_sisauc.configuracao_edital_credenciado_procedimento  DROP CONSTRAINT fk_configuracao_edital_credenciado_procedimento_procedimento;
+			ALTER TABLE sch_sisauc.configuracao_edital_credenciado_procedimento  ADD 
+				CONSTRAINT fk_configuracao_edital_credenciado_procedimento_procedimento_base FOREIGN KEY (id_procedimento)
+				REFERENCES sch_sisauc.procedimento_base (id) MATCH SIMPLE
+				ON UPDATE NO ACTION ON DELETE NO ACTION;
+			
+			ALTER TABLE sch_sisauc.historico_valor_configuracao_edital_procedimento DROP CONSTRAINT fk_historico_valor_configuracao_edital_procedimento_id_procedim;
+			ALTER TABLE sch_sisauc.configuracao_edital_credenciado_procedimento  ADD 
+				CONSTRAINT fk_historico_valor_configuracao_edital_procedimento_id_procedim FOREIGN KEY (id_procedimento)
+				REFERENCES sch_sisauc.procedimento_base (id) MATCH SIMPLE
+				ON UPDATE NO ACTION ON DELETE NO ACTION;
+			
+			-- apagando a tabela procedimento antiga
+			drop table sch_sisauc.procedimento;
+
+		</sql>
+	
+	</changeSet>
+
+</databaseChangeLog>

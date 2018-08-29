@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:sec="http://www.springframework.org/security/tags"
+  xmlns:composite="http://java.sun.com/jsf/composite">
+
+  <composite:interface>
+    <composite:attribute name="are" />
+  </composite:interface>
+
+  <composite:implementation>
+
+    <p:panelGrid rendered="#{cc.attrs.are!=null}">
+      <p:row>
+        <p:column>
+          <h4>
+            ARE nº
+            <h:outputText value="#{cc.attrs.are.codigo}" />
+            <span class="muted">(#{cc.attrs.are.estado.label})</span>
+          </h4>
+        </p:column>
+      </p:row>
+
+      <p:row>
+        <p:column>
+          <h:outputText value="Divisão: " style="font-weight:bold;" />
+          <h:outputText value="#{cc.attrs.are.auditoriaProspectiva.solicitacao.divisao.label}" />
+        </p:column>
+      </p:row>
+
+      <p:row>
+        <p:column>
+          <h:outputText value="Beneficiário: " style="font-weight:bold;" />
+          <h:outputText value="#{cc.attrs.are.beneficiario.nome}" />
+        </p:column>
+      </p:row>
+
+        <p:row>
+          <p:column>
+            <h:outputText value="Gerada em: " style="font-weight:bold;" />
+            <h:outputText value="#{cc.attrs.are.dataGeracao}">
+              <f:convertDateTime locale="pt_BR" dateStyle="long" readonly="true" />
+            </h:outputText>
+          </p:column>
+        </p:row> 
+        
+        <p:row rendered="#{cc.attrs.are.dataEmissao != null}">
+          <p:column>
+            <h:outputText value="Emitida em: " style="font-weight:bold;" />
+            <h:outputText value="#{cc.attrs.are.dataEmissao}">
+              <f:convertDateTime locale="pt_BR" dateStyle="long" readonly="true" />
+            </h:outputText>
+          </p:column>
+        </p:row>     
+        
+        <p:row rendered="#{cc.attrs.are.usuarioEmissorAr != null}">
+          <p:column>
+            <h:outputText value="Emitida por: " style="font-weight:bold;" />
+            <h:outputText value="#{cc.attrs.are.usuarioEmissorAr.nome}" />
+          </p:column>
+        </p:row>
+        
+        <p:row rendered="#{cc.attrs.are.dataApresentacao != null}">
+          <p:column>
+            <h:outputText value="Apresentada em: " style="font-weight:bold;" />
+            <h:outputText value="#{cc.attrs.are.dataApresentacao}">
+              <f:convertDateTime locale="pt_BR" dateStyle="long" readonly="true" />
+            </h:outputText>
+          </p:column>
+        </p:row>                            
+      
+      <p:row rendered="#{cc.attrs.are.estado == 'CANCELADA'}">
+        <p:column>
+          <h:outputText value="Justificativa de cancelamento: " style="font-weight:bold;" />
+          <h:outputText value="#{cc.attrs.are.justificativaCancelamentoAR}" />
+        </p:column>
+      </p:row>      
+
+    </p:panelGrid>
+
+    <div class="vgap-10" />
+
+    <p:dataTable id="tabela" value="#{cc.attrs.are.itens}" var="item" paginator="true" rows="5"
+      paginatorPosition="bottom" paginatorAlwaysVisible="false" rowsPerPageTemplate="5, 10"
+      emptyMessage="#{msgs.no_records_found}"
+      paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+      filteredValue="#{viewUtilsBean.filtrados}" filterDelay="300" widgetVar="datatable-are">
+
+      <f:facet name="header">
+        <h:outputText value="Itens gerados pela ARE" />
+      </f:facet>
+
+      <p:column id="codigo" headerText="Código" width="190">
+        <h:outputText value="#{item.codigo}" />
+      </p:column>
+
+      <p:column id="procedimento" headerText="Procedimento">
+        <h:outputText value="#{formatterBean.procedimentoFormatter.getCodigoDescricao(item.procedimento)}" />
+        <h:outputText rendered="#{item.especialidade.sigla != null}"
+          value=" (#{item.especialidade.sigla})" />
+        <h:outputText rendered="#{item.dente != null}" value=" - Dente #{item.dente}" />
+        <h:outputText rendered="#{item.faceDental != null}" value=" - Face #{item.faceDental.label}" />
+        <h:outputLabel id="observacao-are" styleClass="btn btn-link fa fa-info" rendered="#{item.observacaoARE != null}" />
+        <p:tooltip id="toolTipObservacaoARE" for="observacao-are" styleClass="preformatted" value="OBS: #{item.observacaoARE}" />
+      </p:column>
+
+      <p:column id="info-item" width="40" styleClass="text-center">
+        <p:commandButton id="btn-info-item" title="Visualizar Item" styleClass="btn btn-link" icon="fa fa-search"
+          action="#{buscaAreFormularioBean.selecionarItemARE(item)}" update=":informacoes-item-are-dialog-form" />
+      </p:column>
+
+    </p:dataTable>
+
+  </composite:implementation>
+
+</ui:composition>

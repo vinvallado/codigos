@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" template="/resources/template/template.xhtml">
+
+  <ui:define name="html-title">Cadastro de Credenciado</ui:define>
+
+  <ui:define name="main">
+
+    <h3>Formulário de Credenciado</h3>
+
+    <p:separator />
+
+    <h:form id="formulario-form">
+
+      <p:messages id="msgs" showIcon="false" />
+
+      <p:panelGrid>
+
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Tipo:" for="tipo" />
+          </p:column>
+          <p:column>
+            <p:selectOneMenu value="#{cadastroCredenciadoFormularioBean.credenciado.tipoPessoa}"
+              converter="genericEnumConverter" id="tipo">
+              <p:ajax event="change" immediate="true" update="@form" />
+              <f:selectItems value="#{cadastroCredenciadoFormularioBean.tiposPessoa}" var="tipo" itemValue="#{tipo}"
+                itemLabel="#{tipo.label}" />
+            </p:selectOneMenu>
+          </p:column>
+        </p:row>
+
+        <p:row rendered="#{cadastroCredenciadoFormularioBean.credenciado.tipoPessoa == 'PESSOA_JURIDICA'}">
+          <p:column>
+            <p:outputLabel value="CNPJ:" for="cnpj" />
+          </p:column>
+          <p:column>
+            <p:inputMask id="cnpj" required="true" size="20" rendered="true"
+              value="#{cadastroCredenciadoFormularioBean.credenciado.cnpj}" mask="99.999.999/9999-99" />
+          </p:column>
+        </p:row>
+
+        <p:row rendered="#{cadastroCredenciadoFormularioBean.credenciado.tipoPessoa == 'PESSOA_FISICA'}">
+          <p:column>
+            <p:outputLabel value="CPF:" for="cpf" />
+          </p:column>
+          <p:column>
+            <p:inputMask id="cpf" required="true" size="20" value="#{cadastroCredenciadoFormularioBean.credenciado.cpf}"
+              mask="999.999.999-99" />
+          </p:column>
+        </p:row>
+
+        <p:row rendered="#{cadastroCredenciadoFormularioBean.credenciado.tipoPessoa == 'PESSOA_JURIDICA'}">
+          <p:column>
+            <p:outputLabel value="Nome Fantasia:" for="nomeFantasia" />
+          </p:column>
+          <p:column>
+            <p:inputText id="nomeFantasia" size="40" required="true"
+              value="#{cadastroCredenciadoFormularioBean.credenciado.nomeFantasia}" />
+          </p:column>
+        </p:row>
+        
+        <p:row rendered="#{cadastroCredenciadoFormularioBean.credenciado.tipoPessoa == 'PESSOA_FISICA'}">
+          <p:column>
+            <p:outputLabel value="Nome Completo" for="nomeCompleto" />
+          </p:column>
+          <p:column>
+            <p:inputText id="nomeCompleto" size="40" required="true"
+              value="#{cadastroCredenciadoFormularioBean.credenciado.nomeFantasia}" />
+          </p:column>
+        </p:row>
+
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Razão Social:" for="razaoSocial" />
+          </p:column>
+          <p:column>
+            <p:inputText id="razaoSocial" size="40" required="true"
+              value="#{cadastroCredenciadoFormularioBean.credenciado.razaoSocial}" />
+          </p:column>
+        </p:row>
+
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Email:" for="email" />
+          </p:column>
+          <p:column>
+            <p:inputText id="email" size="40" required="true"
+              value="#{cadastroCredenciadoFormularioBean.credenciado.email}" />
+          </p:column>
+        </p:row>
+
+
+        <p:row rendered="#{cadastroCredenciadoFormularioBean.credenciado.id != null}">
+          <p:column>
+            <p:outputLabel value="Ativo:" for="ativo" />
+          </p:column>
+          <p:column>
+            <p:selectBooleanCheckbox value="#{cadastroCredenciadoFormularioBean.credenciado.ativo}" id="ativo" />
+          </p:column>
+        </p:row>
+
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Telefone Principal:" for="telefonePrincipal" />
+          </p:column>
+          <p:column>
+            <p:inputText id="telefonePrincipal" required="true"
+              value="#{cadastroCredenciadoFormularioBean.credenciado.telefonePrincipal}" />
+          </p:column>
+        </p:row>
+
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Telefone Opcional:" for="telefoneOpcional" />
+          </p:column>
+          <p:column>
+            <p:inputText id="telefoneOpcional" required="false"
+              value="#{cadastroCredenciadoFormularioBean.credenciado.telefoneOpcional}" />
+          </p:column>
+        </p:row>
+
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Logradouro:" for="logradouro" />
+          </p:column>
+          <p:column>
+            <p:inputText id="logradouro" required="true"
+              value="#{cadastroCredenciadoFormularioBean.credenciado.logradouro}" />
+          </p:column>
+        </p:row>
+
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Complemento:" for="complemento" />
+          </p:column>
+          <p:column>
+            <p:inputText id="complemento" required="false"
+              value="#{cadastroCredenciadoFormularioBean.credenciado.complemento}" />
+          </p:column>
+        </p:row>
+
+        <p:row>
+          <p:column>
+            <p:outputLabel value="CEP:" for="cep" />
+          </p:column>
+          <p:column>
+            <p:inputMask id="cep" required="true" size="15" value="#{cadastroCredenciadoFormularioBean.credenciado.cep}"
+              mask="99999-999" />
+          </p:column>
+        </p:row>
+
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Bairro:" for="bairro" />
+          </p:column>
+          <p:column>
+            <p:inputText id="bairro" required="true" value="#{cadastroCredenciadoFormularioBean.credenciado.bairro}" />
+          </p:column>
+        </p:row>
+
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Cidade:" for="cidade" />
+          </p:column>
+          <p:column>
+            <p:autoComplete value="#{cadastroCredenciadoFormularioBean.credenciado.cidade}" required="true"
+              completeMethod="#{applicationBean.procurarCidade}" size="50" forceSelection="true" id="cidade"
+              var="cidade" itemValue="#{cidade}" itemLabel="#{cidade.nome.concat('/').concat(cidade.estado.sigla)}"
+              minQueryLength="3" converter="jsonConverter" maxResults="15" scrollHeight="250" />
+          </p:column>
+        </p:row>
+
+      </p:panelGrid>
+
+      <div class="vgap-10" />
+
+      <p:commandButton value="Salvar" styleClass="btn btn-success" icon="fa fa-save" validateClient="true"
+        action="#{cadastroCredenciadoFormularioBean.salvar}" id="salvar" update="@form" />
+      <a href="../credenciado" id="voltar" class="btn">Voltar</a>
+
+    </h:form>
+
+  </ui:define>
+
+</ui:composition>

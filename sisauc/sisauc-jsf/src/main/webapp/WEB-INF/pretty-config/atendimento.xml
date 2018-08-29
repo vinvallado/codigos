@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pretty-config xmlns="http://ocpsoft.org/schema/rewrite-config-prettyfaces" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://ocpsoft.org/schema/rewrite-config-prettyfaces
+                      http://ocpsoft.org/xml/ns/prettyfaces/rewrite-config-prettyfaces.xsd">
+
+	<!-- Administração Solicitação -->
+	<url-mapping id="cadastro-solicitacao-lista">
+		<pattern value="/atendente/cadastro/solicitacao" />
+		<view-id value="/pages/administracao/cadastro/solicitacao/cadastro-solicitacao-lista.jsf" />
+	</url-mapping>
+
+	<url-mapping id="cadastro-solicitacao-formulario">
+		<pattern value="/atendente/cadastro/solicitacao/#{id}" />
+		<view-id value="/pages/administracao/cadastro/solicitacao/cadastro-solicitacao-wrapper.jsf" />
+	</url-mapping>
+
+	<!-- RESSARCIMENTO -->
+	<url-mapping id="cadastro-solicitacao-ressarcimento-lista">
+		<pattern value="/atendente/cadastro/solicitacao-ressarcimento" />
+		<view-id value="/pages/administracao/cadastro/solicitacao-ressarcimento/cadastro-solicitacao-ressarcimento-lista.jsf" />
+	</url-mapping>
+
+	<url-mapping id="cadastro-solicitacao-ressarcimento-formulario">
+		<pattern value="/atendente/cadastro/solicitacao-ressarcimento/#{id}" />
+		<view-id value="/pages/administracao/cadastro/solicitacao-ressarcimento/eletiva/cadastro-solicitacao-ressarcimento-wrapper.jsf" />
+	</url-mapping>
+	
+	<url-mapping id="cadastro-solicitacao-ressarcimento-nao-eletiva-formulario">
+		<pattern value="/atendente/cadastro/solicitacao-ressarcimento-nao-eletiva/#{id}" />
+		<view-id value="/pages/administracao/cadastro/solicitacao-ressarcimento/nao-eletiva/cadastro-solicitacao-ressarcimento-nao-eletiva-wrapper.jsf" />
+		<action onPostback="true">#{cadastroSolicitacaoRessarcimentoFormularioBean.initNaoEletiva}</action>
+	</url-mapping>
+	
+	<url-mapping id="apresentacao-ar-lista">
+		<pattern value="/atendente/apresentar-are"/>
+		<view-id value="/pages/ar/apresentacao/apresentar-ar-lista.jsf"/>
+	</url-mapping>
+
+
+	<url-mapping id="apresentacao-ar-formulario">
+		<pattern value="/atendente/apresentar-are/#{id}"/>
+		<view-id value="/pages/ar/apresentacao/apresentar-ar-formulario.jsf"/>
+	</url-mapping>
+	
+	<url-mapping id="cadastro-solicitacao-lista">
+		<pattern value="/atendente/busca/solicitacao" />
+		<view-id value="/pages/administracao/cadastro/solicitacao/busca-solicitacao-lista.jsf" />
+	</url-mapping>
+
+</pretty-config>

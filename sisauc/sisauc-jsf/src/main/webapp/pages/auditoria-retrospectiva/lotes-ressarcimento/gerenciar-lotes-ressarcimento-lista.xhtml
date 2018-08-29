@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" template="/resources/template/template.xhtml">
+
+  <ui:define name="html-title">Gerenciar Lotes de Ressarcimento</ui:define>
+
+  <ui:define name="main">
+
+    <h3>Gerenciar Lotes de Ressarcimento</h3>
+
+    <p:separator />
+
+    <a id="criar" class="btn btn-success" href="gerenciar-lotes-ressarcimento/novo"> <span class="fa fa-plus"></span> <span
+      id="criar"> Criar novo Lote de Ressarcimento</span></a>
+
+    <div class="vgap-10" />
+
+    <h:form id="lotes-ressarcimento-lista-form">
+      <p:messages id="msg" showIcon="false" />
+
+      <div class="vgap-10" />
+
+      <p:dataTable value="#{gerenciarLotesRessarcimentoListaBean.lotesRessarcimento}" paginator="true" rows="15"
+        emptyMessage="#{msgs.no_records_found}" id="table-lotes" paginatorPosition="bottom"
+        paginatorAlwaysVisible="false" rowsPerPageTemplate="15, 20, 25"
+        paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+        var="loteRessarcimento" sortBy="#{loteRessarcimento.numero}">
+
+        <p:column id="num_lote_ressarcimento" headerText="Nº Lote de Ressarcimento" width="160" sortBy="#{loteRessarcimento.numero}" filterBy="#{loteRessarcimento.numero}"  
+        	filterFunction="#{viewUtilsBean.filterIgnoreCase}"> 
+          <h:outputText value="#{loteRessarcimento.numero}" />
+        </p:column>
+        <p:column id="beneficiario" headerText="Beneficiario Titular" sortBy="#{loteRessarcimento.beneficiario.nome}"
+        	 filterFunction="#{viewUtilsBean.filterIgnoreCase}"
+          filterBy="#{loteRessarcimento.beneficiario.nome}">
+          <h:outputText value="#{loteRessarcimento.beneficiario.nome}" />
+        </p:column>
+        <p:column id="num_saram" headerText="Saram" width="70" sortBy="#{loteRessarcimento.beneficiario.saram}"
+        	 filterFunction="#{viewUtilsBean.filterIgnoreCase}"
+          filterBy="#{loteRessarcimento.beneficiario.saram}">
+          <h:outputText value="#{loteRessarcimento.beneficiario.saram}" />
+        </p:column>
+        <p:column id="valor_total_ressarcimento" headerText="Valor Total Ressarcimento" width="120" sortBy="#{loteRessarcimento.valorTotalRessarcir}" styleClass="text-right">
+          <h:outputText value="#{loteRessarcimento.valorTotalRessarcir}">
+            <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR" />
+          </h:outputText>
+        </p:column>        
+        <p:column width="50" styleClass="text-center muted">
+          <h:outputLink id="abrir-lote-ressarcimento" styleClass="btn btn-link" value="visualizar-lote-ressarcimento/#{loteRessarcimento.id}"
+            title="Visualizar">
+            <span id="editar" class="fa fa-file-text-o"></span>
+          </h:outputLink>
+        </p:column>
+      </p:dataTable>
+
+    </h:form>
+
+  </ui:define>
+
+
+
+
+
+</ui:composition>

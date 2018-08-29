@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+	
+	<changeSet id="add-coluna-usuario-emissor-gab" author="januarioacsj">
+		<sql>
+			ALTER TABLE sch_sisauc.gab
+  				ADD COLUMN id_usuario_emissor integer;
+		</sql>
+	</changeSet>
+	
+	<changeSet id="add-fk-usuario-emissor-gab" author="januarioacsj">
+		<sql>
+			ALTER TABLE sch_sisauc.gab
+  				ADD CONSTRAINT fk_gab_usuario FOREIGN KEY (id_usuario_emissor) 
+  				REFERENCES sch_sisauc.usuario (id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION;
+		</sql>
+	</changeSet>
+	
+	<changeSet id="add-coluna-usuario-emissor-are" author="januarioacsj">
+		<sql>
+			ALTER TABLE sch_sisauc.ar
+  				ADD COLUMN id_usuario_emissor integer;
+		</sql>
+	</changeSet>
+	
+	<changeSet id="add-fk-usuario-emissor-are" author="januarioacsj">
+		<sql>
+			ALTER TABLE sch_sisauc.ar
+  				ADD CONSTRAINT fk_ar_usuario FOREIGN KEY (id_usuario_emissor) 
+  				REFERENCES sch_sisauc.usuario (id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION;
+		</sql>
+	</changeSet>
+	
+	<changeSet id="add-separacao-por-divisao-are" author="tadeutbc">
+		<sql>
+			ALTER TABLE sch_sisauc.solicitacao ADD COLUMN divisao varchar(30) NOT NULL DEFAULT 'DIVISAO_MEDICA';
+			ALTER TABLE sch_sisauc.ar ADD COLUMN divisao varchar(30) NOT NULL DEFAULT 'DIVISAO_MEDICA';
+		</sql>
+	</changeSet>
+	
+	<changeSet id="add-separacao-por-divisao-gab" author="tadeutbc">
+		<sql>
+			ALTER TABLE sch_sisauc.gab ADD COLUMN divisao varchar(30) NOT NULL DEFAULT 'DIVISAO_MEDICA';
+		</sql>
+	</changeSet>
+
+	<changeSet id="add-dente-e-face-procedimentos-odontologicos-trs" author="tadeutbc">
+		<sql>
+			ALTER TABLE sch_sisauc.procedimento_trs ADD COLUMN odontologico BOOLEAN default FALSE NOT NULL;
+			UPDATE sch_sisauc.procedimento_trs set odontologico = true WHERE id in (
+				select id from sch_sisauc.procedimento_base WHERE codigo in (
+					'81000030','81000294','81000324','81000510','81000278','81000308','81000340','81000367','81000375',
+					'81000383','81000405','81000421','81000430','81000456','81000472','81000480','81000529','84000090',
+					'84000163','84000198','84000201','83000046','83000089','83000097','83000100','83000127','83000135',
+					'83000151','84000031','84000058','84000074','84000112','85100064','85100099','85100102','85100110',
+					'85100129','85100137','85100145','85100188','85100196','85100200','85100218','85100226','85200085',
+					'85400025','85400211','85100048','85100153','85100161','85100013','85200034','85200042','85200077',
+					'85200093','85200107','85200115','85200123','85200131','85200140','85200158','85200166','82000050',
+					'82000069','82000212','82000336','82000417','82000557','82000646','82000662','82000689','82000921',
+					'82000948','82001073','85300012','85300020','85300039','85300047','85300055','85300063','85400033',
+					'85400050','85400076','85400084','85400092','85400106','85400114','85400149','85400157','85400165',
+					'85400181','85400203','85400220','85400246','85400254','85400300','85400319','85400335','85400343',
+					'85400378','85400386','85400394','85400408','85400416','85400424','85400483','85400491','85400521',
+					'85400530','85400556','82000034','82000077','82000085','82000158','82000166','82000174','82000182',
+					'82000190','82000239','82000255','82000263','82000271','82000280','82000298','82000360','82000387',
+					'82000395','82000468','82000484','82000778','82000786','82000794','82000808','82000816','82000859',
+					'82000875','82000883','82000891','82001022','82001154','82001251','82001286','82001367','82001391',
+					'82001502','82001510','82001510','82001545','82001596','82001650','82001707','82001715','87000164',
+					'88000133','82001294','86000047','86000055','86000098','86000110','86000128','86000144','86000152',
+					'86000160','86000179','86000195','86000209','86000225','86000233','86000250','86000276','86000284',
+					'86000314','86000322','86000330','86000381','86000390','86000403','86000411','86000438','86000462',
+					'86000470','86000519','86000535','86000551','86000560','86000578')
+			);
+			
+			ALTER TABLE sch_sisauc.procedimento_pedido_solicitacao_ressarcimento ADD COLUMN dente integer;
+			ALTER TABLE sch_sisauc.procedimento_pedido_solicitacao_ressarcimento ADD COLUMN face_dental varchar(15);
+
+			ALTER TABLE sch_sisauc.resposta_ressarcimento_auditoria ADD COLUMN dente integer;
+			ALTER TABLE sch_sisauc.resposta_ressarcimento_auditoria ADD COLUMN face_dental varchar(15);
+
+			ALTER TABLE sch_sisauc.item_ar ADD COLUMN dente integer;
+			ALTER TABLE sch_sisauc.item_ar ADD COLUMN face_dental varchar(15);
+			
+		</sql>
+	</changeSet>	
+	
+	<changeSet id="add-coluna-dente-e-face-item-are" author="januarioacsj">
+		<sql>
+			ALTER TABLE sch_sisauc.especificacao_item_are
+			  ADD COLUMN dente integer;
+			ALTER TABLE sch_sisauc.especificacao_item_are
+			  ADD COLUMN face_dental character varying(255);
+		</sql>
+	</changeSet>
+	
+</databaseChangeLog>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pretty-config xmlns="http://ocpsoft.org/schema/rewrite-config-prettyfaces" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://ocpsoft.org/schema/rewrite-config-prettyfaces
+                      http://ocpsoft.org/xml/ns/prettyfaces/rewrite-config-prettyfaces.xsd">
+
+	<!-- GAB -->
+	
+	<url-mapping id="cancelamento-lote">
+		<pattern value="/dirsa/cancelar-lote" />
+		<view-id value="/pages/dirsa/cancelamento-lote/cancelamento-lotes-lista.jsf" />
+	</url-mapping>
+	<url-mapping id="cancelamento-auditoria-retrospectiva">
+		<pattern value="/dirsa/cancelar-auditoria-retrospectiva" />
+		<view-id value="/pages/dirsa/cancelamento-auditoria-retrospectiva/cancelamento-auditoria-retrospectiva-lista.jsf" />
+	</url-mapping>
+	
+	<url-mapping id="cancelamento-apresentacao-gab">
+		<pattern value="/dirsa/cancelar-apresentacao-gab"/>
+		<view-id value="/pages/dirsa/cancelamento-apresentacao-gab/cancelamento-apresentacao-gab.jsf"/>
+	</url-mapping>
+	
+	<url-mapping id="desfazer-cancelamento-gab">
+		<pattern value="/dirsa/desfazer-cancelamento-gab"/>
+		<view-id value="/pages/dirsa/desfazer-cancelamento-gab/desfazer-cancelamento-gab.jsf"/>
+	</url-mapping>
+	
+	<url-mapping id="desfazer-relatorio-desconto-beneficiario">
+		<pattern value="/dirsa/desfazer-relatorio-desconto-beneficiario"/>
+		<view-id value="/pages/dirsa/desfazer-relatorio-desconto-beneficiario/desfazer-relatorio-desconto-beneficiario.jsf"/>
+	</url-mapping>	
+
+	<!-- ARE -->	
+	<url-mapping id="cancelamento-lote-are">
+		<pattern value="/dirsa/cancelar-lote-are" />
+		<view-id value="/pages/dirsa/cancelamento-lote-are/cancelamento-lotes-are-lista.jsf" />
+	</url-mapping>
+
+	<url-mapping id="cancelamento-auditoria-retrospectiva-are">
+		<pattern value="/dirsa/cancelar-auditoria-retrospectiva-are" />
+		<view-id value="/pages/dirsa/cancelamento-auditoria-retrospectiva-are/cancelamento-auditoria-retrospectiva-are-lista.jsf" />
+	</url-mapping>
+	
+	<url-mapping id="cancelamento-apresentacao-are">
+		<pattern value="/dirsa/cancelar-apresentacao-are"/>
+		<view-id value="/pages/dirsa/cancelamento-apresentacao-are/cancelamento-apresentacao-are.jsf"/>
+	</url-mapping>
+	
+	<url-mapping id="desfazer-cancelamento-are">
+		<pattern value="/dirsa/desfazer-cancelamento-are"/>
+		<view-id value="/pages/dirsa/desfazer-cancelamento-are/desfazer-cancelamento-are.jsf"/>
+	</url-mapping>
+	
+	<url-mapping id="desfazer-relatorio-desconto-beneficiario">
+		<pattern value="/dirsa/desfazer-relatorio-desconto-beneficiario"/>
+		<view-id value="/pages/dirsa/desfazer-relatorio-desconto-beneficiario/desfazer-relatorio-desconto-beneficiario.jsf"/>
+	</url-mapping>	
+	
+
+	
+</pretty-config>

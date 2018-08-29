@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:sec="http://www.springframework.org/security/tags"
+  template="/resources/template/template.xhtml">
+
+  <ui:define name="html-title">Relatórios de Solicitações de Ressarcimentos</ui:define>
+
+  <ui:define name="main">
+    <h3>Relatórios de Solicitações de Ressarcimentos</h3>
+    <p:separator />
+    <div class="vgap-10"></div>
+    <h:form id="pesquisa-solicitacao-ressarcimento-form">
+      <p:panelGrid>
+        <sec:authorize ifAllGranted="PERFIL_DIRETOR">
+          <p:row>
+            <p:column>
+              <p:outputLabel value="Organizações Militares:" />
+            </p:column>
+            <p:column>
+              <p:selectCheckboxMenu id="organizacoesMilitares"
+                value="#{pesquisarSolicitacaoRessarcimentoBean.parametros.organizacoesMilitares}"
+                label="Organizações Militares" filter="true" filterMatchMode="contains" panelStyle="width:250px"
+                converter="jsonConverter">
+                <f:attribute name="collectionType" value="java.util.ArrayList" />
+                <f:selectItems value="#{pesquisarSolicitacaoRessarcimentoBean.organizacoesMilitares}" var="om"
+                  itemLabel="#{om.sigla}" itemValue="#{om}" />
+              </p:selectCheckboxMenu>
+            </p:column>
+          </p:row>
+        </sec:authorize>
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Divisão:" />
+          </p:column>
+          <p:column>
+            <p:selectManyCheckbox value="#{pesquisarSolicitacaoRessarcimentoBean.parametros.divisoes}"
+              converter="genericEnumConverter" id="divisoes" style="width:200px;"
+              showCheckbox="true">
+              <f:selectItems value="#{pesquisarSolicitacaoRessarcimentoBean.divisoes}" var="divisao"
+                itemLabel="#{divisao.label}" itemValue="#{divisao}" />
+            </p:selectManyCheckbox>
+          </p:column>
+        </p:row>        
+        <p:row>
+          <p:column>
+            <p:outputLabel value="N° da solicitação:" for="numeroSolicitacao" />
+          </p:column>
+          <p:column>
+            <p:inputText value="#{pesquisarSolicitacaoRessarcimentoBean.parametros.numeroSolicitacaoRessarcimento}" id="numeroSolicitacao" />
+          </p:column>
+        </p:row>
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Beneficiário:" for="beneficiario" />
+          </p:column>
+          <p:column>
+            <p:inputText value="#{pesquisarSolicitacaoRessarcimentoBean.parametros.nomeBeneficiario}" id="beneficiario" />
+          </p:column>
+        </p:row>
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Idade Beneficiário"/>
+          </p:column>
+          <p:column>
+            <h:outputText value="De "/>
+            <p:inputMask id="idade-minima" size="3" value="#{pesquisarSolicitacaoRessarcimentoBean.parametros.idadeMinimaBeneficiario}"
+              mask="9?99"/>
+            <h:outputText value=" Até "/>
+            <p:inputMask id="idade-maxima" size="3" value="#{pesquisarSolicitacaoRessarcimentoBean.parametros.idadeMaximaBeneficiario}"
+              mask="9?99"/>
+          </p:column>
+        </p:row>
+        <p:row>
+          <p:column>
+            <p:outputLabel value="SARAM:" for="saram" />
+          </p:column>
+          <p:column>
+            <p:inputText value="#{pesquisarSolicitacaoRessarcimentoBean.parametros.saramBeneficiario}" id="saram" />
+          </p:column>
+        </p:row>
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Procedimento:" for="procedimento" />
+          </p:column>
+          <p:column>
+            <p:inputText value="#{pesquisarSolicitacaoRessarcimentoBean.parametros.procedimento}" id="procedimento" />
+          </p:column>
+        </p:row>
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Data de solicitação:" />
+          </p:column>
+          <p:column>
+            <h:outputText value="De " />
+            <p:calendar value="#{pesquisarSolicitacaoRessarcimentoBean.parametros.inicioDataSolicitacao}" size="8"
+              id="inicio-data-solicitacao">
+              <p:ajax event="change" update="fim-data-solicitacao" />
+              <p:ajax event="dateSelect" update="fim-data-solicitacao" />
+            </p:calendar>
+            <h:outputText value=" Até " />
+            <p:calendar value="#{pesquisarSolicitacaoRessarcimentoBean.parametros.fimDataSolicitacao}" size="8"
+              id="fim-data-solicitacao"
+              mindate="#{pesquisarSolicitacaoRessarcimentoBean.parametros.inicioDataSolicitacao}" />
+          </p:column>
+        </p:row>
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Estado:" />
+          </p:column>
+          <p:column>
+            <p:selectManyMenu value="#{pesquisarSolicitacaoRessarcimentoBean.parametros.estadosSolicitacaoProcedimento}"
+              converter="genericEnumConverter" id="estados-solicitacao-procedimento" style="width:200px;"
+              showCheckbox="true">
+              <f:selectItems value="#{pesquisarSolicitacaoRessarcimentoBean.estadosSolicitacaoProcedimento}" var="estado"
+                itemLabel="#{estado.label}" itemValue="#{estado}" />
+            </p:selectManyMenu>
+          </p:column>
+        </p:row>
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Estado da auditoria prospectiva:" />
+          </p:column>
+          <p:column>
+            <p:selectManyMenu value="#{pesquisarSolicitacaoRessarcimentoBean.parametros.estadoAuditoriaProspectiva}"
+              converter="genericEnumConverter" id="estados-auditoria-prospectiva" style="width:200px;"
+              showCheckbox="true">
+              <f:selectItems value="#{pesquisarSolicitacaoRessarcimentoBean.estadoAuditoriaProspectiva}" var="estado"
+                itemLabel="#{estado.label}" itemValue="#{estado}" />
+            </p:selectManyMenu>
+          </p:column>
+        </p:row>
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Titular:" />
+          </p:column>
+          <p:column>
+            <p:selectOneButton value="#{pesquisarSolicitacaoRessarcimentoBean.parametros.titular}"
+              converter="genericEnumConverter" id="titular">
+              <f:selectItems value="#{pesquisarSolicitacaoRessarcimentoBean.opcoesPesquisaBooleanList}" var="opcao"
+                itemLabel="#{opcao.label}" itemValue="#{opcao}" />
+            </p:selectOneButton>
+          </p:column>
+        </p:row>
+        
+<!--         <p:row> -->
+<!--           <p:column> -->
+<!--             <h:outputText value="Urgente:" /> -->
+<!--           </p:column> -->
+<!--           <p:column> -->
+<!--             <p:selectOneButton value="#{pesquisarSolicitacaoRessarcimentoBean.parametros.urgente}" -->
+<!--               converter="genericEnumConverter" id="urgente"> -->
+<!--               <f:selectItems value="#{pesquisarSolicitacaoRessarcimentoBean.opcoesPesquisaBooleanList}" var="opcao" -->
+<!--                 itemLabel="#{opcao.label}" itemValue="#{opcao}" /> -->
+<!--             </p:selectOneButton> -->
+<!--           </p:column> -->
+<!--         </p:row> -->
+
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Internação:" />
+          </p:column>
+          <p:column>
+            <p:selectOneButton value="#{pesquisarSolicitacaoRessarcimentoBean.parametros.internacao}"
+              converter="genericEnumConverter" id="internacao">
+              <f:selectItems value="#{pesquisarSolicitacaoRessarcimentoBean.opcoesPesquisaBooleanList}" var="opcao"
+                itemLabel="#{opcao.label}" itemValue="#{opcao}" />
+              <p:ajax event="change" update="local-internacao" />
+            </p:selectOneButton>
+            <p:selectOneMenu value="#{pesquisarSolicitacaoRessarcimentoBean.parametros.localInternacao}"
+              id="local-internacao" converter="genericEnumConverter"
+              disabled="#{pesquisarSolicitacaoRessarcimentoBean.parametros.internacao != 'SIM'}">
+              <f:selectItem itemLabel=":: Selecione ::" noSelectionOption="true" />
+              <f:selectItems value="#{pesquisarSolicitacaoRessarcimentoBean.locaisInternacao}" var="local"
+                itemLabel="#{local.label}" itemValue="#{local}" />
+            </p:selectOneMenu>
+          </p:column>
+        </p:row>
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Hipótese Diagnóstica (CID):" for="hipotese-diagnostica" />
+          </p:column>
+          <p:column>
+            <p:autoComplete value="#{pesquisarSolicitacaoRessarcimentoBean.parametros.cid}"
+              completeMethod="#{applicationBean.procurarCodigo}" size="50" forceSelection="true"
+              id="hipotese-diagnostica" var="hipoteseDiagnostica" itemValue="#{hipoteseDiagnostica}"
+              itemLabel="#{hipoteseDiagnostica.codigo.concat(' - ').concat(hipoteseDiagnostica.descricao)}"
+              minQueryLength="3" converter="jsonConverter" maxResults="10">
+              <p:ajax event="itemSelect" process="@this" />
+            </p:autoComplete>
+          </p:column>
+        </p:row>
+
+      </p:panelGrid>
+
+      <div class="vgap-10"></div>
+      <p:commandButton id="pesquisar" icon="fa fa-search" title="Pesquisar" styleClass="btn btn-success"
+        value="Pesquisar" label="Pesquisar" action="#{pesquisarSolicitacaoRessarcimentoBean.pesquisar}"
+        update="resultado" />
+
+      <div class="vgap-10"></div>
+
+      <p:dataTable value="#{pesquisarSolicitacaoRessarcimentoBean.solicitacoes}" var="vo" id="resultado"
+        styleClass="text-small" paginator="true" rows="10" emptyMessage="#{msgs.no_records_found}"
+        paginatorPosition="bottom" paginatorAlwaysVisible="false" rowsPerPageTemplate="10, 15, 25"
+        resizableColumns="false"
+        paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+        filteredValue="#{viewUtilsBean.filtrados}" filterDelay="300" rowHover="true">
+
+        <f:facet name="header">
+          <div class="text-right">
+            <span class="fa fa-file-excel-o"><h:commandButton value="exportar" styleClass="btn btn-link">
+                <p:dataExporter target="resultado" type="xls" fileName="RelatorioSolicitacoesRessarcimento"></p:dataExporter>
+              </h:commandButton></span>
+            <h:outputText value="Total: #{pesquisarSolicitacaoRessarcimentoBean.solicitacoes.size()}" />
+            <p:commandButton id="toggler" type="button" value="Colunas" icon="fa fa-columns" styleClass="margin-l-10" />
+            <p:columnToggler datasource="resultado" trigger="toggler">
+              <p:ajax event="toggle" listener="#{pesquisarSolicitacaoRessarcimentoBean.toggleHander}" />
+            </p:columnToggler>
+          </div>
+        </f:facet>
+        
+        <p:column styleClass="text-center" width="90" headerText="Divisão" sortBy="#{vo.solicitacao.divisao.label}"
+          visible="#{pesquisarSolicitacaoRessarcimentoBean.colunas[0]}" exportable="#{pesquisarSolicitacaoRessarcimentoBean.colunas[0]}">
+          <h:outputText value="#{vo.solicitacao.divisao.label}" />
+        </p:column>
+
+        <p:column styleClass="text-center" width="140" headerText="Código" sortBy="#{vo.solicitacao.numero}"
+          visible="#{pesquisarSolicitacaoRessarcimentoBean.colunas[1]}"
+          exportable="#{pesquisarSolicitacaoRessarcimentoBean.colunas[1]}">
+          <h:outputText value="#{vo.solicitacao.numero}" />
+        </p:column>
+
+        <p:column styleClass="text-center" width="60" headerText="OM"
+          sortBy="#{vo.solicitacao.organizacaoMilitarSolicitante.sigla}"
+          visible="#{pesquisarSolicitacaoRessarcimentoBean.colunas[2]}"
+          exportable="#{pesquisarSolicitacaoRessarcimentoBean.colunas[2]}">
+          <h:outputText value="#{vo.solicitacao.organizacaoMilitarSolicitante.sigla}" />
+        </p:column>
+
+        <p:column headerText="Beneficiário" width="200" sortBy="#{vo.solicitacao.beneficiario.nome}"
+          visible="#{pesquisarSolicitacaoRessarcimentoBean.colunas[3]}"
+          exportable="#{pesquisarSolicitacaoRessarcimentoBean.colunas[3]}">
+          <h:outputText value="#{vo.solicitacao.beneficiario.nome}" />
+        </p:column>
+
+        <p:column headerText="Idade Beneficiário" visible="#{pesquisarSolicitacaoRessarcimentoBean.colunas[4]}" 
+          exportable="#{pesquisarSolicitacaoRessarcimentoBean.colunas[4]}" width="60" styleClass="text-center">
+          <h:outputText value="#{vo.solicitacao.beneficiario.idade}"/>
+        </p:column>
+        
+        <p:column headerText="OM do Titular" styleClass="text-center" width="60"
+          visible="#{pesquisarSolicitacaoRessarcimentoBean.colunas[5]}"
+          exportable="#{pesquisarSolicitacaoRessarcimentoBean.colunas[5]}">
+          <h:outputText value="#{vo.solicitacao.beneficiario.organizacaoMilitar.sigla}"
+            rendered="#{vo.solicitacao.beneficiario.titular}" />
+          <h:outputText value="#{vo.solicitacao.beneficiario.beneficiarioTitular.organizacaoMilitar.sigla}"
+            rendered="#{!vo.solicitacao.beneficiario.titular}" />
+        </p:column>
+
+        <p:column headerText="Saram" width="50" sortBy="#{vo.solicitacao.beneficiario.saram}"
+          visible="#{pesquisarSolicitacaoRessarcimentoBean.colunas[6]}"
+          exportable="#{pesquisarSolicitacaoRessarcimentoBean.colunas[6]}">
+          <h:outputText value="#{vo.solicitacao.beneficiario.saram}" />
+        </p:column>
+
+        <p:column styleClass="text-center" headerText="Data solicitação" width="60"
+          sortBy="#{vo.solicitacao.dataSolicitacaoSistema}" visible="#{pesquisarSolicitacaoRessarcimentoBean.colunas[7]}"
+          exportable="#{pesquisarSolicitacaoRessarcimentoBean.colunas[7]}">
+          <h:outputText value="#{vo.solicitacao.dataSolicitacaoSistema}">
+            <f:convertDateTime pattern="dd/MM/yy" />
+          </h:outputText>
+        </p:column>
+
+<!--         <p:column headerText="Urgente" styleClass="text-center" width="40" sortBy="#{vo.solicitacao.urgente}" -->
+<!--           visible="#{pesquisarSolicitacaoRessarcimentoBean.colunas[6]}" -->
+<!--           exportable="#{pesquisarSolicitacaoRessarcimentoBean.colunas[6]}"> -->
+<!--           <h:outputText value="#{vo.solicitacao.urgente ? 'SIM' : ''}" styleClass="label label-important" /> -->
+<!--         </p:column> -->
+
+        <p:column headerText="Auditoria Prospectiva" styleClass="text-center" width="60"
+          sortBy="#{vo.estadoAuditoriaProspectiva}" visible="#{pesquisarSolicitacaoRessarcimentoBean.colunas[8]}"
+          exportable="#{pesquisarSolicitacaoRessarcimentoBean.colunas[8]}">
+          <h:outputText value="#{vo.estadoAuditoriaProspectiva == 'APROVADO' ? 'Aprovado' : ''}"
+            styleClass="text-success" />
+          <h:outputText value="#{vo.estadoAuditoriaProspectiva == 'REPROVADO' ? 'Reprovado' : ''}"
+            styleClass="text-error" />
+        </p:column>
+
+        <p:column headerText="Estado" width="60" sortBy="#{vo.solicitacao.estado.label}"
+          visible="#{pesquisarSolicitacaoRessarcimentoBean.colunas[9]}"
+          exportable="#{pesquisarSolicitacaoRessarcimentoBean.colunas[9]}">
+          <h:outputText value="#{vo.solicitacao.estado.label}" />
+        </p:column>
+
+        <p:column headerText="Local Internação" width="90" sortBy="#{vo.solicitacao.localInternacao.label}"
+          visible="#{pesquisarSolicitacaoRessarcimentoBean.colunas[10]}"
+          exportable="#{pesquisarSolicitacaoRessarcimentoBean.colunas[10]}">
+          <h:outputText value="#{vo.solicitacao.localInternacao.label}" />
+        </p:column>
+
+      </p:dataTable>
+
+    </h:form>
+
+  </ui:define>
+
+</ui:composition>

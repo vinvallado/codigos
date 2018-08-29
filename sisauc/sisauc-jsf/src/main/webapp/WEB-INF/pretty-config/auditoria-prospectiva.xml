@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pretty-config xmlns="http://ocpsoft.org/schema/rewrite-config-prettyfaces" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://ocpsoft.org/schema/rewrite-config-prettyfaces
+                      http://ocpsoft.org/xml/ns/prettyfaces/rewrite-config-prettyfaces.xsd">
+
+
+  <!-- AUDITORIA PROSPECTIVA -->
+  <url-mapping id="auditoria-prospectiva-lista">
+    <pattern value="/auditoria-prospectiva/pendentes" />
+    <view-id value="/pages/auditoria-prospectiva/solicitacoes-pendentes/solicitacoes-pendentes-lista.jsf" />
+  </url-mapping>
+
+  <url-mapping id="realizar-auditoria-prospectiva">
+    <pattern value="/auditoria-prospectiva/pendentes/#{id}" />
+    <view-id value="/pages/auditoria-prospectiva/realizar-auditoria-prospectiva/realizar-auditoria-prospectiva-wrapper.jsf" />
+  </url-mapping>
+
+  <!-- AUDITORIA PROSPECTIVA RESSARCIMENTO -->
+  <url-mapping id="auditoria-prospectiva-ressarcimento-lista">
+    <pattern value="/auditoria-prospectiva-ressarcimento/pendentes" />
+    <view-id value="/pages/auditoria-prospectiva-ressarcimento/solicitacoes-ressarcimento-pendentes-lista.jsf" />
+  </url-mapping>
+
+  <url-mapping id="realizar-auditoria-prospectiva-ressarcimento">
+    <pattern value="/auditoria-prospectiva-ressarcimento/pendentes/#{id}" />
+    <view-id value="/pages/auditoria-prospectiva-ressarcimento/realizar-auditoria-prospectiva-ressarcimento-wrapper.jsf" />
+  </url-mapping>
+
+</pretty-config>

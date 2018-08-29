@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<changeSet id="criar-tabela-cancelamento-lote-ressarcimento" author="douglasdpr">
+		<sql>
+			CREATE TABLE sch_sdga.cancelamento_lote_ressarcimento (
+			id integer NOT NULL,
+			id_lote integer NOT NULL,
+			nome_guerra_autor character varying(50) NOT
+			NULL,
+			justificativa text,
+			data_execucao timestamp without time zone NOT
+			NULL,
+			ip character varying(20),
+			host character varying(50),
+			CONSTRAINT
+			pk_cancelamento_lote_ar PRIMARY KEY (id),
+			CONSTRAINT
+			fk_cancelamento_lote_ressarcimento_lote FOREIGN KEY
+			(id_lote)
+			REFERENCES
+			sch_sisauc.lote_ressarcimento (id) MATCH SIMPLE
+			ON UPDATE NO ACTION ON DELETE NO
+			ACTION
+			);
+		</sql>
+	</changeSet>
+
+	<changeSet id="criar-cancelamento-lote-ar-seq" author="douglasdpr">
+		<sql>
+			CREATE SEQUENCE sch_sdga.cancelamento_lote_ar_seq
+			START WITH 1
+			INCREMENT BY 1
+			NO MINVALUE
+			NO MAXVALUE
+			CACHE 1;
+		</sql>
+	</changeSet>
+
+	<changeSet id="criar-tabela-cancelamento-lote-ressarcimento-itens" author="douglasdpr">
+		<sql>
+			CREATE TABLE sch_sdga.cancelamento_lote_ressarcimento_itens (
+			id_cancelamento_lote integer NOT NULL,
+			id_item_ar integer NOT NULL,
+			CONSTRAINT cancelamento_lote_ressarcimento_itens_pkey PRIMARY KEY (id_cancelamento_lote, id_item_ar),
+			CONSTRAINT fk_cancelamento_lote_ressarcimento_itens FOREIGN KEY
+			(id_cancelamento_lote)
+			REFERENCES sch_sdga.cancelamento_lote_ressarcimento (id)
+			MATCH SIMPLE
+			ON UPDATE NO ACTION ON DELETE NO ACTION,
+			CONSTRAINT
+			fk_id_item_ar FOREIGN KEY (id_item_ar)
+			REFERENCES
+			sch_sisauc.item_ar (id) MATCH SIMPLE
+			ON UPDATE NO ACTION ON DELETE NO
+			ACTION
+			);
+		</sql>
+	</changeSet>
+	
+	
+</databaseChangeLog>

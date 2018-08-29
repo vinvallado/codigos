@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      @page {
+        @top-right {
+          text-align: right;
+          font-size: 9pt;
+          content: '(FL ' counter(page)'/'counter(pages)' do ${nomeRelatorioPaginacao})' !important; 
+        }
+      }
+      #include("estilo-pdf.css")
+    </style>
+  </head>
+  <body>
+    <div class="text-center">
+      #include("timbre.txt")<br/>
+      <strong>MINISTÉRIO DA DEFESA</strong><br/>
+      COMANDO DA AERONÁUTICA<br/>
+      $om.nome.toUpperCase()<br/>
+      SUBDIVISÃO DE AUDITORIA TÉCNICA
+    </div>
+    <div class="vgap-10"></div>
+    <div class="text-center">
+      <u>NÃO CONFORMIDADES (Passíveis de Glosa)</u>
+    </div>
+    <div class="vgap-30"></div>
+    <div class="text-justify">
+    Período: $date.format('MMMM/yyyy' , $dataEmissao)<br/>
+    </div>
+    <div class="text-justify">
+    Credenciado: $eComercialEsc.escape($credenciado.nomeFantasia)<br/>
+    </div>
+    <div class="text-justify">
+    Esta fatura foi analisada pela Subdivisão de Auditoria Técnica deste hospital e foram encontradas as seguintes não conformidades:
+    </div>
+    <div class="vgap-10"></div>  
+      <table>        
+        <tr class="table-header">
+          <td width="120" class="text-center text-bold" style="width: 4cm">Nº GAB - Item</td>
+          <td class="text-center text-bold">Detalhes</td>
+        </tr>       
+      #foreach ($item in $itensGabSelecionados)
+        <tr class="avoid-line-break">
+          <td class="text-center #if($foreach.count%2!=0) row-odd #end">$item.codigo</td>
+          <td class="#if($foreach.count%2!=0) row-odd #end " style="padding: 0;">
+            <div style="padding: 5pt;">
+            
+              <strong>Beneficiário:</strong> 
+              $item.gab.beneficiario.nome<br/>
+            
+              <strong>Procedimento:</strong> 
+              $item.configuracao.procedimento.codigo - $item.configuracao.procedimento.descricao
+              #if ($item.configuracao.especialidade.sigla)
+                ($item.configuracao.especialidade.sigla)
+              #end<br/>
+
+              #if ($item.auditoriaRetrospectiva.motivo)
+                <strong>Não conformidade:</strong> $item.auditoriaRetrospectiva.motivo.descricao
+              #end
+              
+              #if ($item.auditoriaRetrospectiva.justificativaValorAuditado)
+                <br/>
+                <strong>Detalhes:</strong> $item.auditoriaRetrospectiva.justificativaValorAuditado
+              #end
+            </div>
+            <table border="0">
+              <tr>          
+                <td class="text-center #if($foreach.count%2!=0) row-odd #end" style="border-width: 1pt 1pt 0 0">Valor Apresentado: $number.currency($item.auditoriaRetrospectiva.valorApresentado)</td>
+                <td class="text-center #if($foreach.count%2!=0) row-odd #end" style="border-width: 1pt 1pt 0 0">Valor Auditado: $number.currency($item.auditoriaRetrospectiva.valorAuditado)</td>
+                <td class="text-center text-bold #if($foreach.count%2!=0) row-odd #end"  style="border-width: 1pt 0 0 0">Não Conformidade: #set($valorGlosa = $item.auditoriaRetrospectiva.valorApresentado - $item.auditoriaRetrospectiva.valorAuditado)
+                  $number.currency($valorGlosa)
+                </td>
+              </tr>
+            </table>
+          </td>
+      </tr>
+
+      #end
+    </table>
+    <div class="vgap-10"></div>
+    <div class="avoid-line-break">
+    <div class="vgap-10"></div>
+     <p class="text-right">
+       #if ($configuracao.cidadeRegional)
+         #set($cidade = $configuracao.cidadeRegional.nome)
+       #else
+         #set($cidade = $om.sigla)  
+       #end     
+       $cidade, $date.format('dd' , $dataEmissao) de $date.format('MMMM' , $dataEmissao) de $date.format('yyyy' , $dataEmissao).
+     </p>
+     <div class="vgap-10"></div>
+     <div class="vgap-10"></div>
+     <div class="text-center">
+       _______________________________<br/>
+       Auditor Técnico $om.sigla
+     </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>SISAUC - Sistema para Saúde Complementar</title>
+        <script type="text/javascript">
+            function escapeHtml(unsafe) {
+                return unsafe
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;")
+                    .replace(/:/g, "");
+            }
+            var sTopic = "1DadosdoSistema.html";
+            sTopic = escapeHtml(sTopic);
+            document.write('<frameset cols="17%,83%">');
+            document.write('<frame src="menu.html" name="Menu">');
+            document.write('<frame src="1DadosdoSistema.html" name="conteudoManual">');
+            document.write('</frameset>');
+        </script>
+        <link href="/img/favicon.ico" type="image/x-icon" rel="shortcut icon">
+    </head>
+</html>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+
+	<changeSet id="atualizacao-estado-itemgab-cuja-gabs-canceladas" author="januarioacsj">
+		<sql>
+			UPDATE sch_sisauc.item_gab SET estado = 'CANCELADO' WHERE id_gab in (SELECT id FROM sch_sisauc.gab WHERE estado = 'CANCELADA');
+		</sql>
+	
+	</changeSet>
+
+	<changeSet id="atualizacao-estado-emauditoria-itemgab" author="januarioacsj">
+		<sql>
+			UPDATE sch_sisauc.item_gab SET estado = 'AGUARDANDO_AUDITORIA' where estado = 'EM_AUDITORIA' and id_auditoria_retrospectiva
+				in(select id_auditoria_retrospectiva from sch_sisauc.historico_auditoria_retrospectiva
+					group by id_auditoria_retrospectiva having count(id) = 1 );
+			
+			UPDATE sch_sisauc.item_gab SET estado = 'AUDITORIA_INICIADA' where estado = 'EM_AUDITORIA' and id_auditoria_retrospectiva
+				in (select id_auditoria_retrospectiva from sch_sisauc.historico_auditoria_retrospectiva
+					group by id_auditoria_retrospectiva having count(id) > 1 );
+		</sql>
+	
+	</changeSet>
+	
+	<changeSet id="atualizacao-estado-auditado-para-conforme" author="januarioacsj">
+		<sql>
+			UPDATE sch_sisauc.item_gab SET estado = 'CONFORME' where estado = 'AUDITADO';
+		</sql>
+	
+	</changeSet>
+
+	<!-- Foi preciso colocar em um arquivo pois dentro da tag <sql> estava dando problema de SQL -->
+	<changeSet id="atualizar-estados-de-gab" author="tadeutbc">
+		<sqlFile relativeToChangelogFile="true" path="../sql/atualizar-gabs.sql" splitStatements="false"/>
+	</changeSet>
+
+
+
+
+	<changeSet id="criar-tabela-trs" author="tadeutbc">
+		<sql>
+
+			CREATE SEQUENCE sch_sisauc.procedimento_base_id_seq
+			  INCREMENT 1
+			  MINVALUE 1
+			  MAXVALUE 9223372036854775807
+			  START 1
+			  CACHE 1;
+			ALTER TABLE sch_sisauc.procedimento_base_id_seq
+			  OWNER TO sisauc;
+			
+			ALTER SEQUENCE sch_sisauc.procedimento_base_id_seq OWNED BY sch_sisauc.procedimento_base.id;
+			ALTER TABLE ONLY sch_sisauc.procedimento_base ALTER COLUMN id SET DEFAULT nextval('sch_sisauc.procedimento_base_id_seq'::regclass);
+			SELECT setval('sch_sisauc.procedimento_base_id_seq', 5000, true);
+
+			CREATE TABLE sch_sisauc.procedimento_trs
+			(
+			  id integer NOT NULL,
+			  valor_enfermaria double precision,
+			  valor_apartamento double precision,
+			  internacao boolean NOT NULL,
+			  CONSTRAINT procedimento_trs_pkey PRIMARY KEY (id),
+			  CONSTRAINT fk_procedimento_trs_procedimento_base FOREIGN KEY (id)
+			      REFERENCES sch_sisauc.procedimento_base (id) MATCH SIMPLE
+			      ON UPDATE NO ACTION ON DELETE NO ACTION
+			)
+			WITH (
+			  OIDS=FALSE
+			);
+			ALTER TABLE sch_sisauc.procedimento_trs
+			  OWNER TO sisauc;
+			  
+			-- dados para que seja possível começar a trabalhar no ressarcimento
+			INSERT INTO sch_sisauc.procedimento_base(codigo, descricao, tabela)
+			    VALUES ('20201044','Assistência cardiológica peroperatória em cirurgia geral e em parto (horas suplementares) - máximo de 4 horas','TRS');
+			INSERT INTO sch_sisauc.procedimento_trs(
+			            id, valor_enfermaria, valor_apartamento, internacao)
+			    VALUES (currval('sch_sisauc.procedimento_base_id_seq'), 42.00, null, false);
+
+			INSERT INTO sch_sisauc.procedimento_base(codigo, descricao, tabela)
+			    VALUES ('20201052','Cardioversão elétrica eletiva (avaliação clínica, eletrocardiográfica, indispensável à desfibrilação)','TRS');
+			INSERT INTO sch_sisauc.procedimento_trs(
+			            id, valor_enfermaria, valor_apartamento, internacao)
+			    VALUES (currval('sch_sisauc.procedimento_base_id_seq'), 67.00, null, false);
+
+
+			INSERT INTO sch_sisauc.procedimento_base(codigo, descricao, tabela)
+			    VALUES ('30101018','Abrasão cirúrgica (por sessão)','TRS');
+			INSERT INTO sch_sisauc.procedimento_trs(
+			            id, valor_enfermaria, valor_apartamento, internacao)
+			    VALUES (currval('sch_sisauc.procedimento_base_id_seq'),134.00,214.00, true);
+
+			INSERT INTO sch_sisauc.procedimento_base(codigo, descricao, tabela)
+			    VALUES ('30101026','Alopecia parcial - exérese e sutura','TRS');
+			INSERT INTO sch_sisauc.procedimento_trs(
+			            id, valor_enfermaria, valor_apartamento, internacao)
+			    VALUES (currval('sch_sisauc.procedimento_base_id_seq'), 256.75, 410.80, true);
+
+		</sql>
+	
+	</changeSet>
+
+</databaseChangeLog>

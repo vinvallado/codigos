@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	<p:dialog header="Finalizar Auditoria de ARE" id="finalizar-auditoria-ar"
+		widgetVar="finalizarAuditoriaARDialog" modal="true"	resizable="false">
+		<h:form id="finalizar-auditoria-ar-form">
+			<h:outputText value="Deseja FINALIZAR a auditoria da ARE?" />
+            <div class="vgap-10"></div>
+            <h:outputText value="Após a confirmação, a auditoria desta ARE não poderá ser refeita." />
+			<div class="vgap-30">
+				<!-- GAP 30px -->
+			</div>
+
+			<h:panelGroup styleClass="dialog-footer" layout="block">
+				<p:commandButton id="btn-sim-finalizar-auditoria" value="Sim" styleClass="btn btn-success"
+					icon="fa fa-save"
+					action="#{auditoriaRetrospectivaRessarcimentoFormularioBean.finalizar}"
+                    onclick="PF('finalizarAuditoriaARDialog').hide()" />
+				<p:commandButton id="btn-cancelar-finalizar-auditoria" value="Cancelar" styleClass="btn" icon="fa"
+					type="button" onclick="PF('finalizarAuditoriaARDialog').hide()" />
+			</h:panelGroup>
+
+		</h:form>
+	</p:dialog>
+
+
+
+</ui:composition>

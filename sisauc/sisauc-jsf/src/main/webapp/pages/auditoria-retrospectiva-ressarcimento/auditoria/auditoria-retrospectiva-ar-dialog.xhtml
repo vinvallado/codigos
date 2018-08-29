@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:sisauc="http://java.sun.com/jsf/composite/sisaucjsf">
+
+  <p:dialog header="Auditando Item de ARE" id="auditar-item-ar-dialog" widgetVar="auditoriaItemARDialog" modal="true"
+    resizable="false" onShow="maskPrefixOnlyPositiveNumbers('R$')" width="1200">
+    
+
+    <h:form id="auditar-item-ar-form" prependId="false">
+    
+      <p:messages  autoUpdate="true"/>
+
+      <p:panelGrid id="grid" columns="1">
+        
+
+        <h:panelGroup>
+          <p:selectBooleanCheckbox styleClass="margin-l-10 margin-r-10"
+            value="#{auditoriaRetrospectivaRessarcimentoFormularioBean.auditoriaRetrospectiva.naoRealizado}">
+            <p:ajax event="change" update="@form" oncomplete="maskPrefixOnlyPositiveNumbers('R$')" />
+          </p:selectBooleanCheckbox>
+          <h:outputText value="Item não realizado" />
+        </h:panelGroup>
+        
+        <p:dataTable id="especificacoes" var="especificacao" value="#{auditoriaRetrospectivaRessarcimentoFormularioBean.auditoriaRetrospectiva.especificacoes}" width="1200"
+          rendered="#{!auditoriaRetrospectivaRessarcimentoFormularioBean.auditoriaRetrospectiva.naoRealizado}" widgetVar="especificacao"
+          scrollable="true" scrollHeight="200">
+          
+          <f:facet name="header">
+            <p:commandButton value="Adicionar especificação" actionListener="#{auditoriaRetrospectivaRessarcimentoFormularioBean.adicionarLinhas}"
+              styleClass="btn btn-primary" icon="fa fa-plus" rendered="#{!auditoriaRetrospectivaRessarcimentoFormularioBean.auditoriaRetrospectiva.naoRealizado}"
+              update=":especificacoes"/>
+          </f:facet>
+          
+          <p:column headerText="Tipo" width="50">
+            <h:outputText value="#{especificacao.tipo.label}" rendered="#{especificacao.tipo == 'PROCEDIMENTO' or especificacao.tipo == 'OPME'}"/>
+            <p:selectOneMenu value="#{especificacao.tipo}" style="width: 150px;" rendered="#{especificacao.tipo != 'PROCEDIMENTO' and especificacao.tipo != 'OPME'}"
+              required="true" requiredMessage="Tipo: Campo Obrigatório.">
+              <f:selectItem itemLabel=":: Selecione ::" noSelectionOption="true" />
+              <f:selectItems value="#{auditoriaRetrospectivaRessarcimentoFormularioBean.tipoEspecificacoesAre}" var="tipo" itemLabel="#{tipo.label}" itemValue="#{tipo}"/>
+            </p:selectOneMenu>
+          </p:column>
+          
+          <p:column headerText="Descrição" width="250">
+            <h:outputText value="#{especificacao.descricao}" rendered="#{especificacao.tipo == 'PROCEDIMENTO' or especificacao.tipo == 'OPME'}" />
+            <h:outputText rendered="#{especificacao.dente != null}" value=" - Dente #{especificacao.dente}" />
+            <h:outputText rendered="#{especificacao.faceDental != null}" value=" - Face #{especificacao.faceDental.label}" />
+            <p:commandButton id="btn-observacao-are" styleClass="btn btn-link" value="Ler observação..." rendered="#{auditoriaRetrospectivaRessarcimentoFormularioBean.itemSelecionado.respostaRessarcimentoAuditoria.observacaoARE != null and especificacao.tipo == 'PROCEDIMENTO'}"/>
+            <p:overlayPanel for="btn-observacao-are" style="width:440px; " appendToBody="true">
+              <h:outputText value="#{auditoriaRetrospectivaRessarcimentoFormularioBean.itemSelecionado.respostaRessarcimentoAuditoria.observacaoARE}"/>
+            </p:overlayPanel>
+            <p:inputTextarea style="resize: none;" value="#{especificacao.descricao}" cols="75" rows="2" required="true" requiredMessage="Descrição: Campo Obrigatório."
+              rendered="#{especificacao.tipo != 'PROCEDIMENTO' and especificacao.tipo != 'OPME'}" maxlength="255" autoResize="false" />
+          </p:column>
+          
+          <p:column headerText="Valor Referência" width="50">
+            <h:outputText rendered="#{especificacao.tipo == 'PROCEDIMENTO' or especificacao.tipo == 'OPME'}"
+              value="#{especificacao.valorReferencia}">
+              <f:convertNumber pattern="R$ 0.00" />
+            </h:outputText>
+            <p:inputText rendered="#{especificacao.tipo != 'PROCEDIMENTO' and especificacao.tipo != 'OPME'}"
+              value="#{especificacao.valorReferencia}" required="true" requiredMessage="Valor Referência: Campo Obrigatório."
+              size="8" styleClass="number" converter="doubleConverter" id="valor-referencia" onfocus="maskPrefixOnlyPositiveNumbers('R$ ')">
+              <p:ajax update="valor-calculado-input valor-ressarcir-input especificacoes:valor-calculado-column-cel" />
+            </p:inputText>
+          </p:column>
+          
+          <p:column headerText="Valor Apresentado" width="50">
+            <p:inputText value="#{especificacao.valorApresentado}" required="true" requiredMessage="Valor Apresentado: Campo Obrigatório."
+              size="8" styleClass="number" converter="doubleConverter" id="valor-apresentado" onfocus="maskPrefixOnlyPositiveNumbers('R$ ')">
+              <p:ajax listener="#{auditoriaRetrospectivaRessarcimentoFormularioBean.onChangeValorApresentado}" 
+                update="valor-calculado-input valor-ressarcir-input especificacoes:valor-calculado-column-cel" />
+            </p:inputText>
+          </p:column>
+          
+          <p:column headerText="Valor Calculado" width="50" id="valor-calculado-column">
+            <h:outputText id="valor-calculado-column-cel"
+              value="#{especificacao.valorCalculado}">
+              <f:convertNumber pattern="R$ 0.00" />
+            </h:outputText>
+          </p:column>
+          
+          <p:column width="15" styleClass="text-center">
+            <p:commandButton id="excluir-especificacao" styleClass="btn btn-link" title="Excluir especificação"
+              icon="fa fa-times text-error" process="@this" action="#{auditoriaRetrospectivaRessarcimentoFormularioBean.removerLinhas(especificacao)}"
+              update="especificacoes valor-calculado-input valor-ressarcir-input" rendered="#{especificacao.tipo != 'PROCEDIMENTO' and especificacao.tipo != 'OPME'}">
+              <p:confirm header="Atenção" message="Tem certeza que deseja remover esta especificação?" /> 
+            </p:commandButton>
+          </p:column> 
+                   
+        </p:dataTable>
+        
+      </p:panelGrid>
+      
+      <p:panelGrid id="grid-2" columns="2">
+        <h:panelGroup rendered="#{auditoriaRetrospectivaRessarcimentoFormularioBean.auditoriaRetrospectiva.naoRealizado}">
+          <p:outputLabel value="Justificativa: " style="text-align:left;"/>
+          <p:inputTextarea cols="125" rows="3" maxlength="255" style="align:left;" 
+            value="#{auditoriaRetrospectivaRessarcimentoFormularioBean.auditoriaRetrospectiva.justificativa}"/>
+        </h:panelGroup>
+
+        <h:panelGroup id="valor-calculado-label">
+          <p:outputLabel value="Valor calculado: "
+            rendered="#{!auditoriaRetrospectivaRessarcimentoFormularioBean.auditoriaRetrospectiva.naoRealizado}" />
+        </h:panelGroup>
+        
+        <h:panelGroup id="valor-calculado-input">
+          <h:outputText
+            value="#{auditoriaRetrospectivaRessarcimentoFormularioBean.auditoriaRetrospectiva.valorCalculado}"
+            rendered="#{!auditoriaRetrospectivaRessarcimentoFormularioBean.auditoriaRetrospectiva.naoRealizado}">
+            <f:convertNumber pattern="R$ 0.00" />
+          </h:outputText>
+        </h:panelGroup>
+
+        <h:panelGroup id="valor-ressarcir-label">
+          <p:outputLabel value="Valor a ressarcir: "
+            rendered="#{!auditoriaRetrospectivaRessarcimentoFormularioBean.auditoriaRetrospectiva.naoRealizado}" />
+        </h:panelGroup>
+        
+        <h:panelGroup id="valor-ressarcir-input">
+          <h:outputText
+            value="#{auditoriaRetrospectivaRessarcimentoFormularioBean.auditoriaRetrospectiva.valorRessarcimento}"
+            style="color: green;" 
+            rendered="#{!auditoriaRetrospectivaRessarcimentoFormularioBean.auditoriaRetrospectiva.naoRealizado}">
+            <f:convertNumber pattern="R$ 0.00" />
+          </h:outputText>
+        </h:panelGroup>
+      </p:panelGrid>
+      
+      <div class="vgap-10" />
+
+      <p:commandButton value="Salvar" id="salvar-auditoria-item-ar"
+        styleClass="btn btn-success" icon="fa fa-save" validateClient="true"
+        update="@form tabview-auditoria-retrospectiva-ar:table-itens especificacoes:valor-calculado-column-cel"
+        action="#{auditoriaRetrospectivaRessarcimentoFormularioBean.salvarAuditoriaItemAR}" />
+
+      <a id="cancelar" class="btn" onclick="PF('auditoriaItemARDialog').hide()">Voltar</a>
+
+    </h:form>
+  </p:dialog>
+
+</ui:composition>

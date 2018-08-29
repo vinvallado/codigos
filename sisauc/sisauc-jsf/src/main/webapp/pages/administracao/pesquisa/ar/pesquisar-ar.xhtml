@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:sec="http://www.springframework.org/security/tags"
+  template="/resources/template/template.xhtml">
+
+  <ui:define name="html-title">Relatórios de ARE</ui:define>
+
+  <ui:define name="main">
+    <h3>Relatórios de ARE</h3>
+    <p:separator />
+    <div class="vgap-10"></div>
+    <h:form id="pesquisa-ar-form">
+      <p:panelGrid>
+        <sec:authorize ifAllGranted="PERFIL_DIRETOR">
+          <p:row>
+            <p:column>
+              <p:outputLabel value="Organizações Militares:" />
+            </p:column>
+            <p:column>
+              <p:selectCheckboxMenu id="organizacoesMilitares"
+                value="#{pesquisarARBean.parametros.organizacoesMilitares}" label="Organizações Militares"
+                filter="true" filterMatchMode="contains" panelStyle="width:250px" converter="jsonConverter">
+                <f:attribute name="collectionType" value="java.util.ArrayList" />
+                <f:selectItems value="#{pesquisarARBean.organizacoesMilitares}" var="om" itemLabel="#{om.sigla}"
+                  itemValue="#{om}" />
+              </p:selectCheckboxMenu>
+            </p:column>
+          </p:row>
+        </sec:authorize>
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Divisão:" />
+          </p:column>
+          <p:column>
+            <p:selectManyCheckbox value="#{pesquisarARBean.parametros.divisoes}"
+              converter="genericEnumConverter" id="divisoes" style="width:200px;"
+              showCheckbox="true">
+              <f:selectItems value="#{pesquisarARBean.divisoes}" var="divisao"
+                itemLabel="#{divisao.label}" itemValue="#{divisao}" />
+            </p:selectManyCheckbox>
+          </p:column>
+        </p:row>
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Código da ARE:" for="numero-ar-input" />
+          </p:column>
+          <p:column>
+            <p:inputText value="#{pesquisarARBean.parametros.numeroAR}" id="numero-ar-input" />
+          </p:column>
+        </p:row>
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Beneficiário:" for="beneficiario" />
+          </p:column>
+          <p:column>
+            <p:inputText value="#{pesquisarARBean.parametros.nomeBeneficiario}" id="beneficiario" />
+          </p:column>
+        </p:row>
+        <p:row>
+          <p:column>
+            <p:outputLabel value="SARAM:" for="saram" />
+          </p:column>
+          <p:column>
+            <p:inputText value="#{pesquisarARBean.parametros.saram}" id="saram" />
+          </p:column>
+        </p:row>
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Procedimento TRS:" for="procedimento-trs" />
+          </p:column>
+          <p:column>
+            <p:inputText value="#{pesquisarARBean.parametros.procedimento}" id="procedimento-trs" />
+          </p:column>
+        </p:row>
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Data de emissão:" />
+          </p:column>
+          <p:column>
+            <h:outputText value="De " />
+            <p:calendar value="#{pesquisarARBean.parametros.inicioDataEmissao}" size="8" id="inicio-data-emissao">
+              <p:ajax event="change" update="fim-data-emissao" />
+              <p:ajax event="dateSelect" update="fim-data-emissao" />
+            </p:calendar>
+            <h:outputText value=" Até " />
+            <p:calendar value="#{pesquisarARBean.parametros.fimDataEmissao}" size="8" id="fim-data-emissao"
+              mindate="#{pesquisarARBean.parametros.inicioDataEmissao}" />
+          </p:column>
+        </p:row>
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Data de apresentacao:" />
+          </p:column>
+          <p:column>
+            <h:outputText value="De " />
+            <p:calendar value="#{pesquisarARBean.parametros.inicioDataApresentacao}" size="8"
+              id="inicio-data-apresentacao">
+              <p:ajax event="change" update="fim-data-apresentacao" />
+              <p:ajax event="dateSelect" update="fim-data-apresentacao" />
+            </p:calendar>
+            <h:outputText value=" Até " />
+            <p:calendar value="#{pesquisarARBean.parametros.fimDataApresentacao}" size="8" id="fim-data-apresentacao"
+              mindate="#{pesquisarARBean.parametros.inicioDataApresentacao}" />
+          </p:column>
+        </p:row>
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Data nota fiscal:" />
+          </p:column>
+          <p:column>
+            <h:outputText value="De " />
+            <p:calendar value="#{pesquisarARBean.parametros.inicioDataNotaFiscal}" size="8"
+              id="inicio-data-nota-fiscal">
+              <p:ajax event="change" update="fim-data-nota-fiscal" />
+              <p:ajax event="dateSelect" update="fim-data-nota-fiscal" />
+            </p:calendar>
+            <h:outputText value=" Até " />
+            <p:calendar value="#{pesquisarARBean.parametros.fimDataNotaFiscal}" size="8" id="fim-data-nota-fiscal"
+              mindate="#{pesquisarARBean.parametros.inicioDataNotaFiscal}" />
+          </p:column>
+        </p:row>
+        <p:row>
+          <p:column>
+            <p:outputLabel value="CPF/CNPJ nota fiscal:" for="cpfCnpj-nota-fiscal-input" />
+          </p:column>
+          <p:column>
+            <p:inputText value="#{pesquisarARBean.parametros.cpfCnpjNotaFiscal}" id="cpfCnpj-nota-fiscal-input" />
+          </p:column>
+        </p:row>
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Titular:" />
+          </p:column>
+          <p:column>
+            <p:selectOneButton value="#{pesquisarARBean.parametros.titular}" converter="genericEnumConverter"
+              id="titular">
+              <f:selectItems value="#{pesquisarARBean.opcoesPesquisaBooleanList}" var="opcao"
+                itemLabel="#{opcao.label}" itemValue="#{opcao}" />
+            </p:selectOneButton>
+          </p:column>
+        </p:row>
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Estado:" />
+          </p:column>
+          <p:column>
+            <p:selectManyMenu value="#{pesquisarARBean.parametros.estadosAR}" converter="genericEnumConverter"
+              id="estados-ar" showCheckbox="true">
+              <f:selectItems value="#{pesquisarARBean.estadosAR}" var="estado" itemLabel="#{estado.label}"
+                itemValue="#{estado}" />
+            </p:selectManyMenu>
+          </p:column>
+        </p:row>
+
+      </p:panelGrid>
+
+      <div class="vgap-10"></div>
+      <p:commandButton id="pesquisar" icon="fa fa-search" title="Pesquisar" styleClass="btn btn-success"
+        value="Pesquisar" label="Pesquisar" action="#{pesquisarARBean.pesquisar}" update="resultado" />
+
+      <div class="vgap-10"></div>
+      
+      <p:dataTable value="#{pesquisarARBean.ars}" var="ar" id="resultado" styleClass="text-small" paginator="true"
+        rows="10" emptyMessage="#{msgs.no_records_found}" paginatorPosition="bottom" paginatorAlwaysVisible="false"
+        rowsPerPageTemplate="10, 15, 25" rowHover="true"
+        paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+        filteredValue="#{viewUtilsBean.filtrados}" filterDelay="300">
+        <f:facet name="header">
+          <div class="text-right">
+            <span class="fa fa-file-excel-o">
+              <h:commandButton value="exportar" styleClass="btn btn-link">
+                <p:dataExporter target="resultado" type="xls" fileName="RelatorioAr"/>
+              </h:commandButton>
+            </span>
+            <h:outputText value="ARE: #{pesquisarARBean.ars.size()}" styleClass="margin-l-10" />
+            <p:commandButton id="toggler" type="button" value="Colunas" icon="fa fa-columns" styleClass="margin-l-10" />
+            <p:columnToggler datasource="resultado" trigger="toggler">
+              <p:ajax event="toggle" listener="#{pesquisarARBean.toggleHandler}"/>
+            </p:columnToggler>            
+          </div>
+        </f:facet>
+        
+        <p:column styleClass="text-center" width="90" headerText="Divisão" sortBy="#{ar.divisao.label}"
+          visible="#{pesquisarARBean.colunas[0]}" 
+          exportable="#{pesquisarARBean.colunas[0]}">
+          <h:outputText value="#{ar.divisao.label}" />
+        </p:column>
+
+        <p:column styleClass="text-center" width="180" headerText="Código ARE" sortBy="#{ar.codigo}" 
+          visible="#{pesquisarARBean.colunas[1]}"
+          exportable="#{pesquisarARBean.colunas[1]}">
+          <h:outputText value="#{ar.codigo}" />
+        </p:column>
+        
+        <p:column styleClass="text-center" width="60" headerText="OM" sortBy="#{ar.organizacaoMilitar.sigla}"
+          visible="#{pesquisarARBean.colunas[2]}"
+          exportable="#{pesquisarARBean.colunas[2]}">
+          <h:outputText value="#{ar.organizacaoMilitar.sigla}" />
+        </p:column>
+
+        <p:column styleClass="text-center" headerText="Emissão" width="50" sortBy="#{ar.dataEmissao}"
+          visible="#{pesquisarARBean.colunas[3]}"
+          exportable="#{pesquisarARBean.colunas[3]}">
+          <h:outputText value="#{ar.dataEmissao}">
+            <f:convertDateTime pattern="dd/MM/yy" />
+          </h:outputText>
+        </p:column>
+
+        <p:column styleClass="text-center" headerText="Apresent." width="50" sortBy="#{ar.dataApresentacao}"
+          visible="#{pesquisarARBean.colunas[4]}"
+          exportable="#{pesquisarARBean.colunas[4]}">
+          <h:outputText value="#{ar.dataApresentacao}">
+            <f:convertDateTime pattern="dd/MM/yy" />
+          </h:outputText>
+        </p:column>
+
+        <p:column headerText="Beneficiário" width="200" sortBy="#{ar.beneficiario.nome}"
+          visible="#{pesquisarARBean.colunas[5]}"
+          exportable="#{pesquisarARBean.colunas[5]}">
+          <h:outputText value="#{ar.beneficiario.nome}" />
+        </p:column>
+        
+        <p:column styleClass="text-center" width="100" headerText="Nº nota fiscal" sortBy="#{ar.numeroNotaFiscal}" 
+          visible="#{pesquisarARBean.colunas[6]}"
+          exportable="#{pesquisarARBean.colunas[6]}">
+          <h:outputText value="#{ar.numeroNotaFiscal}" />
+        </p:column>
+        
+        <p:column styleClass="text-center" headerText="Data Nota Fiscal" width="50" sortBy="#{ar.dataNotaFiscal}"
+          visible="#{pesquisarARBean.colunas[7]}"
+          exportable="#{pesquisarARBean.colunas[7]}">
+          <h:outputText value="#{ar.dataNotaFiscal}">
+            <f:convertDateTime pattern="dd/MM/yy" />
+          </h:outputText>
+        </p:column>
+        
+        <p:column styleClass="text-center" width="100" headerText="CPF/CNPJ nota fiscal" sortBy="#{ar.cpfCnpjPrestador}" 
+          visible="#{pesquisarARBean.colunas[8]}"
+          exportable="#{pesquisarARBean.colunas[8]}">
+          <h:outputText value="#{ar.cpfCnpjPrestador}" />
+        </p:column>
+        
+        <p:column styleClass="text-center" width="70" headerText="Estado" sortBy="#{ar.estado.label}"
+          visible="#{pesquisarARBean.colunas[9]}"
+          exportable="#{pesquisarARBean.colunas[9]}">
+          <h:outputText value="#{ar.estado.label}" />
+        </p:column>
+ 
+      </p:dataTable>
+
+    </h:form>
+
+  </ui:define>
+
+</ui:composition>

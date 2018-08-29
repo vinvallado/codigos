@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<changeSet id="add-columns-relatorio-desconto-beneficiario" author="amersonpcb"
+		runAlways="true">
+		<sql>
+		ALTER TABLE sch_sisauc.relatorio_desconto_beneficiario ADD COLUMN data_hora_fim_envio timestamp without time zone;
+		ALTER TABLE sch_sisauc.relatorio_desconto_beneficiario ADD COLUMN data_hora_inicio_envio timestamp without time zone;
+		ALTER TABLE sch_sisauc.relatorio_desconto_beneficiario ADD COLUMN estado character varying(255);
+		</sql>
+	</changeSet>
+	<changeSet id="add-columns-relatorio-desconto-beneficiario-itens" author="amersonpcb"
+		runAlways="true">
+		<sql>
+		ALTER TABLE sch_sisauc.relatorio_desconto_beneficiario_itens ADD COLUMN id serial;
+		ALTER TABLE sch_sisauc.relatorio_desconto_beneficiario_itens ADD COLUMN valor_desconto_enviado double precision;
+		ALTER TABLE sch_sisauc.relatorio_desconto_beneficiario_itens ADD COLUMN estado character varying(255);
+		ALTER TABLE sch_sisauc.relatorio_desconto_beneficiario_itens ADD COLUMN id_desconto_gerado integer;
+		</sql>
+	</changeSet>
+
+	<changeSet id="add-columns-compatibilizacao-sisconsig" author="amersonpcb"
+		runAlways="true">
+		<sql>
+		ALTER TABLE sch_sisauc.beneficiario
+   			ADD COLUMN cd_parentesco character varying(3);
+		</sql>
+	</changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      @page {
+        @top-right {
+          text-align: right;
+          font-size: 9pt;
+          content: '(FL ' counter(page)'/'counter(pages)' da ${nomeRelatorioPaginacao} nº ${ar.codigo})' !important; 
+        }
+      }
+      #include("estilo-pdf.css");
+    </style>
+  </head>
+  <body class="text-bold">
+    <table>
+      <tr height="50%">
+        <td rowspan="2" class="text-center" width="25%">
+          Comando da Aeronáutica<br /> 
+          Comando Geral do Pessoal<br /> 
+          Diretoria de Saúde<br /> 
+          <span style="font-size: 18px;">$ar.organizacaoMilitar.sigla</span>
+        </td>
+        <td rowspan="2" class="text-center">
+          <span style="font-size: 18px;">Autorização de Ressarcimento</span><br />
+          <span style="font-size: 24px;">ARE</span><br />
+          <span style="font-size: 18px;">
+            #if ($arReimpressa)
+              REIMPRESSA
+            #end
+          </span>
+        </td>
+        <td width="27%" >
+          Número: $ar.codigo
+        </td>
+      </tr>
+      <tr height="50%">
+        <td>Data: 
+          #if ($ar.dataEmissao)
+            $date.format('dd/M/yyyy' , $ar.dataEmissao) 
+          #end
+        </td>
+      </tr>
+    </table>
+    <div class="vgap-10"></div>
+    <table class="estrutural">
+      <tr>
+        <td colspan="3">Nome do beneficiário: $ar.beneficiario.nome</td>
+      </tr>
+      <tr>
+        <td>Grau de dependencia:</td>
+        <td>CPF: 
+          $formatter.beneficiarioFormatter.getCpfFormatado($ar.beneficiario) 
+        </td>
+        <td>Internação: #if ($ar.auditoriaProspectiva.solicitacao.internacao) SIM - ($ar.auditoriaProspectiva.solicitacao.localInternacao) #end</td>
+      </tr>
+      <tr>
+        <td colspan="2">Nome do Titular: 
+          #if (! $ar.beneficiario.beneficiarioTitular.nome)
+            $!ar.beneficiario.nome 
+          #end 
+          $!ar.beneficiario.beneficiarioTitular.nome
+        </td>
+        <td>SARAM:
+          #if (!$ar.benecifiario.saram)
+            $!ar.beneficiario.beneficiarioTitular.saram 
+          #end
+          $!ar.beneficiario.saram
+        </td>
+      </tr>
+      <tr>
+        <td>Posto/Graduação/Cat: $!ar.beneficiario.postoGraduacao.descricao $!ar.beneficiario.beneficiarioTitular.postoGraduacao.descricao</td>
+        <td>CPF: 
+          $formatter.beneficiarioFormatter.getCpfFormatadoTitular($ar.beneficiario) 
+        </td>
+        <td>OM: 
+          #if (! $ar.beneficiario.beneficiarioTitular.organizaoMilitar.sigla) 
+            $!ar.beneficiario.organizacaoMilitar.sigla 
+          #end
+          $!ar.beneficiario.beneficiarioTitular.organizacaoMilitar.sigla
+        </td>
+      </tr>
+    </table>
+  
+    <div class="vgap-10"></div>
+  
+    <table class="procedimentos-ar">
+      <tr>
+        <td colspan="2" class="text-center">Procedimento/Material</td>
+        <td class="text-center" width="20%">Situação</td>
+      </tr>
+      #foreach ($item in $ar.itens)
+        <tr>
+          <td colspan="2">
+            #if ($item.procedimento.id == 9871)
+              $item.numeroItem - (TRS - $item.procedimento.codigo) - $item.procedimento.descricao (Ver observação $item.numeroItem)
+              #else 
+                $item.numeroItem - (TRS - $item.procedimento.codigo) - $item.procedimento.descricao
+            #end
+            #if ($item.especialidade)
+              ($item.especialidade.nome) 
+            #end <br /> 
+            #if ($item.respostaRessarcimentoAuditoria.opmeDescricao)
+              $eComercialEsc.escape($item.respostaRessarcimentoAuditoria.opmeDescricao) - Valor: $number.currency( $item.respostaRessarcimentoAuditoria.opmeValor ) <br/> 
+              <br /> 
+            #end 
+            #if ($item.dente)
+              <span style="margin-right: 20px">Dente: $item.dente </span>
+            #end 
+            #if ($item.faceDental)
+              <span style="margin-right: 20px">Face: $item.faceDental.label</span>
+            #end 
+          </td>
+          <td style="border-left: 1pt solid #000">
+            $item.estadoItemAR.label
+          </td>
+        </tr>
+      #end
+        <tr>
+          <td colspan="3" style="border-top:1pt solid #000">
+            Observações <br />
+            #foreach ($item in $ar.itens)
+              #if ($item.observacaoARE)
+                $item.numeroItem - (TRS - $item.procedimento.codigo) - $eComercialEsc.escape($item.observacaoARE)
+            <br />
+              #end  
+            #end
+          </td>
+        </tr>
+    </table>
+    
+    <div class="vgap-100"/>
+    
+    <div class="text-center">
+      <hr style="width: 300px;"/>
+      Assinatura do Auditor
+    </div>
+    
+    <div class="vgap-30"/>
+    
+    <div class="text-center" style="border-style: dashed; font-size: 20px; padding: 10px;">
+      O valor a ser ressarcido corresponderá a 80% do valor apresentado,<br/>
+      desde que NÃO EXCEDA o limite estabelecido (80%) da tabela de<br/>
+      ressarcimento da SARAM (ICA 160-24)
+    </div>
+    
+    <div class="vgap-10"/>
+    
+    <div class="text-center">Esta autorização tem validade de 30 dias a contar da data de emissão</div>
+    
+  </body>
+</html>

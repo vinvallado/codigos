@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets">
+
+  <h:form id="formulario-solicitacao-ressarcimento-bloqueado"
+    rendered="#{cadastroSolicitacaoRessarcimentoFormularioBean.solicitacao.estado == 'ENVIADA_PARA_AUDITORIA' || cadastroSolicitacaoRessarcimentoFormularioBean.solicitacao.estado == 'AUDITADA'}"
+    enctype="multipart/form-data">
+
+    <p:tabView id="tabview-visualizar-solicitacao">
+      <p:tab title="Dados da Solicitação" id="tab-dados-solicitacao">
+        <p:panelGrid id="grid">
+
+          <p:row>
+            <p:column>
+              <h4>
+                <h:outputText value="#{cadastroSolicitacaoRessarcimentoFormularioBean.solicitacao.numero} do dia " />
+                <h:outputText
+                  value="#{cadastroSolicitacaoRessarcimentoFormularioBean.solicitacao.dataSolicitacaoSistema}">
+                  <f:convertDateTime pattern="dd/MM/yyyy" readonly="true" />
+                </h:outputText>
+              </h4>
+            </p:column>
+          </p:row>
+          
+          <p:row>
+            <p:column>
+              <h:outputText value="Divisão: " style="font-weight:bold;" />
+              <h:outputText value="#{cadastroSolicitacaoRessarcimentoFormularioBean.solicitacao.divisao.label}" />
+            </p:column>
+          </p:row>
+
+          <p:row>
+            <p:column>
+              <h:outputText value="Enviada por: " style="font-weight:bold;" />
+              <h:outputText
+                value="#{cadastroSolicitacaoRessarcimentoFormularioBean.solicitacao.autorSolicitacaoSistema.nome}" />
+            </p:column>
+          </p:row>
+
+          <p:row>
+            <p:column>
+              <h:outputText value="Beneficiário: " style="font-weight:bold;" />
+              <h:outputText
+                value="#{cadastroSolicitacaoRessarcimentoFormularioBean.solicitacao.beneficiario.postoGraduacao.descricao} "
+                rendered="#{cadastroSolicitacaoRessarcimentoFormularioBean.solicitacao.beneficiario.postoGraduacao.descricao != null}" />
+              <h:outputText value="#{cadastroSolicitacaoRessarcimentoFormularioBean.solicitacao.beneficiario.nome}" />
+              <h:outputText value=" do(a) "
+                rendered="#{cadastroSolicitacaoRessarcimentoFormularioBean.solicitacao.beneficiario.postoGraduacao.descricao != null}" />
+              <h:outputText style="font-weight:bold;text-decoration: underline;"
+                value="#{cadastroSolicitacaoRessarcimentoFormularioBean.solicitacao.beneficiario.organizacaoMilitar.sigla}"
+                rendered="#{cadastroSolicitacaoRessarcimentoFormularioBean.solicitacao.beneficiario.postoGraduacao.descricao != null}" />
+              <h:outputText value=", " />
+              <h:outputText
+                value="#{formatterBean.beneficiarioFormatter.toIdadeMedica(cadastroSolicitacaoRessarcimentoFormularioBean.solicitacao.beneficiario)}" />
+            </p:column>
+          </p:row>
+
+          <p:row
+            rendered="#{cadastroSolicitacaoRessarcimentoFormularioBean.solicitacao.beneficiario.beneficiarioTitular.nome != null}">
+            <p:column>
+              <h:outputText value="Responsável: " style="font-weight:bold;" />
+              <h:outputText
+                value="#{cadastroSolicitacaoRessarcimentoFormularioBean.solicitacao.beneficiario.beneficiarioTitular.postoGraduacao.descricao} " />
+              <h:outputText
+                value="#{cadastroSolicitacaoRessarcimentoFormularioBean.solicitacao.beneficiario.beneficiarioTitular.nome} do(a) " />
+              <h:outputText style="font-weight:bold;text-decoration: underline;"
+                value="#{cadastroSolicitacaoRessarcimentoFormularioBean.solicitacao.beneficiario.beneficiarioTitular.organizacaoMilitar.sigla}" />
+            </p:column>
+          </p:row>
+
+          <p:row>
+            <p:column>
+              <h:outputText value="Isento: " style="font-weight:bold;"
+                rendered="#{cadastroSolicitacaoRessarcimentoFormularioBean.solicitacao.isento == false}" />
+              <h:outputText value="Isento: " style="font-weight:bold;color:red;"
+                rendered="#{cadastroSolicitacaoRessarcimentoFormularioBean.solicitacao.isento == true}" />
+              <h:outputText value="#{cadastroSolicitacaoRessarcimentoFormularioBean.solicitacao.isento ? 'SIM' : 'NÃO'}" />
+              <h:outputText
+                value=" (#{cadastroSolicitacaoRessarcimentoFormularioBean.solicitacao.especificacao.tipoCobranca})"
+                rendered="#{cadastroSolicitacaoRessarcimentoFormularioBean.solicitacao.isento == true}" />
+            </p:column>
+          </p:row>
+
+          <p:row>
+            <p:column>
+              <h:outputText value="Internação: " style="font-weight:bold;" />
+              <h:outputText value="#{cadastroSolicitacaoRessarcimentoFormularioBean.solicitacao.internacao ? 'SIM' : 'NÃO'}" />
+              <h:outputText value=" (#{cadastroSolicitacaoRessarcimentoFormularioBean.solicitacao.localInternacao.label})"
+                rendered="#{cadastroSolicitacaoRessarcimentoFormularioBean.solicitacao.internacao == true}" />
+            </p:column>
+          </p:row>
+
+          <p:row rendered="#{cadastroSolicitacaoRessarcimentoFormularioBean.solicitacao.hipoteseDiagnostica != null}">
+            <p:column>
+              <h:outputText value="Hipótese Diagnóstica (CID): " style="font-weight:bold;" />
+              <h:outputText value="#{cadastroSolicitacaoRessarcimentoFormularioBean.solicitacao.hipoteseDiagnostica.descricao}" />
+            </p:column>
+          </p:row>
+          
+          <p:row rendered="#{cadastroSolicitacaoRessarcimentoFormularioBean.solicitacao.medicoSolicitante != null}">
+            <p:column>
+              <h:outputText value="Profissional Solicitante: " style="font-weight:bold;" />
+              <h:outputText value="#{cadastroSolicitacaoRessarcimentoFormularioBean.solicitacao.medicoSolicitante.nome}" />
+            </p:column>
+          </p:row>
+
+          <p:row>
+            <p:column>
+              <h:outputText value="Dados Clínicos" style="font-weight:bold;" /> <br />
+              <h:outputText value="#{cadastroSolicitacaoRessarcimentoFormularioBean.solicitacao.dadosClinicos}" />
+            </p:column>
+          </p:row>
+
+          <p:row>
+            <p:column>
+              <h:outputText value="Observações" style="font-weight:bold;" /> <br />
+              <h:outputText value="#{cadastroSolicitacaoRessarcimentoFormularioBean.solicitacao.observacoes}"
+                rendered="#{cadastroSolicitacaoRessarcimentoFormularioBean.solicitacao.observacoes != null}" />
+              <h:outputText value="Não há observação" styleClass="muted"
+                rendered="#{cadastroSolicitacaoRessarcimentoFormularioBean.solicitacao.observacoes == null}" />
+            </p:column>
+          </p:row>
+
+          <p:row rendered="#{cadastroSolicitacaoRessarcimentoFormularioBean.solicitacao.arquivo != null}">
+            <p:column>
+              <h:outputText value="Arquivo" style="font-weight:bold;" /> <br />
+              <a href="#{request.contextPath}/download/solicitacao/#{cadastroSolicitacaoRessarcimentoFormularioBean.solicitacao.id}"
+                class="btn btn-link"> <span class="fa fa-download"></span>
+                <span>Download</span>
+              </a>
+               ou
+              <p:commandButton value="Visualizar" onclick="PF('verPdf').show()" styleClass="btn btn-link"
+                icon="fa fa-file-pdf-o" style="margin:0px" />
+            </p:column>
+          </p:row>
+
+        </p:panelGrid>
+
+        <div class="vgap-10" />
+
+        <p:dataTable id="tabela" value="#{cadastroSolicitacaoRessarcimentoFormularioBean.solicitacao.procedimentos}"
+          var="pedido" paginator="true" rows="5" paginatorPosition="bottom" paginatorAlwaysVisible="false"
+          rowsPerPageTemplate="5, 10" emptyMessage="#{msgs.no_records_found}"
+          paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+          filteredValue="#{viewUtilsBean.filtrados}" filterDelay="300" widgetVar="datatable">
+
+          <f:facet name="header">
+            <h:outputText value="Procedimentos solicitados" />
+          </f:facet>
+
+          <p:column headerText="Tabela" width="120">
+            <h:outputText value="#{pedido.procedimento.tabela.nome}" />
+            <h:outputText value="Outros" rendered="#{pedido.procedimento == null}" />
+          </p:column>
+
+          <p:column headerText="Procedimento">
+            <h:outputText value="#{formatterBean.procedimentoFormatter.getCodigoDescricao(pedido.procedimento)}" />
+            <h:outputText rendered="#{pedido.especialidade.sigla != null}" value=" (#{pedido.especialidade.sigla})" />
+            <h:outputText rendered="#{pedido.dente != null}" value=" - Dente #{pedido.dente}" />
+            <h:outputText rendered="#{pedido.faceDental != null}" value=" - Face #{pedido.faceDental.label}" />
+            <h:outputText value="#{pedido.descricaoOutros}" />
+          </p:column>
+
+          <p:column width="60" headerText="Qtde" styleClass="text-center">
+            <h:outputText value="#{pedido.quantidade}"/>
+          </p:column>
+
+          <p:column width="80" headerText="Orçamento">
+            <h:outputText value="#{pedido.orcamento}">
+              <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR"  />
+            </h:outputText>
+          </p:column>
+
+        </p:dataTable>
+
+      </p:tab>
+      
+      <p:tab title="Dados da Apresentação" id="tab-apresentacao"
+          rendered="#{cadastroSolicitacaoRessarcimentoFormularioBean.solicitacao.naoEletiva}">
+        <div class="vgap-10" />
+
+        <p:panelGrid id="grid-apresentacao" columns="2">
+          <h:outputText value="Número Nota Fiscal: " style="font-weight: bold;"/>
+          <h:outputText value="#{cadastroSolicitacaoRessarcimentoFormularioBean.solicitacao.apresentacao.numeroNotaFiscal}" />
+  
+          <h:outputText value="Data Nota Fiscal: " style="font-weight: bold;"/>
+          <h:outputText value="#{cadastroSolicitacaoRessarcimentoFormularioBean.solicitacao.apresentacao.dataNotaFiscal}">
+            <f:convertDateTime pattern="dd/MM/yyyy" />
+          </h:outputText>
+  
+          <h:outputText value="CPF/CNPJ Prestador: " style="font-weight: bold;"/>
+          <h:outputText value="#{cadastroSolicitacaoRessarcimentoFormularioBean.solicitacao.apresentacao.cpfCnpjPrestador}" />
+  
+          <h:outputText value="Nome/Razão Social Prestador: " style="font-weight: bold;"/>
+          <h:outputText value="#{cadastroSolicitacaoRessarcimentoFormularioBean.solicitacao.apresentacao.nomePrestador}" />
+  
+          <h:outputText value="Arquivo Nota Fiscal: " style="font-weight: bold;" />
+          <p:commandLink styleClass="btn btn-link" ajax="false"
+            action="#{cadastroSolicitacaoRessarcimentoFormularioBean.downloadNotaFiscal}">
+            <span class="fa fa-download"></span> <span>Download</span>
+          </p:commandLink>
+  
+          <h:outputText value="Arquivo Requerimento Ressarcimento: " style="font-weight: bold;" />
+          <p:commandLink styleClass="btn btn-link" ajax="false"
+            action="#{cadastroSolicitacaoRessarcimentoFormularioBean.downloadRequerimento}">
+            <span class="fa fa-download"></span> <span>Download</span>
+          </p:commandLink>
+        </p:panelGrid>
+      </p:tab>
+      
+      <p:tab title="Auditoria Prospectiva Ressarcimento" id="tab-auditoria-prospectiva-ressarcimento"
+        rendered="#{(cadastroSolicitacaoRessarcimentoFormularioBean.auditoriaProspectivaRessarcimento != null)}">
+        <div class="vgap-20" />
+
+        <p:panelGrid id="grid-auditoria">
+          <p:row>
+            <p:column>
+              <h:outputText value="Estado Auditoria: " style="font-weight:bold;" />
+              <h:outputText value="#{cadastroSolicitacaoRessarcimentoFormularioBean.auditoriaProspectivaRessarcimento.estado.label}" />
+            </p:column>
+          </p:row>
+          <p:row>
+            <p:column>
+              <h:outputText value="Data: " style="font-weight:bold;" />
+              <h:outputText value="#{cadastroSolicitacaoRessarcimentoFormularioBean.auditoriaProspectivaRessarcimento.dataFinalAuditoria}">
+                <f:convertDateTime pattern="dd/MM/yyyy" />
+              </h:outputText>
+            </p:column>
+          </p:row>
+          <p:row>
+            <p:column>
+              <h:outputText value="Observações: " style="font-weight:bold;" />
+              <h:outputText value="#{cadastroSolicitacaoRessarcimentoFormularioBean.auditoriaProspectivaRessarcimento.observacoes}"
+                rendered="#{cadastroSolicitacaoRessarcimentoFormularioBean.auditoriaProspectivaRessarcimento.observacoes != null}" />
+              <h:outputText value="Não há observação" styleClass="muted" rendered="#{cadastroSolicitacaoRessarcimentoFormularioBean.auditoriaProspectivaRessarcimento.observacoes == null}" />
+              <h:outputText value="Não há observação" styleClass="muted" rendered="#{cadastroSolicitacaoRessarcimentoFormularioBean.auditoriaProspectivaRessarcimento.observacoes == ''}" />  
+            </p:column>
+          </p:row>
+        </p:panelGrid>
+
+        <p:dataTable id="tabela-procedimentos-nao-aprovados"
+          value="#{cadastroSolicitacaoRessarcimentoFormularioBean.auditoriaProspectivaRessarcimento.procedimentos}" var="procedimento"
+          paginator="true" rows="5" paginatorPosition="bottom" paginatorAlwaysVisible="false"
+          rowsPerPageTemplate="5, 10" emptyMessage="#{msgs.no_records_found}"
+          paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+          filteredValue="#{viewUtilsBean.filtrados}" filterDelay="300" widgetVar="datatablex">
+
+          <f:facet name="header">
+            <h:outputText value="Procedimentos Auditados" />
+          </f:facet>
+
+          <p:column id="procedimento-x" headerText="Procedimento">
+            <h:outputText
+              value="#{formatterBean.procedimentoFormatter.getCodigoDescricao(procedimento.procedimento)}" />
+            <h:outputText rendered="#{procedimento.especialidade.sigla != null}"
+              value=" (#{procedimento.especialidade.sigla})" />  
+            <h:outputText rendered="#{procedimento.dente != null}" value=" - Dente #{procedimento.dente}" />
+            <h:outputText rendered="#{procedimento.faceDental != null}" value=" - Face #{procedimento.faceDental.label}" />          
+            <h:outputLabel id="observacao-are" styleClass="btn btn-link fa fa-info"
+              rendered="#{procedimento.observacaoARE != null}" />
+            <p:tooltip id="toolTipObservacaoARE" for="observacao-are" styleClass="preformatted"
+              value="OBS: #{procedimento.observacaoARE}" /> 
+          </p:column>
+
+          <p:column id="valor" headerText="Orçamento" width="100" style="text-align:center">
+            <h:outputText
+              value="#{procedimento.orcamento}">
+              <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR"  />
+            </h:outputText>
+          </p:column>
+
+          <p:column id="aprovado" headerText="Aprovado" width="60" style="text-align:center">
+            <h:outputText value="#{viewUtilsBean.booleanLabel(procedimento.aprovado)}"
+              styleClass="#{procedimento.aprovado ? 'text-success' : 'text-error'}" />
+          </p:column>
+
+          <p:column id="justificativa" headerText="Justificativa" width="100" style="text-align:center">
+            <h:outputLabel id="justificativa-auditoria" styleClass="btn btn-link fa fa-info"
+              rendered="#{procedimento.justificativa != null}" />
+            <p:tooltip id="toolTipJustificativaAuditoria" for="justificativa-auditoria"
+              value="#{procedimento.justificativa}" />
+            <h:outputLabel value="Não há" styleClass="muted" rendered="#{procedimento.justificativa == null}" />
+          </p:column>
+
+        </p:dataTable>
+
+        <div class="vgap-10" />
+
+        <p:panel style="text-align:center" rendered="#{cadastroSolicitacaoRessarcimentoFormularioBean.solicitacao.arquivo != null}">
+          <p:commandButton type="button" value="Visualizar cópia da solicitação" onclick="PF('verPdf').show()"
+            styleClass="btn" icon="fa fa-file-pdf-o" />
+          <br />
+          <a href="#{request.contextPath}/download/solicitacao/#{cadastroSolicitacaoRessarcimentoFormularioBean.solicitacao.id}"
+            class="btn btn-link"> <SPAN class="fa fa-download" /> <span>Clique aqui para baixar o arquivo</span>
+          </a>
+        </p:panel>
+      </p:tab>
+
+      <p:tab title="ARE geradas" id="tab-ars-geradas"
+        rendered="#{(cadastroSolicitacaoRessarcimentoFormularioBean.arsGeradas != null and !cadastroSolicitacaoRessarcimentoFormularioBean.arsGeradas.isEmpty())}">
+        <div class="vgap-10" />
+
+        <p:dataTable value="#{cadastroSolicitacaoRessarcimentoFormularioBean.arsGeradas}" paginator="true" rows="5"
+          emptyMessage="#{msgs.no_records_found}" paginatorPosition="bottom" paginatorAlwaysVisible="false"
+          rowsPerPageTemplate="5, 10"
+          paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+          var="ar" id="lista-ars-historico">
+
+          <p:column headerText="Nº ARE" width="120">
+            <h:outputText value="#{ar.codigo}" id="lista-num-are" style="text-align:center" />
+          </p:column>
+          <p:column headerText="Data Geração ARE" width="70" styleClass="text-center">
+            <h:outputText value="#{ar.dataGeracao}">
+              <f:convertDateTime pattern="dd/MM/yyyy" readonly="true" />
+            </h:outputText>
+          </p:column>
+          <p:column headerText="Estado" width="100" styleClass="text-center">
+            <h:outputText value="#{ar.estado.label}" />
+          </p:column>
+          <p:column id="justificativa" headerText="Justificativa cancelamento" width="30" style="text-align:center">
+            <h:outputLabel id="btn-justificativa" styleClass="btn btn-link fa fa-info"
+              rendered="#{ar.justificativaCancelamentoAR != null}" />
+            <p:tooltip id="toolTipJustificativaAR" for="btn-justificativa" value="#{ar.justificativaCancelamentoAR}" />
+            <h:outputLabel value="Não há" styleClass="muted" rendered="#{ar.justificativaCancelamentoAR == null}" />
+          </p:column>
+        </p:dataTable>
+
+      </p:tab>
+
+      <div class="vgap-20" />
+
+    </p:tabView>
+
+    <a onClick="history.back();" class="btn">Voltar</a>
+  </h:form>
+
+
+</ui:composition>

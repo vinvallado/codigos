@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+         
+	<changeSet id="procedimento-trs-padrao" author="januarioacsj">
+		<sql>
+			insert into sch_sisauc.procedimento_base values (9871,'00000001','Outros Procedimentos','TRS');
+			insert into sch_sisauc.procedimento_trs values (9871,null,null,false);		  
+		</sql>
+	</changeSet>
+	
+	<changeSet id="valor-referencia-auditor" author="januarioacsj">
+		<sql>
+			ALTER TABLE sch_sisauc.resposta_ressarcimento_auditoria
+  				ADD COLUMN valor_referencia_auditor double precision;  
+		</sql>
+	</changeSet>
+	
+	<changeSet id="coluna-auditor-auditoria-retrospectiva" author="januarioacsj">
+		<sql>
+			ALTER TABLE sch_sisauc.auditoria_retrospectiva
+  				ADD COLUMN id_auditor integer; 
+		</sql>
+	</changeSet>
+	
+	<changeSet id="migracao-auditor" author="januarioacsj">
+		<sqlFile relativeToChangelogFile="true" path="../sql/query_auditoria_retrospectiva_id_auditor.sql" splitStatements="false"/>
+	</changeSet>
+         
+</databaseChangeLog>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets">
+
+  <h:form id="configuracao-mensagens">
+    <p:messages id="msgs" showIcon="false" />
+    <div class="vgap-20"></div>
+    <h4>Não conformidades - Auditoria Retrospectiva</h4>
+    <p:pickList id="pickListNaoHabilitadas" styleClass="nao-conformidades"
+      value="#{configuracaoMensagensBean.dualList}"
+      var="naoConformidade" itemLabel="#{naoConformidade.grupo} - #{naoConformidade.codigo} - #{naoConformidade.descricao}"
+      itemValue="#{naoConformidade}" showSourceFilter="true"
+      showTargetFilter="true" converter="jsonConverter"
+      filterMatchMode="contains">
+      <f:facet name="sourceCaption">Não Habilitadas</f:facet>
+      <f:facet name="targetCaption">Habilitadas</f:facet>
+      <p:column>
+        <strong>#{naoConformidade.grupo}</strong> - #{naoConformidade.codigo} - #{naoConformidade.descricao}
+      </p:column>
+    </p:pickList>
+
+    <div class="vgap-10"></div>
+
+    <p:commandButton value="Salvar" styleClass="btn btn-success"
+      icon="fa fa-save" validateClient="true"
+      action="#{configuracaoMensagensBean.salvar}" update="@form"
+      id="salvar" />
+
+  </h:form>
+</ui:composition>

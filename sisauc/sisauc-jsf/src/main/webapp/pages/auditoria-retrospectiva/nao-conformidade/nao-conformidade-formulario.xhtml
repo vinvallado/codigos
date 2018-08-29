@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" template="/resources/template/template.xhtml">
+
+  <ui:define name="html-title">Não Conformidade</ui:define>
+  
+  <ui:define name="html-head">
+    <link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/css/impressao.css?v=#{versaoInterna}" />
+  </ui:define>
+
+  <ui:define name="main">
+    <h3>Gerar Relatório de Não Conformidade</h3>
+
+    <p:separator />
+
+    <div class="vgap-10" />
+
+    <h:form id="nao-conformidade-form">
+      <p:messages id="msg" showIcon="false" >
+        <p:effect type="fadeout" event="load" delay="4500">
+          <f:param name="mode" value="'hide'" />
+        </p:effect>
+      </p:messages>
+
+      <p:panelGrid>
+        <p:row>
+          <p:column>
+            <h:outputText value="Selecione um Credenciado:" />
+          </p:column>
+          <p:column>
+            <p:selectOneMenu value="#{naoConformidadeFormularioBean.credenciado}" id="credenciado"
+              converter="jsonConverter" filter="true" filterMatchMode="contains">
+              <f:selectItem itemLabel=":: Visualizar todos ::" noSelectionOption="true"/>
+              <p:ajax event="change" listener="#{naoConformidadeFormularioBean.atualizarItensGabPorCredenciado}"
+                update="@form" />
+              <f:selectItems value="#{naoConformidadeFormularioBean.credenciados}" var="credenciado"
+                itemLabel="#{credenciado.nomeFantasia}" itemValue="#{credenciado}" />
+            </p:selectOneMenu>
+          </p:column>
+          <p:column>
+
+          </p:column>
+        </p:row>
+      </p:panelGrid>
+
+      <div class="vgap-30" />
+
+      <p:dataTable value="#{naoConformidadeFormularioBean.itensGab}" paginator="true" rows="15"
+        emptyMessage="#{msgs.no_records_found}" id="tableItensGab" paginatorPosition="bottom"
+        paginatorAlwaysVisible="false" rowsPerPageTemplate="15, 20, 25" sortBy="#{itemGab.codigo}"
+        paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+        var="itemGab" selection="#{naoConformidadeFormularioBean.itensGabSelecionados}" rowKey="#{itemGab.id}">
+
+        <p:column style="width:16px; text-align:center" selectionMode="multiple">
+        </p:column>
+        <p:column headerText="Divisão" width="90" styleClass="text-center" filterOptions="#{viewUtilsBean.divisoesOptions()}" filterBy="#{itemGab.gab.divisao}">
+          <a title="Divisão Médica"><h:panelGroup styleClass="fa fa-tag muted" rendered="#{itemGab.gab.divisao == 'DIVISAO_MEDICA'}" /></a>
+          <a title="Divisão Odonológica"><h:panelGroup styleClass="fa fa-tag text-info" rendered="#{itemGab.gab.divisao == 'DIVISAO_ODONTOLOGICA'}" /></a>
+        </p:column>
+        <p:column headerText="Código" width="180">
+          <h:outputText value="#{itemGab.codigo}" />
+        </p:column>
+        <p:column headerText="Valor Apresentado" styleClass="text-center" width="130">
+          <h:outputText value="#{itemGab.auditoriaRetrospectiva.valorApresentado}">
+            <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR"  />
+          </h:outputText>
+        </p:column>
+         <p:column headerText="Valor Auditado" styleClass="text-center" width="130">
+          <h:outputText value="#{itemGab.auditoriaRetrospectiva.valorAuditado}">
+            <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR"  />
+          </h:outputText>
+        </p:column>
+        <p:column headerText="Credenciado">
+          <h:outputText value="#{itemGab.gab.credenciado.nomeFantasia}" />
+        </p:column>
+        <p:column headerText="Data Emissão" width="70" style="text-align:center">
+          <h:outputText value="#{itemGab.gab.dataEmissao}">
+            <f:convertDateTime pattern="dd/MM/yyyy" />
+          </h:outputText>
+        </p:column>
+        <f:facet name="footer">
+          <p:commandButton id="btn_gerar_relatorio" value="Gerar Relatório" styleClass="btn btn-success" icon="fa fa-print"
+            rendered="#{naoConformidadeFormularioBean.credenciado != null}" action="#{naoConformidadeFormularioBean.validarRelatorio}" ajax="false" />
+        </f:facet>
+      </p:dataTable>
+      
+      <div class="vgap-30" />
+
+    </h:form>
+
+  </ui:define>
+
+</ui:composition>

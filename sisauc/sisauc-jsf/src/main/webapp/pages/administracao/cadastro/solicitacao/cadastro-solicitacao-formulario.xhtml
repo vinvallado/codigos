@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets">
+
+  <h:form id="formulario-solicitacao"
+    rendered="#{cadastroSolicitacaoFormularioBean.solicitacao.estado == 'CRIADA' || 
+    			cadastroSolicitacaoFormularioBean.solicitacao.estado == 'INCONSISTENTE' || 
+    			cadastroSolicitacaoFormularioBean.solicitacao.estado == NULL }"
+    enctype="multipart/form-data">
+
+    <p:messages id="msgs" showIcon="false" autoUpdate="true" />
+
+    <p:panelGrid id="grid">
+
+      <p:row rendered="#{cadastroSolicitacaoFormularioBean.solicitacao.estado=='INCONSISTENTE'}">
+        <p:column>
+          <p:outputLabel value="Inconsistente:" style="color:red;font-weight:bold;" />
+        </p:column>
+        <p:column>
+          <h:outputText value="#{cadastroSolicitacaoFormularioBean.solicitacao.textoInconsistencia}" />
+        </p:column>
+      </p:row>
+      
+      <p:row>
+        <p:column>
+    		<p:outputLabel value="Divisão:" for="divisao" />
+        </p:column>
+        <p:column>
+    		<p:selectOneMenu value="#{cadastroSolicitacaoFormularioBean.solicitacao.divisao}" converter="genericEnumConverter" id="divisao" required="true"
+              requiredMessage="Divisão: Campo obrigatório.">
+    	     <f:selectItem itemLabel="" noSelectionOption="true" />
+    			<f:selectItems value="#{cadastroSolicitacaoFormularioBean.divisoes}" var="local" itemValue="#{local}" itemLabel="#{local.label}" />
+    		</p:selectOneMenu>
+        </p:column>
+      </p:row>
+
+      <p:row>
+        <p:column>
+          <p:outputLabel value="Beneficiário:" for="beneficiario" />
+        </p:column>
+        <p:column>
+          <p:autoComplete value="#{cadastroSolicitacaoFormularioBean.solicitacao.beneficiario}"
+            completeMethod="#{applicationBean.procurarBeneficiario}" size="70" forceSelection="true" id="beneficiario"
+            var="beneficiario" itemValue="#{beneficiario}" required="true"
+            requiredMessage="Beneficiário: Campo obrigatório." maxResults="15"
+            itemLabel="#{formatterBean.beneficiarioFormatter.getSaramNome(beneficiario)}"
+            minQueryLength="5" queryDelay="500" queryDeletionDelay="500" converter="jsonConverter" scrollHeight="300">
+            <p:ajax event="itemSelect" process="@this divisao" update="grid" listener="#{cadastroSolicitacaoFormularioBean.onSelectBeneficiario}"/>
+          </p:autoComplete>
+        </p:column>
+      </p:row>
+      
+      
+      
+      
+
+      <p:row rendered="#{cadastroSolicitacaoFormularioBean.solicitacao.beneficiario != null}">
+        <p:column>
+          <p:outputLabel id="idade" value="Idade: " />
+        </p:column>
+        <p:column>
+          <h:outputText
+            value="#{formatterBean.beneficiarioFormatter.toIdadeMedica(cadastroSolicitacaoFormularioBean.solicitacao.beneficiario)}" />
+        </p:column>
+      </p:row>
+      
+      <p:row
+        rendered="#{cadastroSolicitacaoFormularioBean.solicitacao.beneficiario != null 
+              and cadastroSolicitacaoFormularioBean.solicitacao.beneficiario.beneficiarioTitular != null}">
+        <p:column>
+          <p:outputLabel value="Responsável: " />
+        </p:column>
+        <p:column>
+          <h:outputText value="#{cadastroSolicitacaoFormularioBean.solicitacao.beneficiario.beneficiarioTitular.nome}" />
+        </p:column>
+      </p:row>
+      
+      <p:row
+        rendered="#{cadastroSolicitacaoFormularioBean.solicitacao.beneficiario != null 
+              and cadastroSolicitacaoFormularioBean.solicitacao.beneficiario.beneficiarioTitular != null}">
+        <p:column>
+          <p:outputLabel value="Posto/Graduação: " />
+        </p:column>
+        <p:column>
+          <h:outputText value="#{cadastroSolicitacaoFormularioBean.solicitacao.beneficiario.beneficiarioTitular.postoGraduacao.descricao}" />
+        </p:column>
+      </p:row>
+
+      <p:row
+        rendered="#{cadastroSolicitacaoFormularioBean.solicitacao.beneficiario != null 
+              and cadastroSolicitacaoFormularioBean.solicitacao.beneficiario.organizacaoMilitar.sigla != null}">
+        <p:column>
+          <p:outputLabel value="Unidade: " />
+        </p:column>
+        <p:column>
+          <h:outputText value="#{cadastroSolicitacaoFormularioBean.solicitacao.beneficiario.organizacaoMilitar.sigla}" />
+        </p:column>
+      </p:row>
+
+      <p:row
+        rendered="#{cadastroSolicitacaoFormularioBean.solicitacao.beneficiario != null 
+              and cadastroSolicitacaoFormularioBean.solicitacao.beneficiario.postoGraduacao != null}">
+        <p:column>
+          <p:outputLabel value="Posto/Graduação : " />
+        </p:column>
+        <p:column>
+          <h:outputText value="#{cadastroSolicitacaoFormularioBean.solicitacao.beneficiario.postoGraduacao.descricao}" />
+        </p:column>
+      </p:row>
+
+      <p:row>
+        <p:column>
+          <p:outputLabel value="Dados Clínicos:" for="dados-clinicos" />
+        </p:column>
+        <p:column>
+          <p:inputTextarea id="dados-clinicos" cols="54" rows="4" autoResize="false" required="true"
+            value="#{cadastroSolicitacaoFormularioBean.solicitacao.dadosClinicos}"
+            requiredMessage="Dados Clínicos: Campo obrigatório." />
+        </p:column>
+      </p:row>
+      
+      <p:row>
+        <p:column>
+          <p:outputLabel value="Observações da Divisão Médica:" for="observacoes" />
+        </p:column>
+        <p:column>
+          <p:inputTextarea id="observacoes" cols="54" rows="4" autoResize="false"
+            value="#{cadastroSolicitacaoFormularioBean.solicitacao.observacoes}"  />
+        </p:column>
+      </p:row>      
+
+      <p:row>
+        <p:column>
+          <p:outputLabel value="Urgente:" for="urgente" />
+        </p:column>
+        <p:column>
+          <p:selectBooleanCheckbox value="#{cadastroSolicitacaoFormularioBean.solicitacao.urgente}" id="urgente" />
+        </p:column>
+      </p:row>
+      <p:row>
+        <p:column>
+          <p:outputLabel value="Hipótese Diagnóstica (CID):" for="hipotese-diagnostica" />
+        </p:column>
+        <p:column>
+          <p:autoComplete value="#{cadastroSolicitacaoFormularioBean.solicitacao.hipoteseDiagnostica}"
+            completeMethod="#{applicationBean.procurarCodigo}" size="50" forceSelection="true" id="hipotese-diagnostica"
+            var="hipoteseDiagnostica" itemValue="#{hipoteseDiagnostica}"
+            itemLabel="#{hipoteseDiagnostica.codigo.concat(' - ').concat(hipoteseDiagnostica.descricao)}"
+            minQueryLength="3" converter="jsonConverter" maxResults="10">
+            <p:ajax event="itemSelect" process="@this" />
+          </p:autoComplete>
+        </p:column>
+      </p:row>
+
+      <p:row>
+        <p:column>
+          <p:outputLabel value="Data da Solicitação:" for="data-solicitacao-sistema" />
+        </p:column>
+        <p:column>
+          <p:calendar id="data-solicitacao-sistema"
+            value="#{cadastroSolicitacaoFormularioBean.solicitacao.dataSolicitacaoSistema}" size="8" locale="pt_BR"
+            navigator="true" requiredMessage="Data da Solicitação: Campo obrigatório." required="true" />
+        </p:column>
+      </p:row>
+
+      <p:row>
+        <p:column>
+          <p:outputLabel value="Profissional Solicitante:" for="medico-solicitante" />
+        </p:column>
+        <p:column>
+          <p:autoComplete value="#{cadastroSolicitacaoFormularioBean.solicitacao.medicoSolicitante}"
+            completeMethod="#{applicationBean.procurarMedicos}" size="50" forceSelection="true" id="medico-solicitante"
+            var="medicoSolicitante" itemValue="#{medicoSolicitante}" required="true"
+            itemLabel="#{formatterBean.medicoFormatter.getDescricaoMedico(medicoSolicitante)}" minQueryLength="3"
+            converter="jsonConverter" maxResults="10" requiredMessage="Profissional Solicitante: Campo obrigatório.">
+            <p:ajax event="itemSelect" process="@this" />
+          </p:autoComplete>
+        </p:column>
+      </p:row>
+
+
+      <p:row>
+        <p:column>
+          <p:outputLabel value="Arquivo (Solicitação Física):" for="arquivo" />
+        </p:column>
+        <p:column>
+          <p:fileUpload fileUploadListener="#{cadastroSolicitacaoFormularioBean.subirArquivo}" mode="advanced"
+            update="msgs nome-arquivo" auto="true" id="arquivo" allowTypes="/(\.|\/)(pdf|PDF)$/"
+            invalidSizeMessage="O PDF da solicitação deve ser menor que 2MB!" fileLimit="20" sizeLimit="2000000"
+            invalidFileMessage="O arquivo deve ser um PDF!">
+          </p:fileUpload>
+          <h:panelGroup id="nome-arquivo">
+            <h:outputLink value="#{request.contextPath}/download/solicitacao/#{cadastroSolicitacaoFormularioBean.solicitacao.id}"
+             class="btn btn-link" rendered="#{cadastroSolicitacaoFormularioBean.solicitacao.arquivo != null and cadastroSolicitacaoFormularioBean.solicitacao.arquivo.id != null}">
+			  <span class="fa fa-download" ></span>
+			  <span>
+			    <h:outputText value=" Arquivo: #{cadastroSolicitacaoFormularioBean.solicitacao.arquivo.nome}" />
+			    <h:outputText styleClass="muted" value=" (#{cadastroSolicitacaoFormularioBean.solicitacao.arquivo.tamanho} bytes)"/>
+			  </span>
+            </h:outputLink>
+            <h:outputText value="Arquivo: #{cadastroSolicitacaoFormularioBean.solicitacao.arquivo.nome}"
+              rendered="#{cadastroSolicitacaoFormularioBean.solicitacao.arquivo != null and cadastroSolicitacaoFormularioBean.solicitacao.arquivo.id == null}" />
+            <h:outputText styleClass="muted"
+              value=" (#{cadastroSolicitacaoFormularioBean.solicitacao.arquivo.tamanho} bytes)"
+              rendered="#{cadastroSolicitacaoFormularioBean.solicitacao.arquivo != null and cadastroSolicitacaoFormularioBean.solicitacao.arquivo.id == null}" />
+          </h:panelGroup>
+        </p:column>
+      </p:row>
+
+      <p:row>
+        <p:column>
+          <p:outputLabel value=" Isento:" for="isento" style="height:20px; width:176px;" />
+        </p:column>
+
+        <p:column>
+          <p:selectBooleanCheckbox value="#{cadastroSolicitacaoFormularioBean.solicitacao.isento}" id="isento">
+            <p:ajax event="change" immediate="true" update="@(.mostrar-isento)" />
+          </p:selectBooleanCheckbox>
+        </p:column>
+      </p:row>
+
+      <p:row>
+        <p:column>
+          <h:panelGroup styleClass="mostrar-isento" id="mostrar-isento-label">
+            <p:outputLabel value="Especificação (Isento):" for="especificacao-isento" style="height:20px; width:176px;"
+              rendered="#{cadastroSolicitacaoFormularioBean.solicitacao.isento}" />
+          </h:panelGroup>
+        </p:column>
+        <p:column>
+          <h:panelGroup styleClass="mostrar-isento" id="mostrar-isento-select">
+            <p:selectOneMenu value="#{cadastroSolicitacaoFormularioBean.solicitacao.especificacao}"
+              converter="jsonConverter" id="especificacao-isento"
+              rendered="#{cadastroSolicitacaoFormularioBean.solicitacao.isento}">
+              <f:selectItems value="#{cadastroSolicitacaoFormularioBean.especificacoes}" var="especificacao"
+                itemValue="#{especificacao}" itemLabel="#{especificacao.tipoCobranca}" id="itens-especificacao"/>
+            </p:selectOneMenu>
+          </h:panelGroup>
+        </p:column>
+      </p:row>
+
+
+      <p:row>
+        <p:column>
+          <p:outputLabel value=" Internação:" for="internacao" style="height:20px; width:176px;" />
+        </p:column>
+
+        <p:column>
+          <p:selectBooleanCheckbox value="#{cadastroSolicitacaoFormularioBean.solicitacao.internacao}" id="internacao">
+            <p:ajax event="change" immediate="true" update="@(.mostrar-internacao)" />
+          </p:selectBooleanCheckbox>
+        </p:column>
+      </p:row>
+
+      <p:row>
+        <p:column>
+          <h:panelGroup styleClass="mostrar-internacao" id="mostrar-internacao-label">
+            <p:outputLabel value="Acomodação:" for="local-internacao" style="height:20px; width:176px;"
+              rendered="#{cadastroSolicitacaoFormularioBean.solicitacao.internacao}" />
+          </h:panelGroup>
+        </p:column>
+        <p:column>
+          <h:panelGroup styleClass="mostrar-internacao" id="mostrar-internacao-select">
+            <p:selectOneMenu value="#{cadastroSolicitacaoFormularioBean.solicitacao.localInternacao}"
+              converter="genericEnumConverter" id="local-internacao"
+              rendered="#{cadastroSolicitacaoFormularioBean.solicitacao.internacao}">
+              <f:selectItems value="#{cadastroSolicitacaoFormularioBean.localInternacao}" var="local"
+                itemValue="#{local}" itemLabel="#{local.label}" />
+            </p:selectOneMenu>
+          </h:panelGroup>
+        </p:column>
+      </p:row>
+
+    </p:panelGrid>
+
+
+
+    <p:dataTable value="#{cadastroSolicitacaoFormularioBean.solicitacao.procedimentos}" paginator="true" rows="5"
+      emptyMessage="#{msgs.no_records_found}" paginatorPosition="bottom" paginatorAlwaysVisible="false"
+      rowsPerPageTemplate="5, 10"
+      paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+      var="pedido" id="lista-procedimentos">
+      <f:facet name="header">
+        <p:commandButton id="btn-adic-procedimento" action="#{cadastroSolicitacaoFormularioBean.criarNovoPedido}"
+          update=":adicionar-procedimento-form" styleClass="btn btn-primary" value="Adicionar novo procedimento"
+          process="@this" icon="fa fa-plus" />
+      </f:facet>
+      <p:column headerText="Procedimento">
+        <h:outputText id="descricao-procedimento" value="#{formatterBean.procedimentoFormatter.getCodigoDescricao(pedido.credenciado.procedimento)}" />
+        <h:outputText rendered="#{pedido.credenciado.especialidade.sigla != null}"
+          value=" (#{pedido.credenciado.especialidade.sigla})" />
+      </p:column>
+
+      <p:column headerText="Credenciado">
+        <h:outputText id="descricao-credenciado" value="#{pedido.credenciado.configuracaoEditalCredenciado.credenciado.nomeFantasia}" />
+      </p:column>
+
+      <p:column width="60" headerText="Qtde" styleClass="text-center">
+        <h:outputText id="qtd-procedimento" value="#{pedido.quantidade}"/>
+      </p:column>
+
+      <p:column width="80" headerText="Valor unitário" styleClass="text-center">
+        <h:outputText id="valor-unit" value="#{formatterBean.configuracaoProcedimentoFormatter.obterValorProcedimento(pedido.credenciado)}">
+          <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR"  />
+        </h:outputText>
+      </p:column>
+      
+      <p:column width="100" headerText="Tabela" styleClass="text-center">
+        <h:outputText id="tipo-tabela" value="#{pedido.credenciado.procedimento.tabela.nome}"/>
+      </p:column>
+
+      <p:column width="40" styleClass="text-center">
+        <p:commandButton id="editar-configuracao" styleClass="btn btn-link" title="Editar procedimento"
+          icon="fa fa-pencil" action="#{cadastroSolicitacaoFormularioBean.editarPedido(pedido)}" process="@this"
+          update=":adicionar-procedimento-form" />
+      </p:column>
+
+      <p:column width="40" styleClass="text-center">
+        <p:commandButton id="excluir-configuracao" styleClass="btn btn-link" title="Excluir procedimento"
+          icon="fa fa-times text-error" action="#{cadastroSolicitacaoFormularioBean.selecionarPedido(pedido)}"
+          process="@this" update=":adicionar-procedimento-form" />
+      </p:column>
+    </p:dataTable>
+
+    <div class="vgap-15"></div>
+
+    <p:commandButton id="btn-salvar" value="Salvar" styleClass="btn btn-success" icon="fa fa-save" validateClient="true"
+      action="#{cadastroSolicitacaoFormularioBean.salvar}" update="@form">
+    </p:commandButton>
+    <p:commandButton id="btn-enviar_auditoria" value="Enviar para Auditoria" styleClass="btn" icon="fa fa-search" validateClient="true"
+      action="#{cadastroSolicitacaoFormularioBean.verificarArquivo}" update="@form" />
+    <a id="btn-voltar" onClick="history.back();" class="btn">Voltar</a>
+
+  </h:form>
+
+
+</ui:composition>

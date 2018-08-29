@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" template="/resources/template/template.xhtml">
+
+  <ui:define name="html-title">Desconto de Beneficiários</ui:define>
+
+  <ui:define name="main">
+
+    <h3>Descontar dos Beneficiários</h3>
+
+    <p:separator />
+
+    <h:form prependId="false" id="desconto-beneficiario-form">
+      <p:messages id="msg" showIcon="false" />
+
+      <p:panelGrid>
+      <p:row>
+        <p:column>
+          <p:outputLabel value="Período de apresentação da Nota Fiscal" />        
+        </p:column>
+      </p:row>
+      </p:panelGrid>
+      <p:panelGrid>
+        <p:row>
+          <p:column>
+            <p:outputLabel value="De:" for="inicio" />
+          </p:column>
+          <p:column>
+            <p:calendar value="#{gerarDescontoBeneficiariosBean.parametros.dataInicial}" id="inicio" size="8"
+              locale="pt_BR" navigator="true" />
+          </p:column>
+          <p:column>
+            <p:outputLabel value="Até:" for="fim" />
+          </p:column>
+          <p:column>
+            <p:calendar value="#{gerarDescontoBeneficiariosBean.parametros.dataFinal}" id="fim" size="8"
+              locale="pt_BR" navigator="true" />
+          </p:column>
+          <p:column>
+            <p:commandButton action="#{gerarDescontoBeneficiariosBean.pesquisar}" update="@form"
+              icon="fa fa-search" styleClass="btn btn-primary" value="Pesquisar" />
+          </p:column>
+        </p:row>
+      </p:panelGrid>
+
+      <div class="vgap-30" />
+
+      <p:dataTable id="tabela" value="#{gerarDescontoBeneficiariosBean.resultado}" var="itemGAB" paginator="true"
+        rows="15" paginatorPosition="bottom" paginatorAlwaysVisible="false" rowsPerPageTemplate="10, 15, 25"
+        emptyMessage="#{msgs.no_records_found}"
+        paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+        filteredValue="#{viewUtilsBean.filtrados}" filterDelay="300"
+        selection="#{gerarDescontoBeneficiariosBean.itensSelecionados}" rowKey="#{itemGAB.id}">
+
+        <f:facet name="header">
+          <h:outputText value="Itens de GAB"></h:outputText>
+        </f:facet>
+        <p:column style="width:8px; text-align:center" selectionMode="multiple">
+        </p:column>
+        <p:column headerText="Código Item GAB" width="80" filterMatchMode="contains" sortBy="#{itemGAB.codigo}"
+          id="codigo-item-gab" filterBy="#{itemGAB.codigo}" filterFunction="#{viewUtilsBean.filterIgnoreCase}">
+          <h:outputText value="#{itemGAB.codigo}" title="#{itemGAB.configuracao.procedimento.descricao}" />
+        </p:column>
+
+        <p:column headerText="Beneficiário" width="120" filterBy="#{itemGAB.gab.beneficiario.nome}"
+          filterMatchMode="contains" sortBy="#{itemGAB.gab.beneficiario.nome}"
+          filterFunction="#{viewUtilsBean.filterIgnoreCase}" id="beneficiario">
+          <h:outputText value="#{itemGAB.gab.beneficiario.nome}" />
+        </p:column>
+ 
+        <p:column headerText="Beneficiário Titular" width="120" filterBy="#{itemGAB.gab.beneficiario.beneficiarioTitular.nome}"
+          filterMatchMode="contains" sortBy="#{itemGAB.gab.beneficiario.beneficiarioTitular.nome}"
+          filterFunction="#{viewUtilsBean.filterIgnoreCase}" id="beneficiarioTitular">
+          <h:outputText value="#{itemGAB.gab.beneficiario.beneficiarioTitular.nome}" />
+        </p:column>
+
+        <p:column headerText="Data Emissão" width="50" id="data-emissao" sortBy="#{item.gab.dataEmissao}"
+          styleClass="text-center">
+          <h:outputText value="#{itemGAB.gab.dataEmissao}">
+            <f:convertDateTime pattern="dd/MM/yyyy" />
+          </h:outputText>
+        </p:column>
+
+        <f:facet name="footer">
+          <p:column rendered="#{gerarDescontoBeneficiariosBean.parametros.dataInicial != null}">
+            <p:commandButton value="Gerar Desconto" styleClass="btn btn-success" icon="fa fa-plus"
+              onclick="PF('descontoBeneficiariosDialog').show()" />
+          </p:column>
+        </f:facet>
+
+      </p:dataTable>
+
+    </h:form>
+
+  </ui:define>
+
+  <ui:define name="dialogs">
+    <ui:include src="gerar-relatorio-desconto-beneficiario-dialog.xhtml" />
+  </ui:define>
+</ui:composition>

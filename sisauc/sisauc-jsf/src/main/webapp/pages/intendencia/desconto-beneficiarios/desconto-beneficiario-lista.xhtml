@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" template="/resources/template/template.xhtml">
+
+  <ui:define name="html-title">Relatórios de Descontos</ui:define>
+
+  <ui:define name="main">
+
+    <h3>Descontos Realizados</h3>
+
+    <p:separator />
+
+    <div class="vgap-10" />
+
+    <h:form id="lotes-lista-form">
+      <p:messages id="msg" showIcon="false" />
+
+      <div class="vgap-10" />
+
+      <p:dataTable value="#{descontoBeneficiarioRealizadoListaBean.descontos}" paginator="true" rows="15"
+        emptyMessage="#{msgs.no_records_found}" id="table-lotes" paginatorPosition="bottom"
+        paginatorAlwaysVisible="false" rowsPerPageTemplate="15, 20, 25"
+        paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+        var="desconto">
+
+        <p:column headerText="Nº Relatório" width="150" sortBy="#{desconto.numero}"
+          filterBy="#{desconto.numero}" filterFunction="#{viewUtilsBean.filterIgnoreCase}">
+          <h:outputText value="#{desconto.numero}" />
+        </p:column>
+        <p:column headerText="Beneficiário" width="250" sortBy="#{desconto.beneficiario.nome}"
+          filterBy="#{desconto.beneficiario.nome}" filterFunction="#{viewUtilsBean.filterIgnoreCase}">
+          <h:outputText value="#{desconto.beneficiario.nome}" />
+        </p:column>
+        <p:column headerText="Data de Emissão" width="60" sortBy="#{desconto.dataEmissao}" >
+          <h:outputText value="#{desconto.dataEmissao}">
+            <f:convertDateTime pattern="dd/MM/yyyy"/>
+          </h:outputText>
+        </p:column>
+        <p:column headerText="Valor Descontado" width="60" >
+          <h:outputText value="#{desconto.valorTotal}">
+            <f:convertNumber type="currency" />
+          </h:outputText>
+        </p:column>
+        <p:column headerText="Estado do Desconto" width="100"
+        filterBy="#{desconto.estadoDescontoBeneficiario}"  filterOptions="#{viewUtilsBean.estadoDescontoBeneficiarioOptions()}">
+          <h:outputText value="#{desconto.estadoDescontoBeneficiario.label}" />
+        </p:column>           
+        <p:column width="50" styleClass="text-center muted">
+          <h:outputLink id="abrir-lote" styleClass="btn btn-link" value="./descontos-realizados/#{desconto.id}"
+            title="Visualizar">
+            <span id="editar" class="fa fa-file-text-o"></span>
+          </h:outputLink>
+        </p:column>
+      </p:dataTable> 
+
+    </h:form>
+
+  </ui:define>
+
+</ui:composition>

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<changeSet id="criar-estrutura-cancelamento-apresentacao-gab" author="brunobjm">
+		<sql>
+			CREATE TABLE sch_sdga.cancelamento_apresentacao_gab
+			(
+  				id integer NOT NULL,
+				data_execucao timestamp without time zone,
+				host character varying(255),
+  				ip character varying(255),
+  				justificativa character varying(255),
+  				nome_guerra_autor character varying(255),
+				id_gab integer NOT NULL,
+				CONSTRAINT cancelamento_apresentacao_gab_pkey PRIMARY KEY (id),
+				CONSTRAINT fk_cancelamento_gab_apresentada_gab FOREIGN KEY (id_gab)
+					REFERENCES sch_sisauc.gab (id) MATCH SIMPLE
+					ON UPDATE NO ACTION ON DELETE NO ACTION
+			)
+			WITH (
+  				OIDS=FALSE
+			);
+			ALTER TABLE sch_sdga.cancelamento_apresentacao_gab
+  				OWNER TO sisauc;
+			
+			
+			
+			CREATE SEQUENCE sch_sdga.cancelamento_apresentacao_gab_seq
+  				INCREMENT 1
+  				MINVALUE 1
+  				MAXVALUE 9223372036854775807
+  				START 1
+  				CACHE 1;
+			ALTER TABLE sch_sdga.cancelamento_apresentacao_gab_seq
+  				OWNER TO sisauc;
+		</sql>
+	</changeSet>
+	
+	<changeSet id="separando-especialidades-por-tipos" author="brunobjm">
+		<sql>
+			ALTER TABLE sch_sisauc.especialidade ADD COLUMN tipo varchar(30) NOT NULL DEFAULT 'MEDICA';
+			
+			UPDATE sch_sisauc.especialidade SET tipo = 'OUTRAS' WHERE sigla IN ('FIS', 'FON', 'FON/AU', 'PSI');
+			
+			INSERT INTO sch_sisauc.especialidade VALUES(117, 'CGO', 'CLÍNICA GERAL ODONTOLÓGICA', TRUE, 'ODONTOLOGICA');
+			INSERT INTO sch_sisauc.especialidade VALUES(118, 'CBM', 'CIRURGIA E TRAUMATOLOGIA BUCO-MAXILO-FACIAL', TRUE, 'ODONTOLOGICA');
+			INSERT INTO sch_sisauc.especialidade VALUES(119, 'DNT', 'DENTÍSTICA', TRUE, 'ODONTOLOGICA');
+			INSERT INTO sch_sisauc.especialidade VALUES(120, 'ENT', 'ENDODONTIA', TRUE, 'ODONTOLOGICA');
+			INSERT INTO sch_sisauc.especialidade VALUES(121, 'ETM', 'ESTOMATOLOGIA', TRUE, 'ODONTOLOGICA');
+			INSERT INTO sch_sisauc.especialidade VALUES(122, 'IMP', 'IMPLANTODONTIA', TRUE, 'ODONTOLOGICA');
+			INSERT INTO sch_sisauc.especialidade VALUES(123, 'ONE', 'ODONTOLOGIA PARA PACIENTES COM NECESSIDADES ESPECIAIS', TRUE, 'ODONTOLOGICA');
+			INSERT INTO sch_sisauc.especialidade VALUES(124, 'OPE', 'ODONTOPEDIATRIA', TRUE, 'ODONTOLOGICA');
+			INSERT INTO sch_sisauc.especialidade VALUES(125, 'ORD', 'ORTODONTIA', TRUE, 'ODONTOLOGICA');
+			INSERT INTO sch_sisauc.especialidade VALUES(126, 'PER', 'PERIODONTIA', TRUE, 'ODONTOLOGICA');
+			INSERT INTO sch_sisauc.especialidade VALUES(127, 'PDN', 'PRÓTESE DENTARIA', TRUE, 'ODONTOLOGICA');
+			INSERT INTO sch_sisauc.especialidade VALUES(128, 'RDE', 'RADIOLOGIA', TRUE, 'ODONTOLOGICA');
+			INSERT INTO sch_sisauc.especialidade VALUES(129, 'ROI', 'RADIOLOGIA ODONTOLÓGICA E IMAGINOLOGIA', TRUE, 'ODONTOLOGICA');
+		</sql>
+	</changeSet>	
+	
+	<changeSet id="add-coluna-observacao-gab-na-tabela-item-gab" author="ferrazlffm">
+		<sql>
+			ALTER TABLE sch_sisauc.item_gab
+			ADD column observacao_gab text;
+		</sql>
+	</changeSet>
+	
+	<changeSet id="add-coluna-observacao-gab-na-tabela-resposta-procedimento-auditoria" author="ferrazlffm">
+		<sql>
+			ALTER TABLE sch_sisauc.resposta_procedimento_auditoria
+			ADD column observacao_gab text;
+		</sql>
+	</changeSet>
+
+	<changeSet id="criar-estrutura-cancelamento-apresentacao-ressarcimento" author="brunobjm">
+		<sql>
+			CREATE TABLE sch_sdga.cancelamento_apresentacao_ressarcimento
+			(
+			id integer NOT NULL,
+			data_execucao timestamp without time zone,
+			host character varying(255),
+			ip character varying(255),
+			justificativa character varying(255),
+			nome_guerra_autor character varying(255),
+			id_ar integer NOT NULL,
+			CONSTRAINT cancelamento_apresentacao_ar_pkey PRIMARY KEY (id),
+			CONSTRAINT fk_cancelamento_ar_apresentada_ar FOREIGN KEY (id_ar)
+			REFERENCES sch_sisauc.ar (id) MATCH SIMPLE
+			ON UPDATE NO ACTION ON DELETE NO ACTION
+			)
+			WITH (
+			OIDS=FALSE
+			);
+			ALTER TABLE sch_sdga.cancelamento_apresentacao_ressarcimento
+			OWNER TO sisauc;
+
+
+
+			CREATE SEQUENCE sch_sdga.cancelamento_apresentacao_ar_seq
+			INCREMENT 1
+			MINVALUE 1
+			MAXVALUE 9223372036854775807
+			START 1
+			CACHE 1;
+			ALTER TABLE sch_sdga.cancelamento_apresentacao_ar_seq
+			OWNER TO sisauc;
+		</sql>
+	</changeSet>
+
+</databaseChangeLog>

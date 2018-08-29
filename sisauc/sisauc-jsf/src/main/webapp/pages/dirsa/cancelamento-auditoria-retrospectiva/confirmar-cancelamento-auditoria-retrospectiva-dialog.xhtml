@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets">
+
+  <p:dialog header="Atenção" id="confirmar-cancelamento-auditoria-retrospectiva-dialog" widgetVar="confirmarCancelamentoAuditoriaRetrospectivaDialog"
+    resizable="false" width="800" modal="true">
+    <h:form id="confirmar-cancelamento-auditoria-retrospectiva-dialog-form">
+      <p:messages id="msgs" showIcon="false" autoUpdate="true" />
+      
+      <div class="vgap-10" />
+      Tem certeza que deseja realizar este cancelamento?
+      <div class="vgap-10" />
+      Todas as modificações serão <STRONG><span class="text-error">IRREVERSÍVEIS</span></STRONG>.
+      <div class="vgap-10" />
+
+      <h:panelGroup styleClass="dialog-footer" layout="block">
+        <p:commandButton value="Cancelar Auditoria Retrospectiva" styleClass="btn btn-danger" icon="fa fa-times" validateClient="true"
+          id="btn-cancelar-auditoria-retrospectiva" action="#{cancelamentoAuditoriaRetrospectivaBean.cancelarAuditoriaRetrospectiva}"
+          onclick="PF('confirmarCancelamentoAuditoriaRetrospectivaDialog').hide() PF('acaoSdgaCancelarAuditoriaRetrospectivaDialog').hide()"
+          update=":auditoria-retrospectiva-lista-form:table-auditoria-retrospectiva" />
+        <p:commandButton value="Voltar" styleClass="btn" icon="fa" type="button"
+          onclick="PF('confirmarCancelamentoAuditoriaRetrospectivaDialog').hide()" />
+      </h:panelGroup>
+    </h:form>
+  </p:dialog>
+
+</ui:composition>

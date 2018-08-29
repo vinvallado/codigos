@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      @page {
+        @top-right {
+          text-align: right;
+          font-size: 9pt;
+          content: '(FL ' counter(page)'/'counter(pages)' do ${lote.numero})' !important; 
+        }
+      }
+      #include("estilo-pdf.css");
+    </style>
+  </head>
+  <body>
+    <div class="text-center">
+      #include("timbre.txt")<br/>
+      <strong>MINISTÉRIO DA DEFESA</strong><br/>
+      COMANDO DA AERONÁUTICA<br/>
+      $lote.organizacaoMilitar.nome.toUpperCase()<br/>
+      SUBDIVISÃO DE AUDITORIA TÉCNICA
+    </div>
+    <div class="vgap-10"></div>
+    <div class="text-center">
+      <u>LOTE Nº $lote.numero</u>
+    </div>
+    <div class="vgap-30"></div>
+    <div class="text-justify">
+      Período: $date.format('MMMM/yyyy' , $lote.dataCriacao)<br/>
+    </div>
+    <div class="text-justify">
+      Credenciado: $eComercialEsc.escape($lote.credenciado.nomeFantasia)<br/>
+    </div>
+    <div class="text-justify">
+      Esta fatura foi analisada pela Subdivisão de Auditoria Técnica deste hospital e não foram encontradas inconformidades.
+    </div>
+    <div class="vgap-10"></div>
+    <table>
+      <tr class="table-header">
+        <td class="text-center text-bold" style="width: 4cm">Nº GAB - Item</td>
+        <td class="text-center text-bold">Procedimento</td>
+        <td class="text-center text-bold" style="width: 2cm">Valor</td>
+      </tr>
+    #foreach ($item in $itens)
+        <tr class="#if($foreach.count%2!=0) row-odd #end">
+          <td class="text-center">$item.codigo</td>
+          <td>
+            $item.configuracao.procedimento.codigo - $item.configuracao.procedimento.descricao 
+            #if ($item.configuracao.especialidade.sigla)
+              ($item.configuracao.especialidade.sigla)
+            #end
+          </td>
+          <td class="text-right">$number.currency($item.auditoriaRetrospectiva.valorFinal)</td>
+        </tr>
+    #end      
+      </table>
+    
+    <div class="avoid-line-break">
+      <div class="table-header" style="border: 1px solid #000; padding: 3pt;">
+        Valor Total do Lote: $number.currency($lote.valorTotal)
+      </div>
+      <div class="vgap-10"></div>
+  
+      <div class="vgap-10"></div>
+      <p class="text-right">
+        #if ($configuracao.cidadeRegional)
+          #set($cidade = $configuracao.cidadeRegional.nome)
+        #else
+          #set($cidade = $lote.organizacaoMilitar.sigla)  
+        #end
+        $cidade, $date.format('dd' , $lote.dataCriacao) de $date.format('MMMM' , $lote.dataCriacao) de $date.format('yyyy' , $lote.dataCriacao).
+      </p>
+      <div class="vgap-10"></div>
+      <div class="vgap-10"></div>
+      <div class="text-center">
+        __________________________________<br/>
+        Auditor Técnico $lote.organizacaoMilitar.sigla
+      </div>
+    </div>
+  </body>
+</html>

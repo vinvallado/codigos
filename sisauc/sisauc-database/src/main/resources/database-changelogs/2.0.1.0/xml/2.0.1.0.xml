@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<changeSet id="acao-sdga-agregada-ao-usuario-logado" author="brunobjm">
+		<sql>
+			ALTER TABLE sch_sdga.cancelamento_apresentacao_gab ALTER COLUMN nome_guerra_autor DROP NOT NULL;
+			ALTER TABLE sch_sdga.cancelamento_auditoria_retrospectiva ALTER COLUMN nome_guerra_autor DROP NOT NULL;
+			ALTER TABLE sch_sdga.cancelamento_lote ALTER COLUMN nome_guerra_autor DROP NOT NULL;
+					
+			ALTER TABLE sch_sdga.cancelamento_apresentacao_gab ADD COLUMN id_autor INTEGER;
+			ALTER TABLE sch_sdga.cancelamento_auditoria_retrospectiva ADD COLUMN id_autor INTEGER;
+			ALTER TABLE sch_sdga.cancelamento_lote ADD COLUMN id_autor INTEGER;
+			
+			ALTER TABLE sch_sdga.cancelamento_apresentacao_gab ADD CONSTRAINT id_autor_fk FOREIGN KEY (id_autor) REFERENCES sch_sisauc.usuario(id);
+			ALTER TABLE sch_sdga.cancelamento_auditoria_retrospectiva ADD CONSTRAINT id_autor_fk FOREIGN KEY (id_autor) REFERENCES sch_sisauc.usuario(id);
+			ALTER TABLE sch_sdga.cancelamento_lote ADD CONSTRAINT id_autor_fk FOREIGN KEY (id_autor) REFERENCES sch_sisauc.usuario(id);
+		</sql>
+	</changeSet> 
+	
+	<changeSet id="DIRSA-unidade-filha-todos-sisauc" author="januarioacsj">
+		<sql>
+			UPDATE sch_sisauc.organizacao_militar SET tipo_om='SUBORDINADA' WHERE sigla='DIRSA';
+			UPDATE sch_sisauc.organizacao_militar SET id_regional=(SELECT id FROM sch_sisauc.organizacao_militar WHERE regional_sistema= TRUE) WHERE sigla='DIRSA';
+		</sql>		
+	</changeSet>
+	
+	<changeSet id="inserir-PERFIL_DIRSA-tbl-perfil" author="januarioacsj">
+		<sql>
+			INSERT INTO sch_sisauc.perfil VALUES ('PERFIL_DIRSA','DIRSA',TRUE);
+		</sql>		
+	</changeSet>
+	
+	<changeSet id="alteracoes-cancelamento-auditoria-retrospectiva" author="tadeutbc">
+		<sql>
+
+			ALTER TABLE sch_sdga.cancelamento_auditoria_retrospectiva
+				ADD COLUMN id_item_gab integer;
+				
+			UPDATE sch_sdga.cancelamento_auditoria_retrospectiva SET id_item_gab = (
+				SELECT id FROM sch_sisauc.item_gab WHERE id_auditoria_retrospectiva = sch_sdga.cancelamento_auditoria_retrospectiva.id_auditoria_retrospectiva);
+			
+			ALTER TABLE sch_sdga.cancelamento_auditoria_retrospectiva
+				ADD CONSTRAINT cancelamento_auditoria_retrospecti_id_item_gab_fk FOREIGN KEY (id) 
+				REFERENCES sch_sisauc.item_gab (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
+			
+			ALTER TABLE sch_sdga.cancelamento_auditoria_retrospectiva 
+				DROP CONSTRAINT cancelamento_auditoria_retrospecti_id_item_gab_fk;
+				
+			ALTER TABLE sch_sdga.cancelamento_auditoria_retrospectiva
+				ADD CONSTRAINT cancelamento_auditoria_retrospecti_id_item_gab_fk FOREIGN KEY (id_item_gab) 
+				REFERENCES sch_sisauc.item_gab (id);
+			
+			ALTER TABLE sch_sdga.cancelamento_auditoria_retrospectiva
+				ALTER COLUMN id_auditoria_retrospectiva DROP NOT NULL;
+
+		</sql>
+	</changeSet>
+		
+</databaseChangeLog>

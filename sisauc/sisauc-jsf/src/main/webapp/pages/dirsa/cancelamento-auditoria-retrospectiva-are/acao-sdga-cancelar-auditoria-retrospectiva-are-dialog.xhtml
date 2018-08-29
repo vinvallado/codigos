@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets">
+
+  <p:dialog header="Cancelar Auditoria Retrospectiva" 
+    id="acao-sdga-cancelar-auditoria-retrospectiva-are-dialog" widgetVar="acaoSdgaCancelarAuditoriaRetrospectivaAREDialog"
+    modal="true" resizable="false" width="800">
+    <h:form id="acao-sdga-cancelar-auditoria-retrospectiva-are-form">
+      <p:messages id="msgs" showIcon="false" autoUpdate="true" />
+      <p:panelGrid id="grid" columns="2">
+
+        <p:outputLabel value="Justificativa: " for="justificativa" id="justificativa-label" />
+        <p:inputTextarea value="#{cancelamentoAuditoriaRetrospectivaAREBean.justificativa}" styleClass="input-block-level"
+          id="justificativa" maxlength="500" requiredMessage="O campo justificativa é obrigatório!" cols="85" rows="4"
+          autoResize="false" required="true" placeholder="Ex: SAUTI: 123456 &#10;OM: CCA-SJ &#10;Solicitante: 3S CICLANO" />
+        </p:panelGrid>
+
+        <h:panelGroup styleClass="dialog-footer" layout="block">
+          <p:commandButton value="Cancelar Auditoria Retrospectiva" styleClass="btn btn-danger" icon="fa fa-times" 
+            id="btn-cancelar-auditoria-retrospectiva-are" onsuccess="PF('confirmarCancelamentoAuditoriaRetrospectivaAREDialog').show()" validateClient="true"/>
+          <p:commandButton value="Voltar" styleClass="btn" icon="fa" type="button" onclick="PF('acaoSdgaCancelarAuditoriaRetrospectivaAREDialog').hide()" />
+        </h:panelGroup>
+    </h:form>
+  </p:dialog>
+
+</ui:composition>

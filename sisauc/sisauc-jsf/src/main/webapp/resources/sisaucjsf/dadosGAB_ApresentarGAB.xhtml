@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:sec="http://www.springframework.org/security/tags"
+  xmlns:composite="http://java.sun.com/jsf/composite">
+
+  <composite:interface>
+    <composite:attribute name="gab" />
+  </composite:interface>
+
+  <composite:implementation>
+
+
+      <h:panelGroup rendered="#{cc.attrs.gab!=null}">
+        <h4>
+          GAB nº <h:outputText value="#{cc.attrs.gab.codigo}" /> 
+          <span class="muted">(#{cc.attrs.gab.estado.label})</span>
+        </h4>
+        <h:outputText value="Divisão: " style="font-weight:bold;" />
+        <h:outputText value="#{cc.attrs.gab.auditoriaProspectiva.solicitacao.divisao.label}" /><br/>
+        <h:outputText value="Beneficiário: " style="font-weight:bold;"></h:outputText>
+        <h:outputText value="#{cc.attrs.gab.beneficiario.nome}" /><br/>
+        <h:outputText value="Credenciado: " style="font-weight:bold;"></h:outputText>
+        <h:outputText value="#{cc.attrs.gab.credenciado.nomeFantasia}" /><br/>
+      </h:panelGroup>
+
+
+  </composite:implementation>
+
+</ui:composition>

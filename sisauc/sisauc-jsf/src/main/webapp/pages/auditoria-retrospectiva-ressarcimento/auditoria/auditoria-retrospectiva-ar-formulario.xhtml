@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" template="/resources/template/template.xhtml"
+  xmlns:sisauc="http://java.sun.com/jsf/composite/sisaucjsf">
+
+  <ui:define name="html-title">Auditoria Retrospectiva ARE</ui:define>
+
+  <ui:define name="html-body-bottom">
+    <script type="text/javascript" src="#{request.contextPath}/resources/vendor/js/pdfjs/pdf.js" />
+    <script type="text/javascript" src="#{request.contextPath}/resources/js/ver-pdf.js" />
+    <script type="text/javascript" src="#{request.contextPath}/resources/vendor/js/jquery.maskMoney.min.js" />
+  </ui:define>
+
+  <ui:define name="main">
+    <h3>Auditoria Retrospectiva - Auditando ARE</h3>
+    <div class="vgap-10"></div>
+    <h:form prependId="false" id="form-auditoria-ar">
+      <p:messages id="msgs" showIcon="false" />
+      <p:growl id="msg" showDetail="true" />
+      <div class="vgap-10"></div>
+
+      <h4>
+        ARE nº
+        <h:outputText value="#{auditoriaRetrospectivaRessarcimentoFormularioBean.ar.codigo}" />
+        <br />
+        <br /> Dados da Apresentação:
+      </h4>
+      
+      <p:panelGrid columns="2">
+        
+        <h:outputText value="Número Nota Fiscal: " style="font-weight: bold;"/>
+        <h:outputText value="#{auditoriaRetrospectivaRessarcimentoFormularioBean.ar.apresentacao.numeroNotaFiscal}" />
+
+        <h:outputText value="Data Nota Fiscal: " style="font-weight: bold;"/>
+        <h:outputText value="#{auditoriaRetrospectivaRessarcimentoFormularioBean.ar.apresentacao.dataNotaFiscal}">
+          <f:convertDateTime pattern="dd/MM/yyyy" />
+        </h:outputText>
+
+        <h:outputText value="CPF/CNPJ Prestador: " style="font-weight: bold;"/>
+        <h:outputText value="#{auditoriaRetrospectivaRessarcimentoFormularioBean.ar.apresentacao.cpfCnpjPrestador}" />
+
+        <h:outputText value="Nome/Razão Social Prestador: " style="font-weight: bold;"/>
+        <h:outputText value="#{auditoriaRetrospectivaRessarcimentoFormularioBean.ar.apresentacao.nomePrestador}" />
+
+        <h:outputText value="Arquivo Nota Fiscal: " style="font-weight: bold;" />
+        <p:commandLink styleClass="btn btn-link" ajax="false"
+          action="#{auditoriaRetrospectivaRessarcimentoFormularioBean.downloadNotaFiscal}">
+          <span class="fa fa-download"></span> <span>Download</span>
+        </p:commandLink>
+
+        <h:outputText value="Arquivo Requerimento Ressarcimento: " style="font-weight: bold;" />
+        <p:commandLink styleClass="btn btn-link" ajax="false"
+          action="#{auditoriaRetrospectivaRessarcimentoFormularioBean.downloadRequerimento}">
+          <span class="fa fa-download"></span> <span>Download</span>
+        </p:commandLink>
+
+      </p:panelGrid>
+
+      <div class="vgap-10"></div>
+
+      <p:tabView id="tabview-auditoria-retrospectiva-ar">
+
+        <p:tab title="Auditoria dos itens" id="tab-items">
+          <ui:include src="auditoria-retrospectiva-ar-formulario-tab-itens.xhtml" />
+        </p:tab>
+      
+        <p:tab title="Auditoria Prospectiva" id="tab-auditoria-prospectiva">
+          <sisauc:dadosAuditoriaProspectivaRessarcimento auditoria="#{auditoriaRetrospectivaRessarcimentoFormularioBean.ar.auditoriaProspectiva}"/> 
+        </p:tab>
+      
+        <p:tab title="Dados da solicitação" id="tab-dados-solicitacao">
+          <sisauc:exibirSolicitacaoRessarcimento solicitacao="#{auditoriaRetrospectivaRessarcimentoFormularioBean.ar.auditoriaProspectiva.solicitacao}" />
+        </p:tab>
+      
+      </p:tabView>
+    </h:form>
+  </ui:define>
+
+  <ui:define name="dialogs">
+    <ui:include src="dialog-ver-pdf.xhtml"/>
+    <ui:include src="dialog-finalizar-auditoria-inconsistente-dialog.xhtml"/>
+    <ui:include src="auditoria-retrospectiva-ar-dialog.xhtml"/>
+    <ui:include src="dialog-salvar-auditoria-item-ar-dialog.xhtml"/>
+    <ui:include src="dialog-finalizar-auditoria-dialog.xhtml"/>
+  </ui:define>
+
+</ui:composition>

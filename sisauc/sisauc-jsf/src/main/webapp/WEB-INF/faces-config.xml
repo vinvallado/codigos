@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faces-config version="2.2" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+              http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd">
+
+	<application>
+		<el-resolver>org.springframework.web.jsf.el.SpringBeanFacesELResolver</el-resolver>
+		<resource-bundle>
+			<base-name>messages</base-name>
+			<var>msgs</var>
+		</resource-bundle>
+		<locale-config>
+			<default-locale>pt_BR</default-locale>
+			<supported-locale>en_US</supported-locale>
+		</locale-config>
+		<message-bundle>messages</message-bundle>
+		<message-bundle>resources.application</message-bundle>
+	</application>
+
+	<factory>
+		<exception-handler-factory>
+			br.ccasj.sisauc.framework.faces.FacesExceptionHandlerFactory</exception-handler-factory>
+	</factory>
+
+	<lifecycle>
+		<phase-listener>
+			br.ccasj.sisauc.framework.faces.MultiPageMessagesSupport</phase-listener>
+	</lifecycle>
+
+	<render-kit>
+		<renderer>
+			<component-family>org.primefaces.component</component-family>
+			<renderer-type>org.primefaces.component.FileUploadRenderer</renderer-type>
+			<renderer-class>br.ccasj.sisauc.framework.renderer.FileUploadRenderer</renderer-class>
+		</renderer>
+	</render-kit>
+
+</faces-config>

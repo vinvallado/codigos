@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets">
+
+
+  <p:dialog header="Atenção!" id="gerar-desconto-beneficiarios" widgetVar="descontoBeneficiariosDialog" 
+    modal="true" resizable="false" width="450">
+    <h:form id="gerar-desconto-beneficiarios-form">
+
+      <h:outputText value="Atenção! " style="font-size: 20px; font-weight: bold;"/><br/><br/>
+      
+      <div style="text-align: justify;">
+        Esta ação é <b style="color: red;">IRREVERSÍVEL</b>. Ao continuar, os itens selecionados irão para o estado 
+        <b>"Enviado para desconto"</b> e será gerado um relatório para desconto de beneficiários
+        com os itens selecionados. Deseja realmente continuar?
+      </div>
+
+      <div class="vgap-30" />
+
+      <h:panelGroup styleClass="dialog-footer" layout="block">
+        <p:commandButton value="Sim" styleClass="btn btn-success" id="confirmar" icon="fa fa-save"
+          action="#{relatorioDescontoBeneficiarioFormBean.gerarRelatorio}" update=":desconto-beneficiario-form" process="@this" />
+        <p:commandButton value="Cancelar" id="cancelar" styleClass="btn" icon="fa" type="button"
+          onclick="PF('descontoBeneficiariosDialog').hide()" />
+      </h:panelGroup>
+
+    </h:form>
+  </p:dialog>
+
+</ui:composition>

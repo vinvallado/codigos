@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pretty-config xmlns="http://ocpsoft.org/schema/rewrite-config-prettyfaces" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://ocpsoft.org/schema/rewrite-config-prettyfaces
+                      http://ocpsoft.org/xml/ns/prettyfaces/rewrite-config-prettyfaces.xsd">
+
+	<url-mapping id="impressao-gab">
+		<pattern value="/chefe-funsa/gab/impressao/#{id}" />
+		<view-id value="/pages/gab/acompanhamento/impressao_gab.jsf" />
+		<action onPostback="false">#{impressaoGABBean.imprimir}</action>
+	</url-mapping>
+
+	<url-mapping id="acompanhamento-gab-lista">
+		<pattern value="/chefe-funsa/gab/acompanhamento" />
+		<view-id value="/pages/gab/acompanhamento/acompanhamento-gab-lista.jsf" />
+	</url-mapping>
+
+	<url-mapping id="acompanhamento-gab">
+		<pattern value="/chefe-funsa/gab/acompanhamento/#{id}" />
+		<view-id value="/pages/gab/acompanhamento/acompanhamento-gab.jsf" />
+	</url-mapping>
+
+	<url-mapping id="estatisticas">
+		<pattern value="/chefe-funsa/estatisticas" />
+		<view-id value="/pages/chefe-funsa/estatisticas/estatisticas.jsf" />
+	</url-mapping>
+	
+	<url-mapping id="acompanhamento-ar-lista">
+		<pattern value="/chefe-funsa/ar/acompanhamento" />
+		<view-id value="/pages/ar/acompanhamento/acompanhamento-ar-lista.jsf" />
+	</url-mapping>
+
+	<url-mapping id="acompanhamento-ar">
+		<pattern value="/chefe-funsa/ar/acompanhamento/#{id}" />
+		<view-id value="/pages/ar/acompanhamento/acompanhamento-ar.jsf" />
+	</url-mapping>	
+	
+	<url-mapping id="impressao-ar">
+		<pattern value="/chefe-funsa/ar/impressao/#{id}" />
+		<view-id value="/pages/ar/acompanhamento/impressao_ar.jsf" />
+		<action onPostback="false">#{impressaoARBean.imprimir}</action>
+	</url-mapping>	
+
+</pretty-config>

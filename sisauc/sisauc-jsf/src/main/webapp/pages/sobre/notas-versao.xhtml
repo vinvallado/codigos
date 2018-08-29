@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets">
+
+  <h3>2.3.0</h3>
+
+  <ul>
+    <li><span class="label label-success">novo</span> Criada a funcionalidade de “Cancelar Lote de ARE” para o usuário da DIRSA.</li>
+    <li><span class="label label-success">novo</span> Criada a funcionalidade de “Cancelar Auditoria Retrspectiva de ARE” para o usuário da DIRSA.</li>
+    <li><span class="label label-success">novo</span> Criada a funcionalidade de “Cancelar Apresentação de ARE” para o usuário da DIRSA.</li>
+    <li><span class="label label-success">novo</span> Criada a funcionalidade de “Desfazer Cancelamento de Apresentação de ARE” para o usuário da DIRSA.</li>
+    <li><span class="label label-success">novo</span> Alteração do botão "login" na barra superior de botões para exibir os perfis associados ao usuário.</li>
+  </ul>  
+  
+  <h3>2.2.0</h3>
+
+  <ul>
+    <li><span class="label label-success">novo</span> Adequação do SISAUC para atender os casos previstos pelo STM.</li>
+  </ul>  
+  
+  <h3>2.1.0</h3>
+
+  <ul>
+    <li><span class="label label-success">novo</span> Adicionado o campo FACE para os procedimentos odontológicos da TRS.</li>
+    <li><span class="label label-success">novo</span> Adicionado o campo DENTE para os procedimentos odontológicos da TRS.</li>
+    <li><span class="label label-success">novo</span> Marcar uma GAB ou uma ARE como reimpressa.</li>
+    <li><span class="label label-success">novo</span> Apresentar o usuário que emitiu a GAB ou a ARE nos detalhes da tela de "Buscar GAB/ARE".</li>
+    <li><span class="label label-success">novo</span> Diferenciar uma Solicitação de Procedimento médica de odontológica.</li>
+    <li><span class="label label-success">novo</span> Diferenciar uma Solicitação de Ressarcimento médica de odontológica.</li>
+    <li><span class="label label-success">novo</span> Diferenciar uma GAB médica de odontológica.</li>
+    <li><span class="label label-success">novo</span> Diferenciar uma ARE médica de odontológica.</li>
+  </ul>  
+  
+  <h3>2.0.4</h3>
+
+  <ul>
+    <li><span class="label label-success">novo</span> Permitir ordenar os itens da Solicitação de Procedimento ou de Ressarcimento no momento da Auditoria Prospectiva.</li>
+    <li><span class="label label-success">novo</span> Adicionado alguns campos no detalhes da ARE da “Funcionalidade de Buscar ARE”.</li>
+    <li><span class="label label-success">novo</span> Adicionado o “Profissional Solicitante” na Solicitação de Ressarcimento.</li>
+    <li><span class="label label-success">novo</span> Inserido o campo de assinatura do Auditor no “Anexo A - Extrato da auditoria retrospectiva de ressarcimento por item de ARE”.</li>
+  </ul>  
+  <ul>
+    <li><span class="label label-warning">bug</span> Trocado o nome “identidade” por “CPF” na GAB impressa.</li>
+  </ul>
+  
+  <h3>2.0.3</h3>
+
+  <ul>
+    <li><span class="label label-success">novo</span> Informar o Nome do Beneficiário em cada item do Relatório de Não Conformidades.</li>
+    <li><span class="label label-success">novo</span> Criada a funcionalidade de “Buscar ARE” para o Auditor Retrospectivo.</li>
+    <li><span class="label label-success">novo</span> Inserido a possibilidade de imprimir os detalhes da auditoria retrospectiva de cada item de ARE no momento da impressão do Lote de Ressarcimento.</li>
+    <li><span class="label label-success">novo</span> Inserido o procedimento e o estado de cada item de GAB/ARE no histórico do paciente na Auditoria Prospectiva.</li>
+    <li><span class="label label-success">novo</span> O atendente pode visualizar a Solicitação de Procedimento que ele anexou.</li>
+    <li><span class="label label-success">novo</span> Criada a funcionalidade de “Desfazer o cancelamento de uma GAB” para o usuário da DIRSA.</li>
+    <li><span class="label label-success">novo</span> Trocada a Regional do SISAUC da BAAN para GAP AN.</li>
+  </ul>  
+  <ul>
+    <li><span class="label label-warning">bug</span> Corrigido o problema de não imprimir um Relatório de Desconto de Beneficiário em .pdf quando há um ou mais beneficiários titular sem OM.</li>
+    <li><span class="label label-warning">bug</span> Melhorado a desempenho do SISAUC quando tentar abrir um Relatório de Desconto de Beneficiário com muitos itens.</li>
+  </ul> 
+  
+  <h3>2.0.2</h3>
+
+  <ul>
+	<li><span class="label label-success">novo</span> Criação de Lote de Ressarcimento.</li>
+	<li><span class="label label-success">novo</span> Geração de Lotes de Ressarcimento no formato de arquivo “PDF”.</li>
+	<li><span class="label label-success">novo</span> Em “Buscar GAB” adição do nome do Auditor(a) Retrospectivo(a) na tela de detalhamento de cada item de GAB.</li>
+	<li><span class="label label-success">novo</span> Adicionado Procedimento Padrão (00000001 – Outros Procedimentos) na TRS, disponível para o Auditor Prospectivo.</li>
+  </ul>  
+  <ul>
+    <li><span class="label label-warning">bug</span> Geração de Relatório de Desconto de Beneficiário quando um beneficiário está sem OM.</li>
+  </ul>   
+    
+  <h3>2.0.1</h3>
+
+  <ul>
+	<li><span class="label label-success">novo</span> Inclusão do Perfil DIRSA.</li>
+	<li><span class="label label-success">novo</span> Inclusão da CISSFA.</li>
+	<li><span class="label label-success">novo</span> Possibilidade de selecionar uma tabela no edital de credenciamento.</li>
+	<li><span class="label label-success">novo</span> Adaptação da tela de cadastro de edital para a tabela CISSFA.</li>
+	<li><span class="label label-success">novo</span> Cadastro do USM da CISSFA</li>
+	<li><span class="label label-success">novo</span> Adaptação da funcionalidade de adicionar procedimento utilizando a CISSFA.</li>
+	<li><span class="label label-success">novo</span> Junção das telas de porte e porte anestésico em uma única tela.</li>
+	<li><span class="label label-success">novo</span> Adicionado o campo “Observação da ARE” na Auditoria Prospectiva e na impressão da ARE.</li>
+	<li><span class="label label-success">novo</span> Adicionada a coluna OM no Relatório para Desconto de Beneficiários.</li>
+	<li><span class="label label-success">novo</span> Modificado o termo "Assinatura do Comandante ou Diretor" por "Assinatura do Auditor" na ARE impressa.</li>
+  </ul>  
+  
+  <h3>2.0.0</h3>
+
+  <ul>
+    <li><span class="label label-success">novo</span> Nova tela de login.</li>
+    <li><span class="label label-success">novo</span> Novos Profissionais e especialidades para profissionais.</li>
+    <li><span class="label label-success">novo</span> Inserção de especialidades odontológicas.</li>
+    <li><span class="label label-success">novo</span> Inserido o campo Nome Completo em um cadastro de credenciado com CPF.</li>
+    <li><span class="label label-success">novo</span> Informação do número do edital ao ativar/desativar.</li>
+    <li><span class="label label-success">novo</span> Padronização das telas: Buscar Solicitação(Visualização), Auditoria Prospectiva, Acompanhamento de GAB, Apresentação da GAB, Auditoria Retrospectiva – Auditando * Item da GAB, Gerenciar Lote(Visualização).</li>
+    <li><span class="label label-success">novo</span> Atendente com permissão para emitir e reimprimir GAB.</li>
+    <li><span class="label label-success">novo</span> Inseridos 2 novos tipos de acomodação: “UTI” e “Domiciliar”.</li>
+    <li><span class="label label-success">novo</span> Inserido o filtro de Lote no relatório de Item de GAB.</li>
+    <li><span class="label label-success">novo</span> Inserido o nome do beneficiário acima das abas da Auditoria Prospectiva.</li>
+    <li><span class="label label-success">novo</span> Visualização do nome do Atendente que enviou a Solicitação de Procedimento para auditoria prospectiva na tela de Auditoria Prospectiva.</li>
+    <li><span class="label label-success">novo</span> Escrever no campo observação da GAB.</li>
+    <li><span class="label label-success">novo</span> Mudança no Layout da GAB para adaptar-se as observações da GAB.</li>
+    <li><span class="label label-success">novo</span> Inserido o campo “Observação da Apresentação” na tela de Apresentação de GAB.</li>
+    <li><span class="label label-success">novo</span> Inserida uma lista com motivos de não conformidade, padronizados pela ANS na tela da Auditoria Retrospectiva.</li>
+    <li><span class="label label-success">novo</span> Apresentação da descrição do OPME para o Auditor Retrospectivo.</li>
+    <li><span class="label label-success">novo</span> Troca do título do Relatório de Não-Conformidades para “Relatório de Não-Conformidades (Passíveis de Glosa)”.</li>
+    <li><span class="label label-success">novo</span> Adição da funcionalidade “Pesquisar GAB” para o Auditor Retrospectivo.</li>
+    <li><span class="label label-success">novo</span> Incluído filtro na coluna código da tela “Criar lotes”.</li>
+    <li><span class="label label-success">novo</span> Obrigatoriedade da data na nota fiscal que tenha número.</li>
+    <li><span class="label label-success">novo</span> Bloqueio na alteração da nota fiscal após qualquer um de seus itens terem sido enviados para desconto. </li>
+    <li><span class="label label-success">novo</span> Incluída a coluna OM do Titular na área Relatórios.</li>
+    <li><span class="label label-success">novo</span> Comparação de dois tipos de valores como filtro no “Relatório de Itens de GAB”.</li>
+    <li><span class="label label-success">novo</span> Filtrar pelo grupo e subgrupo de procedimento no “Relatório de Item de GAB”.</li>
+    <li><span class="label label-success">novo</span> Exclusão da Informação “A glosa refere-se a....” do “Relatório de Não-conformidades”. </li>
+    <li><span class="label label-success">novo</span> Foram inseridos os novos estados de item de GAB: “Cancelado”, “Aguardando Auditoria”, “Auditoria Iniciada” e “Enviado para Desconto” na tela de “Relatórios de Item de GAB”.</li>
+    <li><span class="label label-success">novo</span> Informações de referência ao documento e de número de páginas nas impressões da GAB, ARE, Lote e Relatório de Não-Conformidades.</li>
+    <li><span class="label label-success">novo</span> Informar automaticamente, na inserção da solicitação, quando o militar for não contribuinte.</li>
+    <li><span class="label label-success">novo</span> Modificado o formato da numeração da GAB. </li>
+    <li><span class="label label-success">novo</span> Módulo Ressarcimento: Cadastrar Solicitação de Ressarcimento Eletiva e Não Eletiva.</li>
+    <li><span class="label label-success">novo</span> Módulo Ressarcimento: Auditoria Prospectiva.</li>
+    <li><span class="label label-success">novo</span> Módulo Ressarcimento: Emissão de ARE.</li>
+    <li><span class="label label-success">novo</span> Módulo Ressarcimento: Requerimento de Ressarcimento.</li>
+    <li><span class="label label-success">novo</span> Modulo Ressarcimento: Apresentação da ARE.</li>
+    <li><span class="label label-success">novo</span> Módulo Ressarcimento: Auditoria Retrospectiva.</li>
+    <li><span class="label label-success">novo</span> Módulo Ressarcimento: Relatórios de Solicitação de Ressarcimento, Item de ARE e ARE.</li>
+    <li><span class="label label-success">novo</span> Histórico de solicitações de um beneficiário na Auditoria Prospectiva exibe solicitações de procedimento e ressarcimento.</li>
+    <li><span class="label label-success">novo</span> Inserido um alerta na tela de configuração de Web Service.</li>
+    <li><span class="label label-success">novo</span> Retirado o Cadastro de Crédito.</li>
+    <li><span class="label label-success">novo</span> Criado o relatório de descontos.</li>
+    <li><span class="label label-success">novo</span> Auditar Procedimentos em Lote.</li>
+    <li><span class="label label-success">novo</span> Atualização da lista de OM.</li>
+    <li><span class="label label-success">novo</span> Notas da versão com os diagramas de estado e processo, manual do usuário, equipe de desenvolvimento.</li>
+    <li><span class="label label-success">novo</span> Filtro internação na tela de relatórios de GAB.</li>
+    <li><span class="label label-success">novo</span> Rodapé de publicidade.</li>
+  </ul>
+  <ul>
+   <li><span class="label label-warning">bug</span> Possibilidade de visualização do conteúdo do campo “Outros” pelo Auditor Retrospectivo, quando houver informação cadastrada anteriormente neste campo na Apresentação do item da GAB.</li>
+   <li><span class="label label-warning">bug</span> Correção de Lotes duplicados.</li>
+   <li><span class="label label-warning">bug</span> Correção de Relatórios Inconsistentes.</li>
+   <li><span class="label label-warning">bug</span> Ordenação dos itens na impressão da GAB.</li>
+   <li><span class="label label-warning">bug</span> Informação de CAPS LOCK ativado no cadastro de nova senha.</li>
+   <li><span class="label label-warning">bug</span> Correção de erros na visualização e download de um arquivo anexado.</li>
+   <li><span class="label label-warning">bug</span> Correção no limite de upload de arquivos.</li>
+   <li><span class="label label-warning">bug</span> Correção do filtro Telefone Principal da lista de credenciados.</li>
+   <li><span class="label label-warning">bug</span> Correção do erro na impressão de lote com caracter especial.</li>
+   <li><span class="label label-warning">bug</span> Ajuste na quebra de página do relatório de não conformidade.</li>
+   <li><span class="label label-warning">bug</span> Retirada a janela de confirmação da criação de lotes que não continham lotes selecionados</li>
+   <li><span class="label label-warning">bug</span> Correção do erro ao desativar credenciado que pertencia a um credenciamento.</li>
+   <li><span class="label label-warning">bug</span> Inserção dos procedimentos da tabela CBHPM 2012 que estavam faltando.</li>
+  </ul>  
+
+  
+</ui:composition>

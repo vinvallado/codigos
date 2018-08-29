@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      #include("estilo-pdf.css")
+    </style>
+  </head>
+  <body>
+    <div class="text-center">
+      #include("timbre.txt")<br/>
+      <strong>MINISTÉRIO DA DEFESA</strong><br/>
+      COMANDO DA AERONÁUTICA<br/>
+      $lote.organizacaoMilitar.nome.toUpperCase()<br/>
+      SUBDIVISÃO DE AUDITORIA TÉCNICA
+    </div>
+    <div class="vgap-10"></div>
+    
+    <table>
+      <tr class="table-header">
+        <td colspan="10" class="text-center">RELATÓRIO ANALÍTICO DE FATURAS - $lote.credenciado.nomeFantasia</td>
+      </tr>
+      <tr>
+        <td colspan="2"><strong>Período: </strong>$periodo</td>
+        <td colspan="4"><strong>Fatura: </strong>$lote.numero</td>
+        <td colspan="4"><strong>Nota Fiscal: </strong>
+        #if ($lote.notaFiscal.numero)
+          $lote.notaFiscal.numero
+        #end
+        </td>
+      </tr>
+      <tr class="table-header text-center">
+        <td>Beneficiario</td>
+        <td>Item da GAB</td>
+        <td>SARAM Titular</td>
+        <td>Valor Estimado</td>
+        <td>Valor Apresentado</td>
+        <td>Taxas</td>
+        <td>Valor Auditado</td>
+        <td>Glosa</td>
+        <td>Valor Final</td>
+        <td>Desconto 20%</td>
+      </tr>
+      
+      #foreach ($item in $itens)
+        #set ($valorGlosa = $item.auditoriaRetrospectiva.valorApresentado - $item.auditoriaRetrospectiva.valorAuditado)
+        #set ($valorDesconto = $item.auditoriaRetrospectiva.valorFinal * 0.2)
+      
+      <tr class="#if($foreach.count%2!=0) row-odd #end text-center">
+        <td>$item.gab.beneficiario.nome</td>
+        <td class="td-width-gab">$item.codigo</td>
+        <td class="td-width-saram">
+          #if ($item.gab.beneficiario.saram)
+            $item.gab.beneficiario.saram 
+          #else 
+            $item.gab.beneficiario.saramTitular
+          #end
+        </td>
+        <td>$number.currency($item.valorTotal) </td>
+        <td>$number.currency($item.auditoriaRetrospectiva.valorApresentado) </td>
+        <td>$number.currency($item.auditoriaRetrospectiva.somaValoresMetadados())</td>
+        <td>$number.currency($item.auditoriaRetrospectiva.valorAuditado)</td>                                    
+        <td>$number.currency($valorGlosa)</td>
+        <td>$number.currency($item.auditoriaRetrospectiva.valorFinal)</td>
+        <td>
+          #if ($item.gab.isento)
+            ISENTO 
+          #else 
+            $number.currency($valorDesconto)
+          #end
+        </td>        
+      </tr>
+        #end
+      #set ($valorGlosaTotal = $parametros.somaValorApresentado - $parametros.somaValorAuditado) 
+      <tr class="text-center table-header">
+        <td colspan="3">TOTAL</td>
+        <td>$number.currency($parametros.somaValorTotalItem)</td>
+        <td>$number.currency($parametros.somaValorApresentado)</td>
+        <td>$number.currency($parametros.somaValoresMetadados)</td>
+        <td>$number.currency($parametros.somaValorAuditado)</td>                                
+        <td>$number.currency($valorGlosaTotal)</td>                                
+        <td>$number.currency($parametros.somaValorFinal)</td>
+        <td>$number.currency($parametros.somaValoresDesconto)</td>
+      </tr>
+    </table>
+    
+  </body>
+</html>

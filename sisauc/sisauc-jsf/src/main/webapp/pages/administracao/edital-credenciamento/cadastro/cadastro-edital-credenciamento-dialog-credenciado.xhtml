@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets">
+
+  <p:dialog header="Associar credenciado" id="adicionar-credenciado-dialog" widgetVar="adicionarCredenciadoDialog"
+    modal="true" resizable="false" onShow="maskSuffix('%')">
+    <h:form id="adicionar-credenciado-form">
+      <p:panelGrid>
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Credenciado" for="credenciado" />
+          </p:column>
+          <p:column>
+            <p:selectOneMenu value="#{cadastroEditalCredenciamentoFormularioBean.configuracao.credenciado}"
+              converter="jsonConverter" filter="true" filterMatchMode="contains" id="credenciado" >
+              <f:selectItems value="#{cadastroEditalCredenciamentoFormularioBean.credenciados}" var="credenciado"
+                itemValue="#{credenciado}" itemLabel="#{credenciado.nomeFantasia}" />
+            </p:selectOneMenu>
+          </p:column>
+        </p:row>
+
+        <p:row rendered="#{cadastroEditalCredenciamentoFormularioBean.editalCredenciamento.tabela == 'CBHPM2012'}">
+          <p:column>
+            <p:outputLabel value="Índ. Def/Inf. Porte" for="porte" />
+          </p:column>
+          <p:column>
+            <p:inputText styleClass="number" converter="doubleConverter" size="7"
+              value="#{cadastroEditalCredenciamentoFormularioBean.configuracao.indiceReajustePorte}" id="porte" />
+          </p:column>
+        </p:row>
+
+        <p:row rendered="#{cadastroEditalCredenciamentoFormularioBean.editalCredenciamento.tabela == 'CBHPM2012'}">
+          <p:column>
+            <p:outputLabel value="Índ. Def/Inf. Porte Anestésico" for="porte-anestesico" />
+          </p:column>
+          <p:column>
+            <p:inputText styleClass="number" converter="doubleConverter" size="7"
+              value="#{cadastroEditalCredenciamentoFormularioBean.configuracao.indiceReajustePorteAnestesico}"
+              id="porte-anestesico" />
+          </p:column>
+        </p:row>
+
+        <p:row rendered="#{cadastroEditalCredenciamentoFormularioBean.editalCredenciamento.tabela == 'CBHPM2012'}">
+          <p:column>
+            <p:outputLabel value="Índ. Def/Inf. Custo Operacional" for="custo-operacional" />
+          </p:column>
+          <p:column>
+            <p:inputText styleClass="number" converter="doubleConverter" size="7"
+              value="#{cadastroEditalCredenciamentoFormularioBean.configuracao.indiceReajusteCustoOperacional}"
+              id="custo-operacional" />
+          </p:column>
+        </p:row>
+
+        <p:row rendered="#{cadastroEditalCredenciamentoFormularioBean.editalCredenciamento.tabela == 'CBHPM2012'}">
+          <p:column>
+            <p:outputLabel value="Índ. Def/Inf. Auxiliares" for="auxiliares" />
+          </p:column>
+          <p:column>
+            <p:inputText styleClass="number" converter="doubleConverter" size="7"
+              value="#{cadastroEditalCredenciamentoFormularioBean.configuracao.indiceReajusteAuxiliares}"
+              id="auxiliares" />
+          </p:column>
+        </p:row>
+      </p:panelGrid>
+      
+      <p:row rendered="#{cadastroEditalCredenciamentoFormularioBean.editalCredenciamento.tabela == 'CBHPM2012'}">
+        <div class="alert alert-info">
+          Use o sinal <strong>negativo(-)</strong> para deflatores e <strong>positivo(+)</strong> para inflatores.
+        </div>
+      </p:row>
+
+      <h:panelGroup styleClass="dialog-footer" layout="block">
+        <p:commandButton value="Adicionar" styleClass="btn btn-success" icon="fa fa-save" validateClient="true"
+          id="adicionar" action="#{cadastroEditalCredenciamentoFormularioBean.salvarConfiguracao}"
+          update=":formulario-edital-form:lista-credenciados :formulario-edital-form:msgs 
+            :formulario-edital-form:tabela :formulario-edital-form:info-container"
+          onclick="PF('adicionarCredenciadoDialog').hide()" />
+      </h:panelGroup>
+
+    </h:form>
+  </p:dialog>
+
+  <p:dialog header="Atenção!" id="removerCredenciadoDialog" widgetVar="removerCredenciadoDialog" modal="true"
+    resizable="false">
+    <h:form id="remover-credenciado-form-dialog">
+      <h:outputText
+        value="Tem certeza que deseja remover #{cadastroEditalCredenciamentoFormularioBean.configuracao.credenciado.nomeFantasia}?" />
+
+      <div class="vgap-30">
+        <!-- GAP 30px -->
+      </div>
+
+      <h:panelGroup styleClass="dialog-footer" layout="block">
+        <p:commandButton value="Sim" styleClass="btn btn-success" icon="fa fa-save"
+          action="#{cadastroEditalCredenciamentoFormularioBean.removerConfiguracao}" update=":formulario-edital-form" />
+        <p:commandButton value="Cancelar" styleClass="btn" icon="fa" type="button"
+          onclick="PF('removerCredenciadoDialog').hide()" />
+      </h:panelGroup>
+
+    </h:form>
+  </p:dialog>
+
+</ui:composition>

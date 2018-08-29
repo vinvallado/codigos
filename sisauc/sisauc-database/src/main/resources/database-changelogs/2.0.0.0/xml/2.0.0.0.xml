@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<changeSet id="adicionar-coluna-observacao-apresentacao-auditoria-retrospectiva" author="januarioacsj">
+		<sql>
+			ALTER TABLE sch_sisauc.auditoria_retrospectiva ADD COLUMN observacao_apresentacao text;
+		</sql>
+	</changeSet>	
+	
+	<changeSet id="adicionar-coluna-observacao-apresentacao-historico-auditoria-retrospectiva" author="januarioacsj">
+		<sql>
+			ALTER TABLE sch_sisauc.historico_auditoria_retrospectiva ADD COLUMN observacao_apresentacao text;
+		</sql>
+	</changeSet>	
+
+	<changeSet id="adicionar-coluna-observacao-apresentacao-cancelamento-auditoria-retrospectiva" author="januarioacsj">
+		<sql>
+			ALTER TABLE sch_sdga.cancelamento_auditoria_retrospectiva ADD COLUMN observacao_apresentacao text;
+		</sql>
+	</changeSet>
+</databaseChangeLog>

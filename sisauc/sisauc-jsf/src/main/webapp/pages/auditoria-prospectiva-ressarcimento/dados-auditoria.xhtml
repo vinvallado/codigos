@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets">
+
+  <h:form id="formulario-auditoria">
+
+    <p:panelGrid>
+      <p:row>
+        <p:column><p:outputLabel value="Isento:" for="isento"/></p:column>
+        <p:column>
+          <p:selectBooleanCheckbox value="#{realizarAuditoriaProspectivaRessarcimentoBean.auditoria.solicitacao.isento}" id="isento">
+            <p:ajax event="change" immediate="true" update="@(.mostrar-isento)" />
+          </p:selectBooleanCheckbox>
+        </p:column>
+        <p:column>
+          <h:panelGroup styleClass="mostrar-isento" id="mostrar-isento-label">
+            <p:outputLabel value="Especificação (Isento):" for="especificacao-isento" rendered="#{realizarAuditoriaProspectivaRessarcimentoBean.auditoria.solicitacao.isento}" />
+          </h:panelGroup>
+        </p:column>
+        <p:column>
+          <h:panelGroup styleClass="mostrar-isento" id="mostrar-isento-select">
+            <p:selectOneMenu value="#{realizarAuditoriaProspectivaRessarcimentoBean.auditoria.solicitacao.especificacao}" converter="jsonConverter" 
+              id="especificacao-isento" style="width:490px" rendered="#{realizarAuditoriaProspectivaRessarcimentoBean.auditoria.solicitacao.isento}">
+              <f:selectItems value="#{realizarAuditoriaProspectivaRessarcimentoBean.especificacoes}" var="especificacao" itemValue="#{especificacao}" itemLabel="#{especificacao.tipoCobranca}" />
+            </p:selectOneMenu>
+          </h:panelGroup>
+        </p:column>
+      </p:row>
+    </p:panelGrid>
+    
+    <p:panelGrid>
+      <p:row>
+        <p:column>
+          <p:outputLabel value=" Internação:" for="internacao" />
+        </p:column>
+        <p:column>
+          <p:selectBooleanCheckbox value="#{realizarAuditoriaProspectivaRessarcimentoBean.auditoria.internacao}" id="internacao">
+            <p:ajax event="change" immediate="true" update="@(.mostrar-internacao)" />
+          </p:selectBooleanCheckbox>
+        </p:column>
+        <p:column>
+          <h:panelGroup styleClass="mostrar-internacao" id="mostrar-internacao-label">
+            <p:outputLabel value="Acomodação:" for="local-internacao" 
+              rendered="#{realizarAuditoriaProspectivaRessarcimentoBean.auditoria.internacao}" />
+          </h:panelGroup>
+        </p:column>
+        <p:column>
+          <h:panelGroup styleClass="mostrar-internacao" id="mostrar-internacao-select">
+            <p:selectOneMenu value="#{realizarAuditoriaProspectivaRessarcimentoBean.auditoria.localInternacao}"
+              converter="genericEnumConverter" id="local-internacao" rendered="#{realizarAuditoriaProspectivaRessarcimentoBean.auditoria.internacao}">
+              <f:selectItems value="#{realizarAuditoriaProspectivaRessarcimentoBean.locaisInternacao}" var="local" itemValue="#{local}" itemLabel="#{local.label}" />
+            </p:selectOneMenu>
+          </h:panelGroup>
+        </p:column>
+      </p:row>
+    </p:panelGrid>
+
+    <h6>Observações:</h6>
+    <p:inputTextarea value="#{realizarAuditoriaProspectivaRessarcimentoBean.auditoria.observacoes}" styleClass="input-block-level" rows="5" autoResize="false" />
+
+    <h6>Procedimentos</h6>
+
+    <p:messages id="msgs" autoUpdate="true" showIcon="false" />
+
+    <p:dataTable value="#{realizarAuditoriaProspectivaRessarcimentoBean.itensList}" paginator="true" rows="5"
+      emptyMessage="#{msgs.no_records_found}" paginatorPosition="bottom" paginatorAlwaysVisible="false"
+      rowsPerPageTemplate="5, 10"
+      paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+      var="resposta" id="lista-procedimentos">
+      <f:facet name="header">
+        <p:commandButton styleClass="btn btn-primary" icon="fa fa-plus" value="Adicionar novo procedimento"
+          process="@this" action="#{realizarAuditoriaProspectivaRessarcimentoBean.criarNovaResposta}"
+          update=":adicionar-procedimento-auditoria-prospectiva-form" id="adicionar-procedimento" />
+      </f:facet>
+
+      <p:column headerText="Tabela" width="150" sortBy="#{resposta.procedimento.tabela.nome}">
+        <h:outputText value="#{resposta.procedimento.tabela.nome}" />
+        <h:outputText value="Outros" rendered="#{resposta.procedimento == null}" />
+      </p:column>
+
+      <p:column headerText="Procedimento" sortBy="#{resposta.procedimento}"
+        sortFunction="#{realizarAuditoriaProspectivaRessarcimentoBean.sortByModel}" >
+        <h:outputText value="#{formatterBean.procedimentoFormatter.getCodigoDescricao(resposta.procedimento)}" />
+        <h:outputText rendered="#{resposta.especialidade.sigla != null}" value=" (#{resposta.especialidade.sigla})" />
+        <h:outputText rendered="#{resposta.dente != null}" value=" - Dente #{resposta.dente}" />
+        <h:outputText rendered="#{resposta.faceDental != null}" value=" - Face #{resposta.faceDental.label}" />
+        <h:outputText value="#{resposta.descricaoOutros}" />
+        <h:outputLabel id="observacao-are" styleClass="btn btn-link fa fa-info" rendered="#{resposta.observacaoARE != null}" />
+        <p:tooltip id="toolTipObservacaoARE" for="observacao-are" styleClass="preformatted" value="OBS: #{resposta.observacaoARE}" />
+      </p:column>
+
+      <p:column width="80" headerText="Orçamento" sortBy="#{resposta.orcamento}">
+        <h:outputText value="#{resposta.orcamento}">
+          <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR"  />
+        </h:outputText>
+      </p:column>
+
+      <p:column headerText="Aprov" width="50" styleClass="text-center" sortBy="#{resposta.aprovado}" >
+        <p:commandButton icon="fa #{resposta.aprovado ? 'fa-thumbs-o-up text-success' : 'fa-thumbs-o-down text-error'}"
+          title="Verificar justificativa" rendered="#{resposta.aprovado != null}"
+          action="#{realizarAuditoriaProspectivaRessarcimentoBean.selecionarResultadoJustificativa(resposta)}"
+          update=":justificativa-form-dialog" styleClass="btn btn-link">
+        </p:commandButton>
+         <h:outputText value="-" rendered="#{resposta.aprovado == null}"/>
+      </p:column>
+
+      <p:column headerText="OPME" width="50" styleClass="text-center" sortBy="#{resposta.opme}" >
+        <h:outputText value="#{resposta.opme ? 'Sim' : 'Não'}" />
+      </p:column>
+
+      <p:column width="30" styleClass="text-center">
+        <p:commandButton id="editar-resposta" action="#{realizarAuditoriaProspectivaRessarcimentoBean.editarResposta(resposta)}"
+          styleClass="btn btn-link" icon="fa fa-gavel" process="@this" update=":auditar-procedimento-form" />
+      </p:column>
+
+      <p:column width="30" styleClass="text-center">
+        <p:commandButton id="excluir-resposta" styleClass="btn btn-link" title="Excluir procedimento" icon="fa fa-times text-error" 
+          action="#{realizarAuditoriaProspectivaRessarcimentoBean.removerResultado(resposta)}"
+          update="lista-procedimentos">
+          <p:confirm header="Atenção!" message="Tem certeza que deseja remover este procedimento?" icon="ui-icon-alert" />
+        </p:commandButton>
+      </p:column>
+    </p:dataTable>
+
+    <div class="vgap-30"/>
+  
+    <p:commandButton id="finalizar-auditoria" styleClass="btn btn-success" value="Finalizar Auditoria" icon="fa fa-gavel"
+      action="#{realizarAuditoriaProspectivaRessarcimentoBean.prepararResultadoAuditoria}" update=":finalizar-form" />
+      <p:commandButton id="informar_inconsistencia" styleClass="btn margin-l-5" value="Informar inconsistência" type="button" icon="fa fa-exclamation-circle"
+        onclick="PF('informarInconsistenciaSolicitacaoRessarcimentoDialog').show()" />      
+    <a id="btn_voltar" href="../pendentes" class="btn">Voltar</a>
+  </h:form>
+
+
+</ui:composition>

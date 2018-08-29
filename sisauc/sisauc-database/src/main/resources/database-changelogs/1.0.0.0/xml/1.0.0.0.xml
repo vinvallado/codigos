@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<!-- To help make scripts database-independent, the following “generic” data types will be converted to the correct database implementation: 
+		* BOOLEAN * CURRENCY * UUID * CLOB * BLOB * DATE * DATETIME * TIME * BIGINT -->
+
+	<!--changeSet id="cricao-schema-tabela" author="tadeutbc">
+		<sqlFile relativeToChangelogFile="true" path="../sql/1.0.0.0-estrutura.sql" />
+	</changeSet-->
+	<changeSet id="carga-pais" author="tadeutbc">
+		<sqlFile relativeToChangelogFile="true" path="../sql/1.0.0.0-carga-pais.sql" />
+	</changeSet>
+	<changeSet id="carga-estado" author="tadeutbc">
+		<sqlFile relativeToChangelogFile="true" path="../sql/1.0.0.0-carga-estado.sql" />
+	</changeSet>
+	<changeSet id="carga-cidade" author="tadeutbc">
+		<sqlFile relativeToChangelogFile="true" path="../sql/1.0.0.0-carga-cidade.sql" />
+	</changeSet>
+	<changeSet id="carga-admin" author="tadeutbc">
+		<sqlFile relativeToChangelogFile="true" path="../sql/1.0.0.0-carga-admin.sql" />
+	</changeSet>
+	<changeSet id="carga-tabela-porte" author="tadeutbc">
+		<sqlFile relativeToChangelogFile="true" path="../sql/1.0.0.0-carga-porte.sql" />
+	</changeSet>
+	<changeSet id="carga-tabela-porte-anestesico" author="tadeutbc">
+		<sqlFile relativeToChangelogFile="true" path="../sql/1.0.0.0-carga-porte-anestesico.sql" />
+	</changeSet>
+	<changeSet id="carga-tabela-especialidade" author="tadeutbc">
+		<sqlFile relativeToChangelogFile="true" path="../sql/1.0.0.0-carga-especialidade.sql" />
+	</changeSet>
+	<changeSet id="carga-tabela-organizacao-militar" author="tadeutbc">
+		<sqlFile relativeToChangelogFile="true" path="../sql/1.0.0.0-carga-organizacao-militar.sql" />
+	</changeSet>
+	<changeSet id="carga-cid" author="tadeutbc">
+		<sqlFile relativeToChangelogFile="true" path="../sql/1.0.0.0-carga-cid.sql" />
+	</changeSet>
+	<changeSet id="carga-posto-graduacao" author="tadeutbc">
+		<sqlFile relativeToChangelogFile="true" path="../sql/1.0.0.0-carga-posto-graduacao.sql" />
+	</changeSet>
+	<changeSet id="carga-convenio" author="tadeutbc">
+		<sqlFile relativeToChangelogFile="true" path="../sql/1.0.0.0-carga-convenio.sql" />
+	</changeSet>
+	<changeSet id="carga-grupo" author="tadeutbc">
+		<sqlFile relativeToChangelogFile="true" path="../sql/1.0.0.0-carga-grupo.sql" />
+	</changeSet>
+	<changeSet id="carga-sub-grupo" author="tadeutbc">
+		<sqlFile relativeToChangelogFile="true" path="../sql/1.0.0.0-carga-subgrupo.sql" />
+	</changeSet>
+	<changeSet id="carga-procedimento" author="tadeutbc">
+		<sqlFile relativeToChangelogFile="true" path="../sql/1.0.0.0-carga-procedimento.sql" />
+	</changeSet>
+
+</databaseChangeLog>

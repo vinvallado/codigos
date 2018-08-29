@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<changeSet id="atualização de oms" author="brunobjm">
+		<sql>
+			INSERT INTO sch_sisauc.organizacao_militar
+			SELECT nextval('sch_sisauc.organizacao_militar_id_seq'),'PAA-PIPAR-SPA','Posto de Atendimento de São Pedro da Aldeia',TRUE,null,'SUBORDINADA',null,FALSE
+			WHERE NOT EXISTS (SELECT 1 FROM sch_sisauc.organizacao_militar WHERE sigla = 'HCA' AND regional_sistema = true);
+		
+			INSERT INTO sch_sisauc.organizacao_militar
+			SELECT nextval('sch_sisauc.organizacao_militar_id_seq'),'PAA-PIPAR-ARA','Posto de Atendimento de Araruama',TRUE,null,'SUBORDINADA',null,FALSE
+			WHERE NOT EXISTS (SELECT 1 FROM sch_sisauc.organizacao_militar WHERE sigla = 'HCA' AND regional_sistema = true);
+		
+			INSERT INTO sch_sisauc.organizacao_militar
+			SELECT nextval('sch_sisauc.organizacao_militar_id_seq'),'PAA-PIPAR-VV','Posto de Atendimento de Vila Velha',TRUE,null,'SUBORDINADA',null,FALSE
+			WHERE NOT EXISTS (SELECT 1 FROM sch_sisauc.organizacao_militar WHERE sigla = 'HCA' AND regional_sistema = true);
+  		</sql>
+  	</changeSet>
+	
+	<!--Inclusão dos procedimendos da TRS -->
+	<changeSet id="ajustes-ressarcimento-banco-teste" author="januarioacsj">
+		<sql>
+			UPDATE sch_sisauc.ar SET id_auditoria_prospectiva = null;
+			UPDATE sch_sisauc.item_ar SET id_resposta_ressarcimento_auditoria_origem = null;
+			DELETE FROM sch_sisauc.resposta_ressarcimento_auditoria;
+			DELETE FROM sch_sisauc.auditoria_prospectiva_ressarcimento;
+			DELETE FROM sch_sisauc.solicitacao_pedidos_procedimento_ressarcimento;
+			DELETE FROM sch_sisauc.solicitacao WHERE tipo = 'RESSARCIMENTO';
+			DELETE FROM sch_sisauc.apresentacao_ar;
+			DELETE FROM sch_sisauc.item_ar;
+			DELETE FROM sch_sisauc.ar;
+			DELETE FROM sch_sisauc.procedimento_pedido_solicitacao_ressarcimento;
+			DELETE FROM sch_sisauc.procedimento_trs;
+			DELETE FROM sch_sisauc.procedimento_base WHERE tabela= 'TRS';
+		</sql>
+	</changeSet>
+	
+  	<changeSet id="pre-procedimento" author="januarioacsj">
+		<sqlFile relativeToChangelogFile="true" path="../sql/query_0_sisauc_pre_procedimento.sql" />
+	</changeSet>
+	
+	<changeSet id="procedimento-base-1-base" author="januarioacsj">
+		<sqlFile relativeToChangelogFile="true" path="../sql/query_1_sisauc_procedimento_base.sql" />
+	</changeSet>
+	
+	<changeSet id="procedimento-trs-1-trs" author="januarioacsj">
+		<sqlFile relativeToChangelogFile="true" path="../sql/query_1_sisauc_procedimento_trs.sql" />
+	</changeSet>
+	
+	<changeSet id="procedimento-trs-3-base" author="januarioacsj">
+		<sqlFile relativeToChangelogFile="true" path="../sql/query_3_sisauc_procedimento_base.sql" />
+	</changeSet>
+	
+	<changeSet id="procedimento-trs-3-trs" author="januarioacsj">
+		<sqlFile relativeToChangelogFile="true" path="../sql/query_3_sisauc_procedimento_trs.sql" />
+	</changeSet>
+	
+	<changeSet id="procedimento-trs-4-base" author="januarioacsj">
+		<sqlFile relativeToChangelogFile="true" path="../sql/query_4_sisauc_procedimento_base.sql" />
+	</changeSet>
+	
+	<changeSet id="procedimento-trs-4-trs" author="januarioacsj">
+		<sqlFile relativeToChangelogFile="true" path="../sql/query_4_sisauc_procedimento_trs.sql" />
+	</changeSet>
+	
+	<changeSet id="procedimento-trs-5-base" author="januarioacsj">
+		<sqlFile relativeToChangelogFile="true" path="../sql/query_5_sisauc_procedimento_base.sql" />
+	</changeSet>
+	
+	<changeSet id="procedimento-trs-5-trs" author="januarioacsj">
+		<sqlFile relativeToChangelogFile="true" path="../sql/query_5_sisauc_procedimento_trs.sql" />
+	</changeSet>
+	
+	<changeSet id="procedimento-trs-n" author="januarioacsj">
+		<sqlFile relativeToChangelogFile="true" path="../sql/query_n_sisauc_procedimento_trs.sql" />
+	</changeSet>
+	
+	<changeSet id="estrutura-tabela-de-motivo" author="brunobjm">
+		<sql>
+			CREATE TABLE sch_sisauc.motivo
+			(
+  				id integer NOT NULL PRIMARY KEY,
+ 	 			grupo character varying(50) NOT NULL,
+  				codigo integer, 
+  				descricao character varying(255) NOT NULL,
+  				ativo boolean DEFAULT true,
+ 	 			disponivel_retrospectiva boolean,
+  				habilitado_retrospectiva boolean DEFAULT true
+			)
+			WITH (
+	  			OIDS=FALSE
+			);
+			ALTER TABLE sch_sisauc.motivo
+	  			OWNER TO sisauc;
+
+			CREATE SEQUENCE sch_sisauc.motivo_id_seq
+  				INCREMENT 1
+  				MINVALUE 1
+  				MAXVALUE 9223372036854775807
+  				START 1
+  				CACHE 1;
+			ALTER TABLE sch_sisauc.motivo_id_seq
+  				OWNER TO sisauc;
+		</sql>
+  			
+  		<sqlFile relativeToChangelogFile="true" path="../sql/2.0.0.13-motivos.sql" />
+	</changeSet>
+	
+	<changeSet id="relacionando-auditoria-retrospectiva-com-motivo" author="brunobjm">
+		<sql>
+			ALTER TABLE sch_sisauc.auditoria_retrospectiva ADD COLUMN id_motivo integer;
+			ALTER TABLE sch_sisauc.auditoria_retrospectiva 
+				ADD CONSTRAINT fk_auditoria_retrospectiva_motivo FOREIGN KEY (id_motivo)
+				REFERENCES sch_sisauc.motivo (id);
+		</sql>
+	</changeSet>
+	
+	<changeSet id="nao-conformidade-sem-utilizacao" author="brunobjm">
+		<sql>
+			ALTER TABLE sch_sisauc.auditoria_retrospectiva DROP COLUMN id_nao_conformidade;
+			DROP TABLE sch_sisauc.nao_conformidade;
+		</sql>
+	</changeSet>
+	
+	<changeSet id="add-procedimentos-faltantes" author="tadeutbc">
+		<sqlFile relativeToChangelogFile="true" path="../sql/query0_sisauc_CBHMP_procedimentos_base_faltantes.sql" />
+		<sqlFile relativeToChangelogFile="true" path="../sql/query1_sisauc_CBHPM_2012_procedimentos_faltantes.sql" />
+	</changeSet>
+	
+	
+</databaseChangeLog>

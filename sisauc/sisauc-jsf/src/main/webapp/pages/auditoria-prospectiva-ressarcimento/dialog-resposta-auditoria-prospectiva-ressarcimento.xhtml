@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:sisauc="http://java.sun.com/jsf/composite/sisaucjsf">
+
+  <p:dialog header="Auditar procedimento" id="auditar-procedimento-dialog" widgetVar="respostaDialog" modal="true"
+    resizable="false" onShow="maskPrefix('R$ ')" width="940">
+    <h:form id="auditar-procedimento-form">
+      <p:messages id="msgs" showIcon="false" autoUpdate="true" />
+      <p:panelGrid columns="2">
+
+        <h:outputLabel styleClass="ui-outputlabel" value="Procedimento solicitado:" />
+        <h:panelGroup>
+          <h:outputText id="tipo-tabela" value="(#{realizarAuditoriaProspectivaRessarcimentoBean.resposta.procedimento.tabela.nome}) - "
+            rendered="#{realizarAuditoriaProspectivaRessarcimentoBean.resposta.procedimento != null}" />
+          <h:outputText id="outros" value="(Outros) - "
+            rendered="#{realizarAuditoriaProspectivaRessarcimentoBean.resposta.procedimento == null}" />
+          <h:outputText id="procedimento-solicitado" style="text-align:left"
+            value="#{formatterBean.procedimentoFormatter.getCodigoDescricao(realizarAuditoriaProspectivaRessarcimentoBean.resposta.procedimento)}
+           #{realizarAuditoriaProspectivaRessarcimentoBean.resposta.especialidade != null ? (realizarAuditoriaProspectivaRessarcimentoBean.resposta.especialidade.sigla) : ''} " />
+          <h:outputText value="#{realizarAuditoriaProspectivaRessarcimentoBean.resposta.descricaoOutros}" />
+        </h:panelGroup>
+        
+        <h:panelGroup>
+          <h:outputLabel value="Procedimento TRS:" styleClass="ui-outputlabel"
+            rendered="#{realizarAuditoriaProspectivaRessarcimentoBean.resposta.procedimento.tabela != 'TRS'}" />
+        </h:panelGroup>
+        <h:panelGroup>
+          <p:autoComplete id="procedimento" var="procedimento" converter="jsonConverter"
+            value="#{realizarAuditoriaProspectivaRessarcimentoBean.procedimentoTRSSelecionado}"
+            completeMethod="#{viewUtilsBean.procurarProcedimento}"
+            required="#{realizarAuditoriaProspectivaRessarcimentoBean.resposta.aprovado or realizarAuditoriaProspectivaRessarcimentoBean.resposta.procedimento == null}" 
+            requiredMessage="Selecione o procedimento TRS correspondente."
+            itemLabel="#{formatterBean.procedimentoFormatter.getCodigoDescricao(procedimento)}"
+            itemValue="#{procedimento}" scrollHeight="300" dropdown="true"
+            styleClass="ui-autocomplete-large naoaceitarenter" forceSelection="true"
+            rendered="#{realizarAuditoriaProspectivaRessarcimentoBean.resposta.procedimento.tabela != 'TRS'}" >
+            <p:ajax event="itemSelect" update="coluna-observacao-are-label coluna-observao-are-input coluna-valor-referencia-label coluna-valor-referencia-input coluna-odontologica-label coluna-odontologica-input" process="@this" listener="#{realizarAuditoriaProspectivaRessarcimentoBean.onSelectProcedimento}"/>
+            <p:column>
+              <sisauc:detalharProcedimento procedimento="#{procedimento}" />
+            </p:column>
+          </p:autoComplete>
+        </h:panelGroup>
+				
+				<h:panelGroup id="coluna-odontologica-label">
+	        <p:outputLabel value="Dados odontológicos" rendered="#{realizarAuditoriaProspectivaRessarcimentoBean.procedimentoTRSSelecionado.odontologico || 
+	        	(realizarAuditoriaProspectivaRessarcimentoBean.resposta.procedimento != null and realizarAuditoriaProspectivaRessarcimentoBean.resposta.procedimento.tabela == 'TRS' and realizarAuditoriaProspectivaRessarcimentoBean.resposta.procedimento.odontologico)}"/>
+				</h:panelGroup>
+        <h:panelGroup id="coluna-odontologica-input">
+        	<h:panelGrid columns="4" rendered="#{realizarAuditoriaProspectivaRessarcimentoBean.procedimentoTRSSelecionado.odontologico || 
+        	(realizarAuditoriaProspectivaRessarcimentoBean.resposta.procedimento != null and realizarAuditoriaProspectivaRessarcimentoBean.resposta.procedimento.tabela == 'TRS' and realizarAuditoriaProspectivaRessarcimentoBean.resposta.procedimento.odontologico)}">
+	          <p:outputLabel value="Face:" for="face" id="face-label" />
+	          <p:selectOneMenu value="#{realizarAuditoriaProspectivaRessarcimentoBean.resposta.faceDental}" 
+	            converter="genericEnumConverter" style="width: 130px;" filter="true" filterMatchMode="contains" id="face">
+			    	    <f:selectItem itemLabel="" noSelectionOption="true" />
+	              <f:selectItems value="#{realizarAuditoriaProspectivaRessarcimentoBean.faces}"
+	                var="face" itemValue="#{face}"
+	                itemLabel="#{face.label}" id="sel-face" />
+	          </p:selectOneMenu>
+	          <p:outputLabel value="Dente:" for="dente" id="dente-label" style="margin-left: 30px;" />
+	          <p:selectOneMenu value="#{realizarAuditoriaProspectivaRessarcimentoBean.resposta.dente}" converter="javax.faces.Integer" 
+	          	style="width: 130px;" filter="true" filterMatchMode="contains" id="dente">
+			    	    <f:selectItem itemLabel="" noSelectionOption="true" />
+	              <f:selectItems value="#{viewUtilsBean.listarDentes()}"
+	                var="dente" itemValue="#{dente}"
+	                itemLabel="#{dente}" id="sel-dente" />
+	          </p:selectOneMenu>
+        	</h:panelGrid>
+        </h:panelGroup>
+        
+        
+        
+        
+        
+        
+        <h:panelGroup id="coluna-valor-referencia-label">
+          <p:outputLabel value="Valor de Referência:" for="valor-referencia" id="valor-referencia-label"
+            rendered="#{realizarAuditoriaProspectivaRessarcimentoBean.procedimentoTRSSelecionado.codigo =='00000001' or realizarAuditoriaProspectivaRessarcimentoBean.resposta.procedimento.codigo =='00000001'}" />
+        </h:panelGroup>
+        <h:panelGroup id="coluna-valor-referencia-input">
+          <p:inputText value="#{realizarAuditoriaProspectivaRessarcimentoBean.resposta.valorRerenciaAuditor}" styleClass="number"
+            id="valor-referencia" converter="doubleConverter"  required="#{realizarAuditoriaProspectivaRessarcimentoBean.procedimentoTRSSelecionado.codigo =='00000001' or realizarAuditoriaProspectivaRessarcimentoBean.resposta.procedimento.codigo =='00000001'}"
+            requiredMessage="Procedimento (TRS - 00000001 - Outros Procedimentos) requer Valor de Referência (Campo obrigatório)"
+            onfocus="maskPrefixOnlyPositiveNumbers('R$ ')" rendered="#{realizarAuditoriaProspectivaRessarcimentoBean.procedimentoTRSSelecionado.codigo =='00000001' or realizarAuditoriaProspectivaRessarcimentoBean.resposta.procedimento.codigo =='00000001'}"/>
+        </h:panelGroup>
+
+        <p:outputLabel value="OPME/Medicamento:" id="opme-label" for="opme" />
+        <p:selectBooleanCheckbox value="#{realizarAuditoriaProspectivaRessarcimentoBean.resposta.opme}" id="opme">
+          <p:ajax event="change" immediate="true" update="@(.mostrar-opme)" oncomplete="maskPrefix('R$ ')" />
+        </p:selectBooleanCheckbox>
+
+        <h:panelGroup styleClass="mostrar-opme" id="coluna-descricao-opme-label">
+          <p:outputLabel value="Descrição OPME/Medicamento:" for="descricao-opme" id="descricao-opme-label"
+            rendered="#{realizarAuditoriaProspectivaRessarcimentoBean.resposta.opme}" />
+        </h:panelGroup>
+        <h:panelGroup styleClass="mostrar-opme" id="coluna-descricao-opme-input">
+          <p:inputTextarea value="#{realizarAuditoriaProspectivaRessarcimentoBean.resposta.opmeDescricao}"
+            styleClass="input-block-level" id="descricao-opme"
+            required="#{realizarAuditoriaProspectivaRessarcimentoBean.resposta.opme}" maxlength="500"
+            requiredMessage="O campo Descrição OPME/Medicamento é obrigatório." cols="20" rows="4" autoResize="false"
+            rendered="#{realizarAuditoriaProspectivaRessarcimentoBean.resposta.opme}" />
+        </h:panelGroup>
+
+        <h:panelGroup styleClass="mostrar-opme" id="coluna-valor-opme-label">
+          <p:outputLabel value="Valor OPME/Medicamento:" for="valor-opme" id="valor-opme-label"
+            rendered="#{realizarAuditoriaProspectivaRessarcimentoBean.resposta.opme}" />
+        </h:panelGroup>
+        <h:panelGroup styleClass="mostrar-opme" id="coluna-valor-opme-input">
+          <p:inputText value="#{realizarAuditoriaProspectivaRessarcimentoBean.resposta.opmeValor}" styleClass="number"
+            id="valor-opme" converter="doubleConverter" required="#{realizarAuditoriaProspectivaRessarcimentoBean.resposta.opme}"
+            requiredMessage="O campo Valor OPME/Medicamento é obrigatório."
+            onfocus="maskPrefixOnlyPositiveNumbers('R$ ')" rendered="#{realizarAuditoriaProspectivaRessarcimentoBean.resposta.opme}" />
+        </h:panelGroup>
+
+        <h:panelGroup styleClass="mostrar-opme" id="coluna-justificativa-opme-label">
+          <p:outputLabel value="Justificativa do OPME/Medicamento:" for="justificativa-opme"
+            id="justificativa-opme-label" rendered="#{realizarAuditoriaProspectivaRessarcimentoBean.resposta.opme}" />
+        </h:panelGroup>
+        <h:panelGroup styleClass="mostrar-opme" id="coluna-justificativa-opme-input">
+          <p:inputTextarea value="#{realizarAuditoriaProspectivaRessarcimentoBean.resposta.opmeJustificativa}"
+            id="justificativa-opme" styleClass="input-block-level" cols="20" rows="4" autoResize="false"
+            required="#{realizarAuditoriaProspectivaRessarcimentoBean.resposta.opme}"
+            requiredMessage="O campo Justificativa do OPME/Medicamento é obrigatório."
+            rendered="#{realizarAuditoriaProspectivaRessarcimentoBean.resposta.opme}" />
+        </h:panelGroup>
+
+        <p:outputLabel value="Aprovado:" id="aprovado-label" for="aprovado" />
+        <p:selectBooleanCheckbox value="#{realizarAuditoriaProspectivaRessarcimentoBean.resposta.aprovado}" id="aprovado">
+          <p:ajax event="change" update="@(.esconder-justificativa)" process="@this" oncomplete="maskPrefix('R$ ')" />
+        </p:selectBooleanCheckbox>
+
+        <h:panelGroup styleClass="esconder-justificativa" id="coluna-justificativa-label">
+          <p:outputLabel value="Justificativa da Reprovação:" for="justificativa" id="justificativa-label"
+            rendered="#{!realizarAuditoriaProspectivaRessarcimentoBean.resposta.aprovado}" />
+        </h:panelGroup>
+
+        <h:panelGroup styleClass="esconder-justificativa" id="coluna-justificativa-input">
+          <p:inputTextarea value="#{realizarAuditoriaProspectivaRessarcimentoBean.resposta.justificativa}" id="justificativa"
+            styleClass="input-block-level" required="#{!realizarAuditoriaProspectivaRessarcimentoBean.resposta.aprovado}" cols="20"
+            rows="4" autoResize="false"
+            requiredMessage="O campo justificativa é obrigatório para procedimentos reprovados."
+            rendered="#{!realizarAuditoriaProspectivaRessarcimentoBean.resposta.aprovado}" />
+        </h:panelGroup>
+        
+        <h:panelGroup id="coluna-observacao-are-label" >
+          <p:outputLabel value="Observação da ARE:" for="observacaoARE-input-padrao" id="observacaoARE-label-padrao" 
+            title="Observação que será impressa na ARE" />
+        </h:panelGroup>        
+        
+        <h:panelGroup id="coluna-observao-are-input" >
+          <p:inputTextarea value="#{realizarAuditoriaProspectivaRessarcimentoBean.resposta.observacaoARE}" id="observacaoARE-input-padrao"
+            styleClass="input-block-level" cols="20" rows="3" autoResize="false" required="#{realizarAuditoriaProspectivaRessarcimentoBean.procedimentoTRSSelecionado.codigo =='00000001' or realizarAuditoriaProspectivaRessarcimentoBean.resposta.procedimento.codigo =='00000001'}"
+            requiredMessage="Procedimento (TRS - 00000001 - Outros Procedimentos) requer Observação da ARE (Campo obrigatório)" />
+        </h:panelGroup>  
+        
+      </p:panelGrid>
+
+      <h:panelGroup styleClass="dialog-footer" layout="block">
+        <p:commandButton value="Salvar" styleClass="btn btn-success" icon="fa fa-save" validateClient="true"
+          id="adicionar" action="#{realizarAuditoriaProspectivaRessarcimentoBean.auditarItem}"
+          update=":tabview-auditoria-prospectiva:formulario-auditoria:lista-procedimentos :tabview-auditoria-prospectiva:formulario-auditoria:msgs msgs" />
+      </h:panelGroup>
+
+    </h:form>
+  </p:dialog>
+
+</ui:composition>

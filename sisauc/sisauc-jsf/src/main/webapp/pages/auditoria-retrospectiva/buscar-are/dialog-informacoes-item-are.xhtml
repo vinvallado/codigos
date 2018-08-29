@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets">
+
+   <p:dialog header="Item ARE" id="informacoes-item-are-dialog" widgetVar="dialogInformacoesItemARE" modal="true"
+    resizable="false" width="960">
+    <h:form id="informacoes-item-are-dialog-form">
+
+      <h4>
+        <h:outputText value="#{buscaAreFormularioBean.itemARE.codigo}" />
+        <span class="muted">(#{buscaAreFormularioBean.itemARE.estadoItemAR.label})</span>
+      </h4>
+      <p>
+        <h:outputText value="Procedimento: " class="text-bold" />
+        #{formatterBean.procedimentoFormatter.getCodigoDescricao(buscaAreFormularioBean.itemARE.procedimento)}
+        <h:outputText rendered="#{buscaAreFormularioBean.itemARE.dente != null}" value=" - Dente #{buscaAreFormularioBean.itemARE.dente}" />
+        <h:outputText rendered="#{buscaAreFormularioBean.itemARE.faceDental != null}" value=" - Face #{buscaAreFormularioBean.itemARE.faceDental.label}" />
+      </p>
+      <p>
+        <h:outputText value="Auditor Retrospectivo: " class="text-bold"
+          rendered="#{buscaAreFormularioBean.itemARE.auditoriaRetrospectiva.auditorRetrospectivo.nome != null}"/>
+        <h:outputText value="#{buscaAreFormularioBean.itemARE.auditoriaRetrospectiva.auditorRetrospectivo.nome}"
+          rendered="#{buscaAreFormularioBean.itemARE.auditoriaRetrospectiva.auditorRetrospectivo.nome != null}" />
+      </p>
+      <p>
+        <h:outputText value="Lote Ressarcimento: " class="text-bold"  rendered="#{buscaAreFormularioBean.lote != null}" />
+        <h:outputText value="#{buscaAreFormularioBean.lote.numero}" rendered="#{buscaAreFormularioBean.lote != null}"/>
+      </p>
+      <p>
+        <h:outputText value="Observação da ARE: " class="text-bold" rendered="#{buscaAreFormularioBean.itemARE.observacaoARE != null}"/>
+        <h:outputText value="#{buscaAreFormularioBean.itemARE.observacaoARE}" rendered="#{buscaAreFormularioBean.itemARE.observacaoARE != null}" />
+      </p>
+      
+      <p:dataTable value="#{buscaAreFormularioBean.especificacoes}" var="especificacao"
+        rendered="#{buscaAreFormularioBean.itemARE.auditoriaRetrospectiva != null}">
+        <f:facet name="header">
+          <h:outputText value="Especificações Auditoria Retrospectiva"></h:outputText>
+        </f:facet>
+        
+        <p:column headerText="Tipo" width="50">
+          <p:outputLabel styleClass="text-center" value="#{especificacao.tipo.label}" />
+        </p:column>
+        
+        <p:column headerText="Descrição" width="200">
+          <h:outputText value="#{especificacao.descricao}" />
+          <h:outputText rendered="#{especificacao.dente != null}" value=" - Dente #{especificacao.dente}" />
+          <h:outputText rendered="#{especificacao.faceDental != null}" value=" - Face #{especificacao.faceDental.label}" />
+        </p:column>
+        
+        <p:column headerText="Valor Referência" width="70">
+          <h:outputLabel styleClass="text-center" value="#{especificacao.valorReferencia}">
+            <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR"  />
+          </h:outputLabel>
+        </p:column>
+        
+        <p:column headerText="Valor Apresentado" width="70">
+          <h:outputLabel styleClass="text-center" value="#{especificacao.valorApresentado}">
+            <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR"  />
+          </h:outputLabel>
+        </p:column>
+        
+        <p:column headerText="Valor Calculado" width="70">
+          <h:outputLabel styleClass="text-center" value="#{especificacao.valorCalculado}">
+            <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR"  />
+          </h:outputLabel>
+        </p:column>
+        
+        <f:facet name="footer">
+          <td colspan="5">
+          	<span style="margin-right: 60px;"><strong>Valor calculado total: </strong>
+            <h:outputText value="#{buscaAreFormularioBean.itemARE.auditoriaRetrospectiva.getValorCalculado()}">
+              <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR"  />
+            </h:outputText></span>
+          	<span><strong>Valor a ressarcir: </strong>
+            <h:outputText value="#{buscaAreFormularioBean.itemARE.auditoriaRetrospectiva.valorRessarcimento}">
+              <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR"  />
+            </h:outputText></span>
+          </td>
+        </f:facet>
+      </p:dataTable>
+      
+    </h:form>
+  </p:dialog>
+
+</ui:composition>

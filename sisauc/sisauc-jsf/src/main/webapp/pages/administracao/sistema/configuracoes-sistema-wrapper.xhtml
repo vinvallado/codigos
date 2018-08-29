@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" template="/resources/template/template.xhtml">
+
+  <ui:define name="html-title">Configurações do Sistema</ui:define>
+
+  <ui:define name="main">
+    <h3>Configurações do Sistema</h3>
+    <p:separator />
+
+    <div class="vgap-10"></div>
+
+    <p:tabView id="tabview-configuracao-sistema">
+      <p:tab title="Configuração de Regional" id="tab-configuracao-regional">
+        <div class="vgap-10"></div>
+        <ui:include src="./configuracao-regional/configuracao-regional.xhtml"></ui:include>
+      </p:tab>
+
+      <p:tab title="Parâmetros do Sistema" id="tab-parametros-sistema">
+        <div class="vgap-10"></div>
+        <ui:include src="./configuracao-parametros-sistema/configuracao-parametros-sistema.xhtml"></ui:include>
+      </p:tab>
+
+      <p:tab title="Configuração de Mensagens" id="tab-configuracao-mensagens">
+        <div class="vgap-10"></div>
+        <ui:include src="./configuracao-mensagens/configuracao-mensagens.xhtml"></ui:include>
+      </p:tab>
+
+    </p:tabView>
+  </ui:define>
+
+  <ui:define name="html-body-bottom">
+    <script type="text/javascript" src="#{request.contextPath}/resources/vendor/js/jquery.maskMoney.min.js"/>
+    <script type="text/javascript">
+      $(document).ready(function(){
+        maskPrefix('R$');
+      });
+    </script>
+  </ui:define>  
+
+</ui:composition>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" template="/resources/template/template.xhtml">
+
+  <ui:define name="html-title">Lista de Credenciados</ui:define>
+
+  <ui:define name="main">
+
+    <h3>Cadastro de Credenciados</h3>
+
+    <p:separator />
+
+    <a id="criar" class="btn btn-success" href="credenciado/novo"> <span class="fa fa-plus"></span> <span>Criar
+        novo Credenciado</span></a>
+
+    <div class="vgap-10" />
+
+    <h:form id="form-credenciados-lista">
+
+      <p:messages id="msg" showIcon="false" />
+
+      <p:dataTable id="tabela" widgetVar="datatableCredenciados" value="#{cadastroCredenciadoListaBean.credenciados}" 
+        var="credenciado" sortBy="#{credenciado.nomeFantasia}" paginator="true" rows="15" paginatorPosition="bottom" 
+        paginatorAlwaysVisible="true" rowsPerPageTemplate="10, 15, 25" emptyMessage="#{msgs.no_records_found}"
+        paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+        filteredValue="#{viewUtilsBean.filtrados}" filterDelay="300">
+
+        <p:column id="cnpj-cpf" headerText="CNPJ/CPF" width="160" filterFunction="#{viewUtilsBean.filterCnpjCpf}"
+          filterBy="#{formatterBean.credenciadoFormatter.getCpfCnpj(credenciado)}" filterMatchMode="contains">
+          <h:outputText value="#{formatterBean.credenciadoFormatter.getCpfCnpj(credenciado)}" />
+        </p:column>
+
+        <p:column id="nome-fantasia" headerText="Nome Fantasia" filterBy="#{credenciado.nomeFantasia}"
+          filterFunction="#{viewUtilsBean.filterIgnoreCase}" filterMatchMode="contains"
+          sortBy="#{credenciado.nomeFantasia}">
+          <h:outputText value="#{credenciado.nomeFantasia}" />
+        </p:column>
+
+        <p:column id="telefone" headerText="Telefone Principal" width="200" filterBy="#{credenciado.telefonePrincipal}"
+          filterFunction="#{viewUtilsBean.filterIgnoreCase}" filterMatchMode="contains">
+          <h:outputText value="#{credenciado.telefonePrincipal}" />
+        </p:column>
+
+        <p:column id="ativo" headerText="Ativo" width="70" styleClass="text-center" sortBy="#{credenciado.ativo}"
+          filterOptions="#{viewUtilsBean.booleanOptions()}" filterBy="#{viewUtilsBean.booleanLabel(credenciado.ativo)}">
+          <h:outputText value="#{viewUtilsBean.booleanLabel(credenciado.ativo)}"
+            styleClass="#{credenciado.ativo ? 'text-success' : 'text-error'}" />
+        </p:column>
+
+        <p:column id="btn-ativo" width="40" styleClass="text-center">
+          <p:commandButton id="ativar-desativar"
+            icon="fa #{credenciado.ativo ? 'fa-times text-error' : 'fa-check text-success'}"
+            title="#{credenciado.ativo ? 'Desativar' : 'Ativar'}" styleClass="btn btn-link"
+            action="#{cadastroCredenciadoListaBean.selecionarCredenciadoAlterarAtivo(credenciado)}"
+            update=":dialog-status-form" />
+        </p:column>
+
+        <p:column id="btn-editar" width="40" styleClass="text-center">
+          <h:outputLink id="editar" styleClass="btn btn-link" value="credenciado/#{credenciado.id}" title="Editar">
+            <span id="editar" class="fa fa-pencil"></span>
+          </h:outputLink>
+        </p:column>
+
+      </p:dataTable>
+
+    </h:form>
+
+  </ui:define>
+
+  <ui:define name="dialogs">
+
+    <p:dialog header="Atenção!" id="mudar-status-credenciado-dialog" widgetVar="mudarStatusCredenciadoDialog"
+      modal="true" resizable="false">
+      <h:form id="dialog-status-form">
+        <h:outputText
+          value="Tem certeza que deseja #{cadastroCredenciadoListaBean.credenciadoSelecionado.ativo ? 'desativar' : 'ativar'} 
+          o credenciado #{cadastroCredenciadoListaBean.credenciadoSelecionado.nomeFantasia}?" />
+
+        <div class="vgap-30">
+          <!-- GAP 30px -->
+        </div>
+
+        <h:panelGroup styleClass="dialog-footer" layout="block">
+          <p:commandButton value="Sim" styleClass="btn btn-success" icon="fa fa-save" onclick="PF('mudarStatusCredenciadoDialog').hide()"
+            action="#{cadastroCredenciadoListaBean.mudarStatusAtivoCredenciado}" update=":form-credenciados-lista" 
+            oncomplete="PF('datatableCredenciados').filter();"/>
+          <p:commandButton value="Cancelar" styleClass="btn" icon="fa" type="button"
+            onclick="PF('mudarStatusCredenciadoDialog').hide()" />
+        </h:panelGroup>
+
+      </h:form>
+    </p:dialog>
+
+  </ui:define>
+
+</ui:composition>

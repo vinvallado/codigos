@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" template="/resources/template/template.xhtml">
+
+  <ui:define name="html-title">Cadastro de Profissional</ui:define>
+
+  <ui:define name="main">
+
+    <h3>Formulário de Profissional</h3>
+
+    <p:separator />
+
+    <h:form prependId="false">
+
+      <p:messages id="msgs" showIcon="false" />
+
+      <p:panelGrid columns="2">
+
+        <p:outputLabel value="Nome:" for="nome" />
+        <p:inputText id="nome" required="true" value="#{cadastroMedicoFormularioBean.medico.nome}" />
+        
+        <p:outputLabel value="Profissional de Saúde:" for="profissional-saude" />
+        <p:selectBooleanCheckbox value="#{cadastroMedicoFormularioBean.medico.profissionalSaude}" id="profissional-saude">
+          <p:ajax event="change" update="@(.mostrar-profissional-saude)"/>
+        </p:selectBooleanCheckbox>
+        
+        <h:panelGroup id="row-numero-conselho-regional-label" styleClass="mostrar-profissional-saude">
+          <p:outputLabel value="Nº Conselho Regional:" for="numero-conselho-regional" rendered="#{cadastroMedicoFormularioBean.medico.profissionalSaude}"/>
+        </h:panelGroup>
+        <h:panelGroup id="row-numero-conselho-regional-field" styleClass="mostrar-profissional-saude">
+          <p:inputText id="numero-conselho-regional" maxlength="50" required="true" rendered="#{cadastroMedicoFormularioBean.medico.profissionalSaude}"
+            value="#{cadastroMedicoFormularioBean.medico.numeroConselhoRegional}" validatorMessage="O Nº do Conselho Regional não deve conter caracteres especiais">
+            <f:validateRegex pattern="[0-9a-zA-Z]+"  />
+          </p:inputText>
+
+          <p:selectOneMenu value="#{cadastroMedicoFormularioBean.medico.estadoConselhoRegional}" id="estado-conselho-regional"
+            style="margin-left: 10px; width: 60px"
+            converter="jsonConverter" filter="true" required="true" rendered="#{cadastroMedicoFormularioBean.medico.profissionalSaude}">
+            <f:selectItems value="#{cadastroMedicoFormularioBean.estados}" var="estado" itemLabel="#{estado.sigla}"
+              itemValue="#{estado}" />
+          </p:selectOneMenu>
+        </h:panelGroup>
+
+        <h:panelGroup id="row-tipo-profissional-label" styleClass="mostrar-profissional-saude">
+          <p:outputLabel value="Tipo Profissional:" for="tipo-profissional" rendered="#{cadastroMedicoFormularioBean.medico.profissionalSaude}"/>
+        </h:panelGroup>
+
+        <h:panelGroup id="row-tipo-profissional-field" styleClass="mostrar-profissional-saude">
+          <p:selectOneMenu value="#{cadastroMedicoFormularioBean.medico.tipoProfissionalSaude}" id="tipo-profissional"
+            converter="genericEnumConverter" filter="true" required="true" rendered="#{cadastroMedicoFormularioBean.medico.profissionalSaude}" 
+            filterMatchMode="contains">
+            <f:selectItems value="#{cadastroMedicoFormularioBean.tipos}" var="tipo" itemLabel="#{tipo.label}"
+              itemValue="#{tipo}" />
+            <p:ajax event="change" listener="#{cadastroMedicoFormularioBean.onSelectTipoProfissional}" update="row-especialidades-field"/>
+          </p:selectOneMenu>
+        </h:panelGroup>
+
+        <h:panelGroup id="row-especialidades-label" styleClass="mostrar-profissional-saude">
+          <p:outputLabel value="Especialidades:" for="especialidades" rendered="#{cadastroMedicoFormularioBean.medico.profissionalSaude}"/>
+        </h:panelGroup>
+
+        <h:panelGroup id="row-especialidades-field" styleClass="mostrar-profissional-saude">
+          <p:selectCheckboxMenu required="true" requiredMessage="É necessário cadastrar ao menos uma especialidade." id="especialidades"
+            rendered="#{cadastroMedicoFormularioBean.medico.profissionalSaude}"
+            value="#{cadastroMedicoFormularioBean.medico.especialidades}" label="Especialidades" filter="true"
+            filterMatchMode="contains" style="width: 220px;" panelStyle="width:350px" converter="jsonConverter">
+            <f:attribute name="collectionType" value="java.util.HashSet" />
+            <f:selectItems value="#{cadastroMedicoFormularioBean.especialidades}" var="especialidade"
+              itemLabel="#{especialidade.nome} (#{especialidade.sigla})" />
+          </p:selectCheckboxMenu>
+        </h:panelGroup>
+
+
+        <p:outputLabel value="Militar:" for="militar" />
+        <p:selectBooleanCheckbox value="#{cadastroMedicoFormularioBean.medico.militar}" id="militar">
+          <p:ajax event="change" update="row-om-label row-om-field"  />
+        </p:selectBooleanCheckbox>
+        
+        <h:panelGroup id="row-om-label">
+          <p:outputLabel value="Organização Militar:" for="om" rendered="#{cadastroMedicoFormularioBean.medico.militar}"/>
+        </h:panelGroup>
+
+        <h:panelGroup id="row-om-field">
+          <p:selectOneMenu value="#{cadastroMedicoFormularioBean.medico.organizacaoMilitar}" id="om" filterMatchMode="contains"
+            converter="jsonConverter" filter="true" required="true" rendered="#{cadastroMedicoFormularioBean.medico.militar}">
+            <f:selectItems value="#{cadastroMedicoFormularioBean.oms}" var="om" itemLabel="#{om.sigla}"
+              itemValue="#{om}" />
+          </p:selectOneMenu>
+        </h:panelGroup>
+
+        <p:outputLabel value="Ativo:" for="ativo" />
+        <p:selectBooleanCheckbox value="#{cadastroMedicoFormularioBean.medico.ativo}" id="ativo" />
+
+      </p:panelGrid>
+
+      <div class="vgap-10" />
+
+      <p:commandButton value="Salvar" styleClass="btn btn-success" icon="fa fa-save" validateClient="true"
+        action="#{cadastroMedicoFormularioBean.salvar}" id="salvar" update="@form" />
+
+      <a href="../medico" id="voltar" class="btn">Voltar</a>
+
+    </h:form>
+
+  </ui:define>
+
+</ui:composition>

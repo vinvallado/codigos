@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:task="http://www.springframework.org/schema/task"
+	   xmlns:tx="http://www.springframework.org/schema/tx"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+
+
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.0.xsd
+
+
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+
+	<context:property-placeholder location="classpath:versao"/>
+
+	<bean id="dataSourcePropertiesPlaceHolder" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
+		<property name="order" value="0"/>
+		<property name="locations">
+			<list>
+				<value>classpath:config/config.properties</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="customDataSourcePropertiesPlaceHolder" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
+		<property name="ignoreResourceNotFound" value="true"/>
+		<property name="order" value="-1"/>
+		<property name="locations">
+			<list>
+				<value>file:${user.home}/.#{servletContext.servletContextName}/config.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<context:property-placeholder/>
+<!-- depends-on="liquibase"  -->
+	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"  >
+		<property name="dataSource" ref="dataSource" />
+		<property name="packagesToScan" value="br.ccasj" />
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+				<property name="showSql" value="true" />
+				<property name="generateDdl" value="true" />
+			</bean>
+		</property>
+		<property name="jpaProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQL9Dialect</prop>
+				<prop key="hibernate.connection.characterEncoding">utf8</prop>
+				<prop key="hibernate.connection.charSet">utf8</prop>
+				<prop key="hibernate.id.new_generator_mappings">true</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="${database.driver}" />
+		<property name="url" value="${database.url}:${database.port}/${database.name}" />
+		<property name="username" value="${database.username}" />
+		<property name="password" value="${database.password}" />
+	</bean>
+
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+	</bean>
+
+	<bean id="arquivosDir" class="java.lang.String">
+		<constructor-arg value="${user.home}/.#{servletContext.servletContextName}/arquivos" />
+	</bean>
+
+	<tx:annotation-driven />
+
+	<context:annotation-config/>
+	<context:component-scan base-package="br.ccasj.sisauc">
+	</context:component-scan>
+
+	<bean id="persistenceExceptionTranslationPostProcessor" class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
+
+	<bean id="versaoExterna" class="java.lang.String">
+		<constructor-arg value="${versaoExterna}" />
+	</bean>
+	<bean id="versaoInterna" class="java.lang.String">
+		<constructor-arg value="${versaoInterna}" />
+	</bean>
+
+	<!--  bean id="liquibase" class="liquibase.integration.spring.SpringLiquibase">
+ 		<property name="dataSource" ref="dataSource" />
+ 		<property name="changeLog" value="classpath:database-changelogs/database.changelog-master.xml" />
+ 	</bean-->
+
+	<bean id="fixForTomcat" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+	    <property name="targetObject" value="#{@systemProperties}"/>
+	    <property name="targetMethod" value="setProperty"/>
+	    <property name="arguments">
+	        <list>
+	            <value>org.apache.el.parser.COERCE_TO_ZERO</value>
+	            <value>false</value>
+	        </list>
+	    </property>
+	</bean>
+
+	<bean id="velocityEngine" class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
+		<property name="resourceLoaderPath" value="/resources/velocity/"/>
+		 <property name="velocityProperties">
+            <props>
+                <prop key="input.encoding">UTF-8</prop>
+                <prop key="output.encoding">UTF-8</prop>
+            </props>
+        </property>
+	</bean>
+
+
+ 	<!--Verificação de tarefas agendadas-->
+
+ 	<!-- task:scheduled-tasks scheduler="myScheduler">
+	     <task:scheduled ref="envioDescontosSisconsigService" method="enviarDescontosSisconsig"
+	    	fixed-delay="120000" cron=""/>
+	</task:scheduled-tasks-->
+
+	<!-- task:scheduler id="myScheduler"/-->
+
+	<!-- CONFIGURACAO DA EXECUCAO ASSINCRONA DE METODOS 
+
+	<task:annotation-driven executor="myExecutor" exception-handler="exceptionHandler"/>
+
+    <task:executor id="myExecutor" pool-size="7-44" queue-capacity="11"/>
+
+    <bean id="envioDescontosSisconsigService" class="br.ccasj.sisauc.intendencia.domain.service.impl.EnvioRelatorioDescontosSisconsigImpl"/>
+
+    < bean id="exceptionHandler" class="com.foo.MyAsyncUncaughtExceptionHandler"/-->
+
+
+	<import resource="security.xml"/>
+	<import resource="faces.xml"/>
+
+</beans>

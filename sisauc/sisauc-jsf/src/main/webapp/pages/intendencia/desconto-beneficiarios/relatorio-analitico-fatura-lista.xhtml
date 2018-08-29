@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" template="/resources/template/template.xhtml">
+
+  <ui:define name="html-title">Relatório Analítico de Fatura</ui:define>
+
+  <ui:define name="main">
+
+    <h3>Relatório Analítico de Fatura</h3>
+
+    <p:separator />
+
+    <h:form id="relatorio-analitico-lista-form">
+      <p:messages id="msg" showIcon="false" />
+
+      <div class="vgap-10" />
+
+      <p:dataTable value="#{relatorioAnaliticoFaturaListaBean.lotes}" paginator="true" rows="15"
+        emptyMessage="#{msgs.no_records_found}" id="table-lotes" paginatorPosition="bottom"
+        paginatorAlwaysVisible="false" rowsPerPageTemplate="15, 20, 25"
+        paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+        var="lote" sortBy="#{lote.numero}">
+
+        <p:column headerText="Nº Lote" width="150" sortBy="#{lote.numero}" filterBy="#{lote.numero}"
+          filterFunction="#{viewUtilsBean.filterIgnoreCase}">
+          <h:outputText value="#{lote.numero}" />
+        </p:column>
+        <p:column headerText="Credenciado" width="150" sortBy="#{lote.credenciado.nomeFantasia}"
+          filterFunction="#{viewUtilsBean.filterIgnoreCase}" filterBy="#{lote.credenciado.nomeFantasia}">
+          <h:outputText value="#{lote.credenciado.nomeFantasia}" />
+        </p:column>
+        <p:column headerText="Nº Nota Fiscal" width="150" filterBy="#{lote.notaFiscal.numero}">
+          <h:outputText value="#{lote.notaFiscal.numero}">
+          </h:outputText>
+        </p:column>
+        <p:column headerText="Valor Total" width="100" sortBy="#{lote.valorTotal}">
+          <h:outputText value="#{lote.valorTotal}">
+            <f:convertNumber type="currency" />
+          </h:outputText>
+        </p:column>
+        <p:column styleClass="text-center muted" width="150">
+          <p:commandButton icon="fa fa-print" value="Exibir Relatório" styleClass="btn btn-link" ajax="false"
+           action="#{relatorioAnaliticoFaturaListaBean.selecionarLote(lote.id)}" update=":impressao-relatorio-analitico-form" />
+        </p:column>
+      </p:dataTable>
+
+    </h:form>
+
+  </ui:define>
+
+
+
+</ui:composition>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" template="/resources/template/template.xhtml">
+
+  <ui:define name="html-title">Relatórios para ressarcimento de beneficiário</ui:define>
+
+  <ui:define name="main">
+
+    <h3>Relatórios para Ressarcimento de Beneficiário</h3>
+
+    <a id="criar" class="btn btn-success" href="relatorio-desconto-beneficiario-geracao-relatorio"> 
+      <span class="fa fa-plus"></span>
+      <span id="criar"> Criar novo Relatório</span>
+    </a>
+    
+    <div class="vgap-30" />
+    
+    <p:dataTable value="#{relatorioDescontoBeneficiarioListaBean.relatorios}" var="relatorio" 
+      paginator="true" paginatorPosition="bottom" rows="10" paginatorAlwaysVisible="false">
+      <p:column headerText="Código" width="180" styleClass="text-center">
+        <h:outputText value="#{relatorio.codigo}"/>
+      </p:column>
+      
+      <p:column headerText="Autor">
+        <h:outputText value="#{relatorio.autor.nome} (#{relatorio.autor.login})"/>
+      </p:column>
+      
+      <p:column headerText="Gerado em" width="180" styleClass="text-center">
+        <h:outputText value="#{relatorio.dataGeracao}">
+          <f:convertDateTime pattern="dd/MM/yy 'às' HH:mm"/>
+        </h:outputText>
+      </p:column>
+      
+      <p:column width="50" styleClass="text-center muted">
+        <h:outputLink id="abrir-relatorio" styleClass="btn btn-link" title="Visualizar"
+          value="relatorio-desconto-beneficiario/#{relatorio.id}">
+          <span id="visualizar" class="fa fa-search"></span>
+        </h:outputLink>
+      </p:column>
+    </p:dataTable>
+    
+  </ui:define>
+
+</ui:composition>

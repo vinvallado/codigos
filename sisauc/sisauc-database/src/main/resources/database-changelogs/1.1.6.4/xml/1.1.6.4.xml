@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<changeSet id="criar-sch_sdga" author="ferrazlffm">
+		<sql>
+			CREATE SCHEMA sch_sdga;
+			ALTER SCHEMA sch_sdga OWNER TO sisauc;
+		</sql>
+	</changeSet>
+
+	<changeSet id="criar-tabela-cancelamento-lote" author="ferrazlffm">
+		<sql>
+			CREATE TABLE sch_sdga.cancelamento_lote (
+			id integer NOT NULL,
+			id_lote integer NOT NULL,
+			nome_guerra_autor character varying(50) NOT
+			NULL,
+			justificativa text,
+			data_execucao timestamp without time zone NOT
+			NULL,
+			ip character varying(20),
+			host character varying(50),
+			CONSTRAINT
+			pk_cancelamento_lote PRIMARY KEY (id),
+			CONSTRAINT
+			fk_cancelamento_lote_lote FOREIGN KEY
+			(id_lote)
+			REFERENCES
+			sch_sisauc.lote (id) MATCH SIMPLE
+			ON UPDATE NO ACTION ON DELETE NO
+			ACTION
+			);
+		</sql>
+	</changeSet>
+
+	<changeSet id="criar-tabela-cancelamento-lote-itens" author="ferrazlffm">
+		<sql>
+			CREATE TABLE sch_sdga.cancelamento_lote_itens (
+			id_cancelamento_lote integer NOT NULL,
+			id_item_gab integer NOT NULL,
+			CONSTRAINT cancelamento_lote_itens_pkey PRIMARY KEY (id_cancelamento_lote, id_item_gab),
+			CONSTRAINT fk_cancelamento_lote_itens FOREIGN KEY
+			(id_cancelamento_lote)
+			REFERENCES sch_sdga.cancelamento_lote (id)
+			MATCH SIMPLE
+			ON UPDATE NO ACTION ON DELETE NO ACTION,
+			CONSTRAINT
+			fk_id_item_gab FOREIGN KEY (id_item_gab)
+			REFERENCES
+			sch_sisauc.item_gab (id) MATCH SIMPLE
+			ON UPDATE NO ACTION ON DELETE NO
+			ACTION
+			);
+		</sql>
+	</changeSet>
+
+	<changeSet id="add-column-cancelado-no-lote" author="ferrazlffm">
+		<sql>
+			ALTER TABLE sch_sisauc.lote ADD COLUMN cancelado boolean DEFAULT
+			FALSE;
+		</sql>
+	</changeSet>
+
+	<changeSet id="criar-cancelamento-lote-seq" author="ferrazlffm">
+		<sql>
+			CREATE SEQUENCE sch_sdga.cancelamento_lote_seq
+			START WITH 1
+			INCREMENT BY 1
+			NO MINVALUE
+			NO MAXVALUE
+			CACHE 1;
+		</sql>
+	</changeSet>
+	
+	<changeSet id="criar-tabela-cancelamento_auditoria_retrospectiva" author="januarioacsj">
+		<sql>
+			CREATE TABLE sch_sdga.cancelamento_auditoria_retrospectiva(
+				id integer NOT NULL,
+				valor_apresentado double precision,
+				valor_auditado double precision,
+				valor_final double precision,
+				procedimento_realizado boolean NOT NULL,
+				justificativa_valor_final text,
+				justificativa_valor_auditado text,
+				id_auditoria_retrospectiva integer NOT NULL,
+				data_execucao timestamp without time zone NOT NULL,
+				nome_guerra_autor character varying(50) NOT NULL,
+				justificativa text,
+				ip character varying(20),
+				host character varying(50),
+			CONSTRAINT cancelamento_auditoria_retrospectiva_pkey PRIMARY KEY (id),
+			CONSTRAINT cancelamento_auditoria_retrospecti_id_auditoria_retrospectiva_fkey FOREIGN KEY (id_auditoria_retrospectiva)
+				REFERENCES sch_sisauc.auditoria_retrospectiva (id) MATCH SIMPLE
+				ON UPDATE NO ACTION ON DELETE NO ACTION
+			)
+			WITH (
+			  OIDS=FALSE
+			);
+			ALTER TABLE sch_sdga.cancelamento_auditoria_retrospectiva
+			  OWNER TO sisauc;
+		</sql>
+	</changeSet>	
+	
+	<changeSet id="cancelamento_auditoria_retrosp_metadado_valor_auditoria_retrosp" author="januarioacsj">
+		<sql>			
+			CREATE TABLE sch_sdga.cancelamento_auditoria_retrosp_metadado_valor_auditoria_retrosp(
+				id_cancelamento_auditoria_retrospectiva integer NOT NULL,
+				id_metadado_valor_auditoria_retrospectiva integer NOT NULL,
+			CONSTRAINT cancel_auditoria_retrosp_metadado_valor_auditoria_retrosp_pkey PRIMARY KEY (id_cancelamento_auditoria_retrospectiva, id_metadado_valor_auditoria_retrospectiva),
+			CONSTRAINT cancel_auditoria_retrosp_metad_id_metadado_valor_auditria__fkey FOREIGN KEY (id_metadado_valor_auditoria_retrospectiva)
+				REFERENCES sch_sisauc.metadado_valor_auditoria_retrospectiva (id) MATCH SIMPLE
+				ON UPDATE NO ACTION ON DELETE NO ACTION,
+			CONSTRAINT cancel_auditoria_retrosp_metadad_id_auditoria_retrosp_fkey FOREIGN KEY (id_cancelamento_auditoria_retrospectiva)
+				REFERENCES sch_sdga.cancelamento_auditoria_retrospectiva (id) MATCH SIMPLE
+			      	ON UPDATE NO ACTION ON DELETE NO ACTION
+			)
+			WITH (
+			  OIDS=FALSE
+			);
+			ALTER TABLE sch_sdga.cancelamento_auditoria_retrosp_metadado_valor_auditoria_retrosp
+			  OWNER TO sisauc;
+		</sql>
+	</changeSet>
+	
+	<changeSet id="criar-cancelamento-auditoria-retrospectiva-seq" author="januarioacsj">
+		<sql>
+			CREATE SEQUENCE sch_sdga.cancelamento_auditoria_retrospectiva_seq
+			START WITH 1
+			INCREMENT BY 1
+			NO MINVALUE
+			NO MAXVALUE
+			CACHE 1;
+		</sql>
+	</changeSet>
+	
+	<changeSet id="add-column-cidade-configuracao-sistema" author="ferrazlffm">
+		<sql>
+			ALTER TABLE sch_sisauc.configuracao_sistema
+			ADD column id_cidade integer;
+			ALTER TABLE sch_sisauc.configuracao_sistema
+			ADD CONSTRAINT fk_configuracao_sistema_cidade
+			FOREIGN KEY (id_cidade)
+			REFERENCES sch_sisauc.cidade (id) MATCH SIMPLE
+			ON UPDATE NO ACTION ON DELETE NO ACTION; 
+		</sql>
+	</changeSet>
+
+	<changeSet id="criar-tabela-cancelamento_auditoria_retrospectiva_ressarcimento" author="douglasdpr">
+		<sql>
+			CREATE TABLE sch_sdga.cancelamento_auditoria_retrospectiva_ressarcimento(
+			id integer NOT NULL,
+			valor_apresentado double precision,
+			valor_auditado double precision,
+			valor_final double precision,
+			procedimento_realizado boolean NOT NULL,
+			justificativa_valor_final text,
+			justificativa_valor_auditado text,
+			id_auditoria_retrospectiva_ar integer NOT NULL,
+			data_execucao timestamp without time zone NOT NULL,
+			nome_guerra_autor character varying(50) NOT NULL,
+			justificativa text,
+			ip character varying(20),
+			host character varying(50),
+			CONSTRAINT cancelamento_auditoria_retrospectiva_ar_pkey PRIMARY KEY (id),
+			CONSTRAINT cancelamento_auditoria_retrospecti_id_auditoria_retrospectiva_ar_fkey FOREIGN KEY (id_auditoria_retrospectiva_ar)
+			REFERENCES sch_sisauc.auditoria_retrospectiva_ressarcimento (id) MATCH SIMPLE
+			ON UPDATE NO ACTION ON DELETE NO ACTION
+			)
+			WITH (
+			OIDS=FALSE
+			);
+			ALTER TABLE sch_sdga.cancelamento_auditoria_retrospectiva_ressarcimento
+			OWNER TO sisauc;
+		</sql>
+	</changeSet>
+
+	<changeSet id="criar-cancelamento-auditoria-retrospectiva-ar-seq" author="douglasdpr">
+		<sql>
+			CREATE SEQUENCE sch_sdga.cancelamento_auditoria_retrospectiva_ar_seq
+			START WITH 1
+			INCREMENT BY 1
+			NO MINVALUE
+			NO MAXVALUE
+			CACHE 1;
+		</sql>
+	</changeSet>
+
+
+</databaseChangeLog>

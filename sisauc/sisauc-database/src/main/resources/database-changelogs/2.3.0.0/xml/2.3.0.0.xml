@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<changeSet id="add-cancelado-lote-ressarcimento" author="amersonpcb"
+		runAlways="true">
+		<sql>
+			ALTER TABLE sch_sisauc.lote_ressarcimento ADD COLUMN cancelado
+			boolean;
+		</sql>
+	</changeSet>
+
+	<changeSet id="add-default-value-cancelado-lote-ressarcimento"
+		author="amersonpcb">
+		<sql>
+			ALTER TABLE sch_sisauc.lote_ressarcimento ALTER COLUMN cancelado
+			SET DEFAULT false;
+		</sql>
+	</changeSet>
+
+	<changeSet id="update-default-value-cancelado-lote-ressarcimento"
+		author="amersonpcb">
+		<sql>
+			UPDATE sch_sisauc.lote_ressarcimento SET cancelado=false;
+		</sql>
+	</changeSet>
+
+	<changeSet id="alter-notnull-value-cancelado-lote-ressarcimento"
+		author="amersonpcb">
+		<sql>
+			ALTER TABLE sch_sisauc.lote_ressarcimento ALTER COLUMN cancelado
+			SET NOT NULL;
+		</sql>
+	</changeSet>
+	<changeSet id="create-cancelamento-audit-restrosp-ressarcimento"
+		author="amersonpcb">
+		<sql>
+			CREATE TABLE sch_sdga.cancelamento_auditoria_retrospectiva_ar (
+			id integer NOT NULL,
+			valor_apresentado double precision,
+			valor_estimado double precision,
+			valor_ressarcimento double precision,
+			nao_realizado boolean NOT NULL,
+			justificativa_audit_retrosp_ar text,
+			id_auditoria_retrospectiva_ar integer,
+			id_auditor integer,
+			data_execucao timestamp without time zone NOT NULL,
+			nome_guerra_autor character varying(50),
+			justificativa text,
+			ip character varying(20),
+			host character varying(50),
+			id_autor integer,
+			id_item_ar integer,
+			CONSTRAINT cancelamento_auditoria_retrospectiva_ar_pkey PRIMARY KEY (id),
+			CONSTRAINT cancelamento_audit_retrosp_ar_id_audit_retrosp_ar_f
+			FOREIGN KEY (id_auditoria_retrospectiva_ar)
+			REFERENCES sch_sisauc.auditoria_retrospectiva_ressarcimento (id) MATCH SIMPLE
+			ON UPDATE NO ACTION ON DELETE NO ACTION,
+			CONSTRAINT cancelamento_audit_retrosp_ar_id_item_ar_fk FOREIGN KEY (id_item_ar)
+			REFERENCES sch_sisauc.item_gab (id) MATCH SIMPLE
+			ON UPDATE NO ACTION ON DELETE NO ACTION,
+			CONSTRAINT id_autor_fk FOREIGN KEY (id_autor)
+			REFERENCES sch_sisauc.usuario (id) MATCH SIMPLE
+			ON UPDATE NO ACTION ON DELETE NO ACTION,
+			CONSTRAINT fk_auditoria_retrospectiva_ressarcimento_auditor FOREIGN KEY
+			(id_auditor)
+			REFERENCES sch_sisauc.usuario (id) MATCH SIMPLE
+			ON UPDATE NO ACTION ON DELETE NO ACTION
+			)
+			WITH (
+			OIDS=FALSE
+			);
+		</sql>
+	</changeSet>
+
+	<changeSet id="create-seq-cancelamento-audit-restrosp-ressarcimento"
+		author="amersonpcb">
+		<sql>
+			CREATE SEQUENCE sch_sdga.cancelamento_auditoria_retrospectiva_ar_seq
+			INCREMENT 1
+			MINVALUE 1
+			MAXVALUE 9223372036854775807
+			START 1
+			CACHE 1;
+		</sql>
+	</changeSet>
+
+
+
+</databaseChangeLog>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pretty-config xmlns="http://ocpsoft.org/schema/rewrite-config-prettyfaces"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://ocpsoft.org/schema/rewrite-config-prettyfaces
+                      http://ocpsoft.org/xml/ns/prettyfaces/rewrite-config-prettyfaces.xsd">
+
+	<url-mapping id="login">
+		<pattern value="/login" />
+		<view-id value="/pages/autenticacao/login.jsf" />
+	</url-mapping>
+	
+	<url-mapping id="loginBarra">
+		<pattern value="/" />
+		<view-id value="/pages/autenticacao/login.jsf" />
+	</url-mapping>
+	
+	<url-mapping id="loginVazio">
+		<pattern value="" />
+		<view-id value="/pages/autenticacao/login.jsf" />
+	</url-mapping>		
+
+	<url-mapping id="principal">
+		<pattern value="/principal" />
+		<view-id value="/pages/principal/pagina-principal.jsf" />
+	</url-mapping>
+
+	<url-mapping id="sobre">
+		<pattern value="/sobre" />
+		<view-id value="/pages/sobre/sobre-wrapper.jsf" />
+	</url-mapping>
+
+	<url-mapping id="sobre">
+		<pattern value="/sobre/manual/" />
+		<view-id value="/pages/sobre/manual/SISAUC - Sistema para Saúde Complementar.html" />
+	</url-mapping>
+
+	<url-mapping id="perfil">
+		<pattern value="/perfil" />
+		<view-id value="/pages/perfil/perfil.jsf" />
+	</url-mapping>
+	
+	<url-mapping id="403">
+		<pattern value="/403" />
+		<view-id value="/pages/sistema/403.jsf" />
+	</url-mapping>
+	
+	<url-mapping id="404">
+		<pattern value="/404" />
+		<view-id value="/pages/sistema/404.jsf" />
+	</url-mapping>
+	
+	<!-- Baixar pdf solicitações -->
+	<url-mapping id="download-pdf-solicitacao">
+		<pattern value="/download/solicitacao/#{id}" />
+		<view-id value="/pages/administracao/cadastro/solicitacao/cadastro-solicitacao-formulario.jsf" />
+		<action onPostback="false">#{downloadArquivoBean.downloadArquivo}</action>
+	</url-mapping>
+
+	<url-mapping id="impressao-gab-geral">
+		<pattern value="/geral/gab/impressao/#{id}" />
+		<view-id value="/pages/gab/impressao/impressao_gab.jsf" />
+		<action onPostback="false">#{impressaoGABBean.imprimir}</action>
+	</url-mapping>
+ 
+	<url-mapping id="pesquisa-gab">
+		<pattern value="/pesquisa/gab"/>
+		<view-id value="/pages/administracao/pesquisa/gab/pesquisar-gab.jsf" />
+	</url-mapping>
+	
+	<url-mapping id="pesquisa-ar">
+		<pattern value="/pesquisa/ar"/>
+		<view-id value="/pages/administracao/pesquisa/ar/pesquisar-ar.jsf" />
+	</url-mapping>
+
+	<url-mapping id="pesquisa-item-gab">
+		<pattern value="/pesquisa/item-gab"/>
+		<view-id value="/pages/administracao/pesquisa/item-gab/pesquisar-item-gab.jsf" />
+	</url-mapping>
+	
+	<url-mapping id="pesquisa-item-are">
+		<pattern value="/pesquisa/item-are"/>
+		<view-id value="/pages/administracao/pesquisa/item-are/pesquisar-item-are.jsf" />
+	</url-mapping>
+
+	<url-mapping id="pesquisa-solicitacao-procedimento">
+		<pattern value="/pesquisa/solicitacao-procedimento" />
+		<view-id value="/pages/administracao/pesquisa/solicitacao-procedimento/pesquisar-solicitacao-procedimento.jsf" />
+	</url-mapping>
+	
+	<url-mapping id="pesquisa-solicitacao-ressarcimento">
+		<pattern value="/pesquisa/solicitacao-ressarcimento" />
+		<view-id value="/pages/administracao/pesquisa/solicitacao-ressarcimento/pesquisar-solicitacao-ressarcimento.jsf" />
+	</url-mapping>
+
+</pretty-config>

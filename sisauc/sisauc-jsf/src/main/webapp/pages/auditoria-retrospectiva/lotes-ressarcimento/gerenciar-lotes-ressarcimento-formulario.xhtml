@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" template="/resources/template/template.xhtml">
+
+  <ui:define name="html-title">Criar Lotes de Ressarcimento</ui:define>
+
+  <ui:define name="main">
+    <h3>Criar Lotes de Ressarcimento</h3>
+
+    <p:separator />
+
+    <div class="vgap-10" />
+
+    <h:form id="gerar-lote-ressarcimento-form">
+      <p:messages id="msg" showIcon="false" />
+      
+        <p:panelGrid>
+        <p:row>
+          <p:column>
+            <h:outputText value="Selecione um Beneficiario:" />
+          </p:column>
+          <p:column>
+            <p:selectOneMenu value="#{gerenciarLotesRessarcimentoFormularioBean.beneficiario}" id="beneficiario"
+              converter="jsonConverter" filter="true" filterMatchMode="contains" style="width: 400px;">
+              <f:selectItem itemLabel=":: Visualizar todos ::" noSelectionOption="true" />
+              <p:ajax event="change" listener="#{gerenciarLotesRessarcimentoFormularioBean.atualizarItensArPorBeneficiario}"
+                update="tableItensAr" />
+              <f:selectItems value="#{gerenciarLotesRessarcimentoFormularioBean.beneficiarios}" var="beneficiario"
+                itemLabel="#{beneficiario.saram} - #{beneficiario.nome}" itemValue="#{saram}" />
+            </p:selectOneMenu>
+          </p:column>
+          <p:column>
+
+          </p:column>
+        </p:row>
+      </p:panelGrid>
+
+  
+
+      <div class="vgap-30" />
+
+      <p:dataTable value="#{gerenciarLotesRessarcimentoFormularioBean.itensAr}" paginator="true" rows="15"
+        emptyMessage="#{msgs.no_records_found}" id="tableItensAr" paginatorPosition="bottom"
+        paginatorAlwaysVisible="false" rowsPerPageTemplate="15, 20, 25" sortBy="#{itemAr.codigo}"
+        paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+        var="itemAr" selection="#{gerenciarLotesRessarcimentoFormularioBean.itensArSelecionados}" rowKey="#{itemAr.id}">
+        
+        
+        <f:facet name="header">
+          <p:panel id="panel-valor-total-parcial">
+          <p:column>
+            <h:outputText value="Valor parcial do lote de ressarcimento: " />
+          </p:column>
+          <p:column>
+            <h:outputText value="#{gerenciarLotesRessarcimentoFormularioBean.valorTotalParcial}">
+              <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR"  />
+            </h:outputText>
+          </p:column>
+          </p:panel>
+        </f:facet>
+        <p:ajax event="rowSelect" listener="#{gerenciarLotesRessarcimentoFormularioBean.getValorTotalParcial}" update="panel-valor-total-parcial" immediate="true"/>
+        <p:ajax event="rowSelectCheckbox" listener="#{gerenciarLotesRessarcimentoFormularioBean.getValorTotalParcial}" update="panel-valor-total-parcial" immediate="true"/>
+        <p:ajax event="rowUnselectCheckbox" listener="#{gerenciarLotesRessarcimentoFormularioBean.getValorTotalParcial}" update="panel-valor-total-parcial" immediate="true"/>
+        <p:ajax event="rowUnselect" listener="#{gerenciarLotesRessarcimentoFormularioBean.getValorTotalParcial}" update="panel-valor-total-parcial" immediate="true"/>
+        <p:ajax event="toggleSelect" listener="#{gerenciarLotesRessarcimentoFormularioBean.getValorTotalParcial}" update="panel-valor-total-parcial" immediate="true"/>
+
+
+        <p:column style="width:16px; text-align:center" selectionMode="multiple">
+        </p:column>
+
+        <p:column headerText="Divisão" width="90" styleClass="text-center" filterOptions="#{viewUtilsBean.divisoesOptions()}" filterBy="#{itemAr.ar.divisao}">
+          <a title="Divisão Médica"><h:panelGroup styleClass="fa fa-tag muted" rendered="#{itemAr.ar.divisao == 'DIVISAO_MEDICA'}" /></a>
+          <a title="Divisão Odonológica"><h:panelGroup styleClass="fa fa-tag text-info" rendered="#{itemAr.ar.divisao == 'DIVISAO_ODONTOLOGICA'}" /></a>
+        </p:column>
+        
+        <p:column id="codigo" headerText="Código" filterBy="#{itemAr.codigo}" filterMatchMode="contains" width="200">
+          <h:outputText value="#{itemAr.codigo}"/>
+        </p:column>
+        <p:column headerText="Valor" width="100" styleClass="text-right" sortBy="#{itemAr.auditoriaRetrospectiva.valorRessarcimento}">
+          <h:outputText value="#{itemAr.auditoriaRetrospectiva.valorRessarcimento}">
+            <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR"  />
+          </h:outputText>
+        </p:column>
+        <p:column headerText="Beneficiario">
+          <h:outputText value="#{itemAr.ar.beneficiario.beneficiarioTitular.saram}" rendered="#{itemAr.ar.beneficiario.titular != true}"/>
+          <h:outputText value="#{itemAr.ar.beneficiario.saram} - "/>
+          <h:outputText value="#{itemAr.ar.beneficiario.beneficiarioTitular.nome}" rendered="#{itemAr.ar.beneficiario.titular != true}"/>
+          <h:outputText value="#{itemAr.ar.beneficiario.nome}"/>
+        </p:column>
+        <p:column headerText="Data Emissão" width="70" styleClass="text-center" sortBy="#{itemAr.ar.dataEmissao}">
+          <h:outputText value="#{itemAr.ar.dataEmissao}">
+            <f:convertDateTime pattern="dd/MM/yyyy" />
+          </h:outputText>
+        </p:column>
+        <f:facet name="footer">
+          <p:commandButton value="Gerar Lote de Ressarcimento" styleClass="btn btn-success" icon="fa fa-plus"
+            rendered="#{gerenciarLotesRessarcimentoFormularioBean.beneficiario != null}" 
+            action="#{gerenciarLotesRessarcimentoFormularioBean.validarGeracaoLoteRessarcimento}" ajax="false"/>
+        </f:facet>
+      </p:dataTable>
+
+      <div class="vgap-30" />
+
+      <a href="../gerenciar-lotes-ressarcimento" class="btn">Voltar</a>
+
+    </h:form>
+
+  </ui:define>
+
+  <ui:define name="dialogs">
+    <ui:include src="gerar-lote-ressarcimento-dialog.xhtml" />
+  </ui:define>
+
+
+</ui:composition>

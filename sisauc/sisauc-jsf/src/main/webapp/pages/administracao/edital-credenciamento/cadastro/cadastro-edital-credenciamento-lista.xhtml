@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" template="/resources/template/template.xhtml">
+
+  <ui:define name="html-title">Lista de Editais</ui:define>
+
+  <ui:define name="main">
+
+    <h3>Cadastro de Edital de Credenciamento</h3>
+
+    <p:separator />
+
+    <a class="btn btn-success" href="edital-credenciamento/novo" id="novo"> <span class="fa fa-plus"></span> <span>Criar novo Edital</span></a>
+
+    <div class="vgap-10"></div>
+
+    <h:form id="lista-editais-form">
+
+      <p:messages id="msg" showIcon="false" />
+
+      <p:dataTable value="#{cadastroEditalCredenciamentoListaBean.editais}" var="edital"
+        sortBy="#{edital.numero}" id="table-editais" paginator="true" rows="15" widgetVar="datatable-editais"
+        paginatorPosition="bottom" rowsPerPageTemplate="10, 15, 25"
+        emptyMessage="#{msgs.no_records_found}"
+        paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+        filteredValue="#{viewUtilsBean.filtrados}" filterDelay="300">
+
+        <p:column headerText="Número" filterBy="#{edital.numero}" sortBy="#{edital.numero}" id="col_numero"
+          filterFunction="#{viewUtilsBean.filterIgnoreCase}">
+          <h:outputText value="#{edital.numero}"/>
+        </p:column>
+
+        <p:column headerText="Tabela" filterBy="#{edital.tabela.nome}" sortBy="#{edital.tabela.nome}" id="col_tabela"
+          filterFunction="#{viewUtilsBean.filterIgnoreCase}" width="100">
+          <h:outputText value="#{edital.tabela.nome}"/>
+        </p:column>
+
+        <p:column headerText="Início" width="100" styleClass="text-center" sortBy="#{edital.inicio}" id="col_inicio">
+          <h:outputText value="#{edital.inicio}">
+            <f:convertDateTime pattern="dd/MM/yyyy"/>
+          </h:outputText>
+        </p:column>
+
+        <p:column headerText="Fim" width="100" styleClass="text-center" sortBy="#{edital.fim}" id="col_fim">
+          <h:outputText value="#{edital.fim}">
+            <f:convertDateTime pattern="dd/MM/yyyy"/>
+          </h:outputText>
+        </p:column>
+
+        <p:column headerText="Ativo" width="70" styleClass="text-center" sortBy="#{edital.ativo}"
+          filterOptions="#{viewUtilsBean.booleanOptions()}" filterBy="#{viewUtilsBean.booleanLabel(edital.ativo)}" id="col_ativo">
+          <h:outputText value="#{viewUtilsBean.booleanLabel(edital.ativo)}" styleClass="#{edital.ativo ? 'text-success' : 'text-error'}" />
+        </p:column>
+
+        <p:column id="btn-ativo" width="40" styleClass="text-center">
+          <p:commandButton id="ativar-desativar" icon="fa #{edital.ativo ? 'fa-times text-error' : 'fa-check text-success'}"
+            title="#{edital.ativo ? 'Desativar' : 'Ativar'}" styleClass="btn btn-link"
+            action="#{cadastroEditalCredenciamentoListaBean.selectionarEdital(edital)}" update=":dialog-status-form" />
+        </p:column>
+
+        <p:column width="40" styleClass="text-center" id="col_editar">
+          <h:outputLink id="editar" styleClass="btn btn-link" value="edital-credenciamento/#{edital.id}" title="Editar">
+            <span id="editar" class="fa fa-pencil"></span>
+          </h:outputLink>
+        </p:column>
+
+      </p:dataTable>
+
+    </h:form>
+
+  </ui:define>
+  
+  <ui:define name="dialogs">
+    <p:dialog header="Atenção!" id="mudar-status-edital-dialog" widgetVar="mudarStatusEditalDialog" modal="true" resizable="false">
+      <h:form id="dialog-status-form">
+        <h:outputText value="Tem certeza que deseja #{cadastroEditalCredenciamentoListaBean.edital.ativo ? 'desativar' : 'ativar'} 
+          o edital nº #{cadastroEditalCredenciamentoListaBean.edital.numero}?"/>
+
+        <div class="vgap-30"><!-- GAP 30px --></div>
+
+        <h:panelGroup styleClass="dialog-footer" layout="block">
+          <p:commandButton value="Sim" styleClass="btn btn-success" icon="fa fa-save" 
+          action="#{cadastroEditalCredenciamentoListaBean.mudarStatusAtivoEdital}" 
+          update=":lista-editais-form" onclick="PF('mudarStatusEditalDialog').hide()"
+          oncomplete="PF('datatable-editais').filter();"/>
+          <p:commandButton value="Cancelar" styleClass="btn" icon="fa" type="button" onclick="PF('mudarStatusEditalDialog').hide()"/>
+        </h:panelGroup>
+
+      </h:form>
+    </p:dialog>
+  </ui:define>
+
+</ui:composition>

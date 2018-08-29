@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <h:form id="formulario-auditoria">
+    
+    <p:panelGrid>
+      <p:row>
+        <p:column>
+          <p:outputLabel id="checkbox_isento" value=" Isento:" for="isento" />
+        </p:column>
+        <p:column>
+          <p:selectBooleanCheckbox value="#{realizarAuditoriaProspectivaBean.auditoria.solicitacao.isento}" id="isento">
+            <p:ajax event="change" immediate="true" update="@(.mostrar-isento)" />
+          </p:selectBooleanCheckbox>
+        </p:column>
+      </p:row>
+      
+      <p:row>
+        <p:column>
+          <h:panelGroup styleClass="mostrar-isento" id="mostrar-isento-label">
+            <p:outputLabel value="Especificação (Isento):" for="especificacao-isento"
+              rendered="#{realizarAuditoriaProspectivaBean.auditoria.solicitacao.isento}" />
+          </h:panelGroup>
+        </p:column>
+        <p:column>
+          <h:panelGroup styleClass="mostrar-isento" id="mostrar-isento-select">
+            <p:selectOneMenu value="#{realizarAuditoriaProspectivaBean.auditoria.solicitacao.especificacao}"
+              converter="jsonConverter" id="especificacao-isento" style="width:490px"
+              rendered="#{realizarAuditoriaProspectivaBean.auditoria.solicitacao.isento}">
+              <f:selectItems value="#{realizarAuditoriaProspectivaBean.especificacoes}" var="especificacao"
+                itemValue="#{especificacao}" itemLabel="#{especificacao.tipoCobranca}" />
+            </p:selectOneMenu>
+          </h:panelGroup>
+        </p:column>
+      </p:row>
+
+    </p:panelGrid>
+
+      <h6>Observações do Auditor Prospectivo:</h6>
+      <p:inputTextarea id="observacoes_aud_prospectivo" value="#{realizarAuditoriaProspectivaBean.auditoria.observacoes}" styleClass="input-block-level"
+        rows="5" autoResize="false"></p:inputTextarea>
+
+      <h6>Procedimentos</h6>
+
+      <p:messages id="msgs" autoUpdate="true" showIcon="false" />
+
+      <p:dataTable value="#{realizarAuditoriaProspectivaBean.itensList}" paginator="true" rows="5"
+        emptyMessage="#{msgs.no_records_found}" paginatorPosition="bottom" paginatorAlwaysVisible="false" 
+        rowsPerPageTemplate="5, 10" selection="#{realizarAuditoriaProspectivaBean.respostasSelecionadas}" rowKey="#{resultado.id}"
+        paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+        var="resultado" id="lista-procedimentos">
+        <f:facet name="header">
+          <p:commandButton styleClass="btn btn-primary" icon="fa fa-plus" value="Adicionar novo procedimento"
+            process="@this" action="#{realizarAuditoriaProspectivaBean.criarNovoResultado}"
+            update=":adicionar-procedimento-auditoria-prospectiva-form" id="adicionar-procedimento" />
+          <p:commandButton styleClass="btn" icon="fa fa-th-list" value="Auditar em lote"
+            process="@this lista-procedimentos" action="#{realizarAuditoriaProspectivaBean.auditarEmLote}"
+            update=":auditar-procedimento-form" id="auditar-procedimentos-lote" />
+        </f:facet>
+        <p:column style="width:16px; text-align:center" selectionMode="multiple">
+        </p:column>        
+        <p:column headerText="Procedimento" width="345" sortBy="#{resultado.credenciado}"
+          sortFunction="#{realizarAuditoriaProspectivaBean.sortByModel}" >
+          <h:outputText value="#{formatterBean.procedimentoFormatter.getCodigoDescricao(resultado.credenciado.procedimento)}" />
+          <h:outputText rendered="#{resultado.credenciado.especialidade.sigla != null}"
+            value=" (#{resultado.credenciado.especialidade.sigla})" />
+          <h:outputLabel id="observacao-gab" styleClass="btn btn-link fa fa-info" rendered="#{resultado.observacaoGAB != null}" />
+          <p:tooltip id="toolTipObservacaoGAB" for="observacao-gab" styleClass="preformatted" value="OBS: #{resultado.observacaoGAB}" />
+        </p:column>
+        
+        <p:column headerText="Credenciado" width="185" sortBy="#{resultado.credenciado.configuracaoEditalCredenciado.credenciado.nomeFantasia}">
+          <h:outputText value="#{resultado.credenciado.configuracaoEditalCredenciado.credenciado.nomeFantasia}"></h:outputText>
+        </p:column>
+
+        <p:column headerText="Aprov" width="50" styleClass="text-center" sortBy="#{resultado.aprovado}">
+          <p:commandButton rendered="#{resultado.aprovado != null}"
+            icon="fa #{resultado.aprovado ? 'fa-thumbs-o-up text-success' : 'fa-thumbs-o-down text-error'}"
+            title="Verificar justificativa"
+            action="#{realizarAuditoriaProspectivaBean.selecionarResultadoJustificativa(resultado)}"
+            update=":justificativa-form-dialog" styleClass="btn btn-link">
+          </p:commandButton>
+          <h:outputText value="-" rendered="#{resultado.aprovado == null}"/>
+        </p:column>
+
+        <p:column headerText="OPME" width="50" styleClass="text-center" sortBy="#{resultado.opme}">
+          <h:outputText value="#{resultado.opme ? 'Sim' : 'Não'}" />
+        </p:column>
+        
+        <p:column width="90" headerText="Tabela" styleClass="text-center">
+          <h:outputText value="#{resultado.credenciado.procedimento.tabela.nome}"/>
+        </p:column>
+
+        <p:column width="30" styleClass="text-center">
+          <p:commandButton id="editar-resposta" action="#{realizarAuditoriaProspectivaBean.editarResultado(resultado)}"
+            styleClass="btn btn-link" icon="fa fa-gavel" process="@this" update=":auditar-procedimento-form" />
+        </p:column>
+
+        <p:column width="30" styleClass="text-center">
+          <p:commandButton id="excluir-resposta" styleClass="btn btn-link" title="Excluir procedimento"
+            icon="fa fa-times text-error" action="#{realizarAuditoriaProspectivaBean.selecionarResultado(resultado)}"
+            process="@this" update=":remover-resultado-form-dialog" />
+        </p:column>
+
+    </p:dataTable>
+
+      <div class="vgap-30"></div>
+      <p:commandButton id="finalizar-auditoria" styleClass="btn btn-success" value="Finalizar Auditoria" icon="fa fa-gavel"
+        action="#{realizarAuditoriaProspectivaBean.prepararResultadoAuditoria}" update=":finalizar-form" />
+      <p:commandButton id="btn-informar-inconsistencia" styleClass="btn" value="Informar inconsistência" icon="fa fa-exclamation-circle"
+        onclick="PF('informarInconsistenciaDialog').show()" />
+      <a id="btn_voltar" href="../pendentes" class="btn">Voltar</a>
+
+    </h:form>
+
+
+</ui:composition>

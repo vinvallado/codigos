@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      @page {
+        @top-right {
+          text-align: right;
+          font-size: 9pt;
+          content: '(FL ' counter(page)'/'counter(pages)' da ${gab.codigo})' !important; 
+        }
+      }
+      #include("estilo-pdf.css");
+    </style>
+  </head>
+  <body class="text-bold">
+  
+    <table>
+      <tr>
+        <td rowspan="2" class="text-center" width="25%">
+          Comando da Aeronáutica<br /> 
+          Comando Geral do Pessoal<br /> 
+          Diretoria de Saúde<br /> 
+          <span style="font-size: 18px;">$gab.organizacaoMilitar.sigla</span>
+        </td>
+        <td rowspan="2" class="text-center">
+          GUIA DE APRESENTAÇÃO DE BENEFICIÁRIO<br />
+          <span style="font-size: 24px;">GAB</span><br />
+          <span style="font-size: 18px;">
+            #if ($gabReimpressa)
+              REIMPRESSA
+            #end
+          </span>
+        </td>
+        <td width="25%" >
+          Número: $gab.codigo
+        </td>
+      </tr>
+      <tr>
+        <td>Data: 
+          #if ($gab.dataEmissao)
+            $date.format('dd/M/yyyy' , $gab.dataEmissao) 
+          #end
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">Ao: $eComercialEsc.escape($gab.credenciado.nomeFantasia)</td>
+        <td>CPF/CNPJ: $gab.credenciado.cpfCnpj</td>
+      </tr>
+      <tr>
+        <td colspan="2">Endereço: $gab.credenciado.logradouro</td>
+        <td>Telefone: $gab.credenciado.telefonePrincipal</td>
+      </tr>
+    </table>
+    <div class="vgap-5"></div>
+    <div class="text-center">Apresento a V. Sa. o Beneficiário a seguir identificado para ser submetido ao(s) seguinte(s) exame(s)/Tratamento(s)</div>
+    <div class="vgap-5"></div>
+    <table class="estrutural">
+      <tr>
+        <td colspan="3">Nome do beneficiário: $gab.beneficiario.nome</td>
+        <td>SARAM:
+          #if (!$gab.benecifiario.saram)
+            $!gab.beneficiario.beneficiarioTitular.saram 
+          #end
+          $!gab.beneficiario.saram
+        </td>
+      </tr>
+      <tr>
+        <td>Grau de dependencia:</td>
+        <td>CPF: 
+          $formatter.beneficiarioFormatter.getCpfFormatado($gab.beneficiario) 
+        </td>
+        <td>Urgente: #if ($gab.auditoriaProspectiva.solicitacao.urgente) SIM #end</td>
+        <td>Internação: #if ($gab.auditoriaProspectiva.solicitacao.internacao) SIM - ($gab.auditoriaProspectiva.solicitacao.localInternacao) #end</td>
+      </tr>
+      <tr>
+        <td colspan="4">Nome do Titular: 
+          #if (! $gab.beneficiario.beneficiarioTitular.nome)
+            $!gab.beneficiario.nome 
+          #end 
+          $!gab.beneficiario.beneficiarioTitular.nome
+        </td>
+      </tr>
+      <tr>
+        <td>Posto/Graduação/Cat: $!gab.beneficiario.postoGraduacao.descricao $!gab.beneficiario.beneficiarioTitular.postoGraduacao.descricao</td>
+        <td colspan="2">CPF: 
+          $formatter.beneficiarioFormatter.getCpfFormatadoTitular($gab.beneficiario) 
+        </td>
+        <td>Unidade: 
+          #if (! $gab.beneficiario.beneficiarioTitular.organizaoMilitar.sigla) 
+            $!gab.beneficiario.organizacaoMilitar.sigla 
+          #end
+          $!gab.beneficiario.beneficiarioTitular.organizacaoMilitar.sigla
+        </td>
+      </tr>
+    </table>
+  
+    <div class="vgap-10"></div>
+  
+    <table class="estrutural">
+      <tr>
+        <td colspan="4" class="text-center">Especificações</td>
+      </tr>
+      <tr>
+        <td colspan="4">
+          #set ($itens = $gab.itens) 
+          #foreach ($item in $itens)
+            $formatter.itemGABFormatter.getNumeroItem( $item ) - ($item.configuracao.procedimento.tabela.nome - $item.configuracao.procedimento.codigo) - $item.configuracao.procedimento.descricao
+            #if ($item.configuracao.especialidade)
+              ($item.configuracao.especialidade.nome) 
+            #end <br /> 
+            #if ($item.descricaoOpme)
+              $eComercialEsc.escape($item.descricaoOpme) - Valor: $number.currency( $item.valorOpme ) <br/> 
+            #end 
+            <br /> 
+          #end
+          Observações <br /> 
+          Não cobrar indenização ao Paciente <br />
+          #foreach ($item in $itens)
+            #if ($item.observacaoGAB)
+              $formatter.itemGABFormatter.getNumeroItem( $item ) - ($item.configuracao.procedimento.tabela.nome - $item.configuracao.procedimento.codigo) - $eComercialEsc.escape($item.observacaoGAB)
+           <br />
+            #end  
+          #end
+        </td>
+      </tr>
+  
+      <tr>
+        <td colspan="2" width="50%" class="text-center text-top">Autorizo o(s) exames/tratamento(s) acima especificado(s)</td>
+        <td colspan="2" class="text-center text-top"><span>Certifico que o(s) exame(s)/tratamento(s) acima especificado(s) <br/>foi(oram) realizado(s), conforme especificado nesta GAB</span>
+        <div class="vgap-50"></div></td>
+      </tr>
+  
+      <tr>
+        <td colspan="2" class="text-center">Assinatura do Comandante ou Diretor</td>
+        <td colspan="2" class="text-center">Assinatura do responsável pelo paciente / Paciente</td>
+      </tr>
+    </table>
+    <div class="vgap-5"></div>
+    <div class="text-center">Esta guia tem validade de 30 dias a contar da data de emissão</div>
+  
+  </body>
+</html>

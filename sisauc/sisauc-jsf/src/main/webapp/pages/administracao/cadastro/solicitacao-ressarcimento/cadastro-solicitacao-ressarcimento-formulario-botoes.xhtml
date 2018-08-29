@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets">
+
+  <p:commandButton value="Salvar" id="salvar" styleClass="btn btn-success" icon="fa fa-save"
+    action="#{cadastroSolicitacaoRessarcimentoFormularioBean.salvar}" update="@form" validateClient="true" />
+
+  <p:commandButton id="enviar-auditoria" styleClass="btn margin-l-5" value="Enviar para auditoria"
+    icon="fa fa fa-search" action="#{cadastroSolicitacaoRessarcimentoFormularioBean.enviarParaAuditoria}" update="@form">
+    <p:confirm header="Atenção!"
+      message="Tem certeza que deseja enviar esta solicitação para Auditoria? Ao confirmar, esta solicitação só poderá ser acessada por um AUDITOR."
+      icon="ui-icon-alert" />
+  </p:commandButton>
+  
+  <p:commandButton value="Imprimir Requerimento de Ressarcimento" styleClass="btn margin-l-5" immediate="true"
+    icon="fa fa-print" action="#{cadastroSolicitacaoRessarcimentoFormularioBean.validarImpressaoRequerimento}"
+    update="msgs" rendered="#{cadastroSolicitacaoRessarcimentoFormularioBean.solicitacao.naoEletiva == true}"/>
+    
+  <p:commandButton immediate="true" style="display:none;" ajax="false" id="downloadButton"
+    action="#{cadastroSolicitacaoRessarcimentoFormularioBean.imprimirRequerimento}"/>
+
+  <a id="btn-voltar" class="btn" onclick="history.back();">Voltar</a>
+
+</ui:composition>

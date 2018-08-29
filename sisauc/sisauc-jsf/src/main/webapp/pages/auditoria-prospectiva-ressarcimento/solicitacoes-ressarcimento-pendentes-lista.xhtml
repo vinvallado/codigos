@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" template="/resources/template/template.xhtml">
+
+  <ui:define name="html-title">Lista de Solicitações de Ressarcimento</ui:define>
+
+  <ui:define name="main">
+
+    <h3>Solicitações de ressarcimento para auditoria</h3>
+
+    <p:separator />
+
+    <h:form prependId="false">
+      <p:messages id="msg" showIcon="false" />
+
+      <p:dataTable id="tabela" value="#{solicitacoesRessarcimentoPendentesAuditoriaProspectivaBean.solicitacoes}" var="solicitacao"
+        sortBy="#{solicitacao.dataUltimaAlteracaoEstado}" sortOrder="descending" paginator="true" rows="15"
+        paginatorPosition="bottom" paginatorAlwaysVisible="false"
+        rowStyleClass="#{solicitacao.naoEletiva ? 'error' : ''}"
+        rowsPerPageTemplate="10, 15, 25" emptyMessage="#{msgs.no_records_found}"
+        paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+        filteredValue="#{viewUtilsBean.filtrados}" filterDelay="300">
+
+        <p:column id="nao_eletiva" sortBy="#{solicitacao.naoEletiva}" width="20" styleClass="text-center">
+          <a title="NÃO ELETIVA"> <h:panelGroup styleClass="fa fa-exclamation-circle" rendered="#{solicitacao.naoEletiva}" />
+          </a>
+        </p:column>
+
+        <p:column id="tipo_divisao" headerText="Divisão" width="90" styleClass="text-center" filterOptions="#{viewUtilsBean.divisoesOptions()}" filterBy="#{solicitacao.divisao}">
+          <a title="Divisão Médica"><h:panelGroup styleClass="fa fa-tag muted" rendered="#{solicitacao.divisao == 'DIVISAO_MEDICA'}" /></a>
+          <a title="Divisão Odonológica"><h:panelGroup styleClass="fa fa-tag text-info" rendered="#{solicitacao.divisao == 'DIVISAO_ODONTOLOGICA'}" /></a>
+        </p:column>
+        
+        <p:column id="codigo" headerText="Código" width="150" filterBy="#{solicitacao.numero}" filterMatchMode="contains" sortBy="#{solicitacao.numero}">
+          <h:outputText value="#{solicitacao.numero}" />
+        </p:column>
+
+        <p:column id="nome_beneficiario" headerText="Nome Beneficiario" filterBy="#{solicitacao.beneficiario.nome}" filterMatchMode="contains"
+          filterFunction="#{viewUtilsBean.filterIgnoreCase}" sortBy="#{solicitacao.beneficiario.nome}">
+          <h:outputText value="#{solicitacao.beneficiario.nome}" />
+        </p:column>
+
+        <p:column headerText="Data" width="100" styleClass="text-center" sortBy="#{solicitacao.dataUltimaAlteracaoEstado}">
+          <h:outputText value="#{solicitacao.dataUltimaAlteracaoEstado}">
+            <f:convertDateTime pattern="dd/MM/yyyy" />
+          </h:outputText>
+        </p:column>
+
+        <p:column id="btn-editar" width="40" styleClass="text-center">
+          <h:outputLink id="editar" styleClass="btn btn-link" value="pendentes/#{solicitacao.id}" title="Editar">
+            <span id="editar" class="fa fa-gavel"></span>
+          </h:outputLink>
+        </p:column>
+
+      </p:dataTable>
+    </h:form>
+
+  </ui:define>
+
+</ui:composition>

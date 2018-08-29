@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:sisauc="http://java.sun.com/jsf/composite/sisaucjsf" template="/resources/template/template.xhtml">
+
+  <ui:define name="html-body-bottom">
+    <script type="text/javascript" src="#{request.contextPath}/resources/vendor/js/jquery.maskMoney.min.js" />
+    <script type="text/javascript">
+		$(document).ready(function() {
+			maskPrefix('R$');
+		});
+	</script>
+  </ui:define>
+
+  <ui:define name="html-title">Apresentação da GAB</ui:define>
+
+  <ui:define name="main">
+    <h3 id="titulo">Apresentação da GAB</h3>
+    <p:separator />
+    <div class="vgap-10"></div>
+
+    <h:form prependId="false" id="form-detalhes-gab">
+      <p:messages id="msgs" showIcon="false" />
+      <div class="vgap-10"></div>
+      <sisauc:dadosGAB_ApresentarGAB gab="#{apresentacaoGabFormularioBean.gab}"/>
+      <div class="vgap-10"></div>
+      <p:dataTable id="lista-itens-gab" rowIndexVar="rowId" value="#{apresentacaoGabFormularioBean.itensGAB}"
+        var="itemGab" paginator="false" emptyMessage="#{msgs.no_records_found}" rendered="#{apresentacaoGabFormularioBean.gab!=null}"
+        paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+        filteredValue="#{viewUtilsBean.filtrados}" filterDelay="300">
+        <f:facet name="header">
+          <h:outputText value="Itens da GAB" />
+        </f:facet>
+        <p:column headerText="Apresentado" width="80" styleClass="text-center" id="item-apresentado">
+          <h:panelGroup styleClass="fa #{itemGab.auditoriaRetrospectiva != null ? 'fa-thumbs-o-up text-success' : 'fa-thumbs-o-down text-error'}"/>
+        </p:column>
+
+        <p:column headerText="Nº Item" width="200" id="numero-item" styleClass="text-center">
+          <h:outputText value="#{itemGab.codigo}"/>
+        </p:column>
+
+        <p:column headerText="Procedimento" id="descricao-procedimento">
+          <h:outputText value="#{formatterBean.configuracaoProcedimentoFormatter.getCodigoNomeSiglaEspecialidade(itemGab.configuracao)}"/>
+          <h:outputLabel id="observacao-gab" styleClass="btn btn-link fa fa-info" rendered="#{itemGab.observacaoGAB != null}" />
+          <p:tooltip id="toolTipObservacaoGAB" for="observacao-gab" styleClass="preformatted" value="OBS: #{itemGab.observacaoGAB}" />
+        </p:column>
+        
+        <p:column headerText="Observação da Apresentação" id="observacao-apresentacao" width="230">
+          <h:panelGroup rendered="#{(itemGab.auditoriaRetrospectiva != null)}">
+          <p:inputTextarea rows="2" cols="30" autoResize="false" size="30" maxlength="255"
+            value="#{itemGab.auditoriaRetrospectiva.observacaoApresentacao}" />
+          </h:panelGroup>
+        </p:column>
+
+        <p:column headerText="Valor apresentado" width="150" styleClass="text-center" id="valor-apresentado">
+          <h:panelGroup rendered="#{(itemGab.auditoriaRetrospectiva != null) and (itemGab.auditoriaRetrospectiva.realizado == true)}">
+            <p:inputText onfocus="maskPrefixOnlyPositiveNumbers('R$ ')" converter="doubleConverter" value="#{itemGab.auditoriaRetrospectiva.valorApresentado}" maxlength="20" size="10" styleClass="number no-margin"/>
+            <p:commandButton id="abrir-dialog-valores" icon="fa fa-plus-square-o" title="Valores extras" styleClass="btn btn-link" label="Sim"
+              action="#{apresentacaoGabFormularioBean.carregarMetadadosEdicao(itemGab)}" update=":form-dialog-valores-extras" />
+          </h:panelGroup>
+
+          <h:outputText value="Não Realizado" styleClass="text-error" rendered="#{(itemGab.auditoriaRetrospectiva != null) and (itemGab.auditoriaRetrospectiva.realizado == false)}"/>
+
+        </p:column>
+
+        <p:column id="nao-realizado" headerText="Realizado" width="70" styleClass="text-center">
+
+          <p:commandButton id="procedimento-realizado" icon="fa fa-check text-success" title="Procedimento realizado"
+            styleClass="btn btn-link" label="Sim" action="#{apresentacaoGabFormularioBean.marcarItemRealizado(itemGab)}"
+            update="@form" />
+
+          <p:commandButton id="procedimento-nao-realizado" icon="fa fa-times text-error" title="Procedimento não realizado"
+            action="#{apresentacaoGabFormularioBean.marcarItemNaoRealizado(itemGab)}"
+            styleClass="btn btn-link" label="Não" update="@form">
+            <p:confirm message="Tem certeza que deseja marcar o item da GAB #{itemGab.codigo} como 'Não Realizado'?" icon="fa fa-exclamation" header="Atenção!"/>
+          </p:commandButton>
+
+        </p:column>
+
+      </p:dataTable>
+      <div class="vgap-10"></div>
+      <p:commandButton value="Salvar Apresentação da GAB" id="finalizar-apresentacao" styleClass="btn btn-success" icon="fa fa-save" 
+        validateClient="true" action="#{apresentacaoGabFormularioBean.salvar}" update="@form">
+        <p:confirm message="Confirma salvar a apresentação da GAB? Todos os itens da GAB foram preenchidos corretamente?" icon="fa fa-exclamation" header="Atenção!"/>
+      </p:commandButton>
+        
+      <a href="../apresentar-gab" id="cancelar" class="btn">Cancelar</a>
+
+    </h:form>
+  </ui:define>
+
+  <ui:define name="dialogs">
+    <ui:include src="dialog-finalizar-apresentacao-item-gab.xhtml" />
+    <ui:include src="dialog-editar-valores-extras.xhtml" />
+  </ui:define>
+
+</ui:composition>

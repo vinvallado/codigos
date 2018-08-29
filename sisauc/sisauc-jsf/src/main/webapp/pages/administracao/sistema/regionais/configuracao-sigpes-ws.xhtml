@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" template="/resources/template/template.xhtml">
+  
+  <ui:define name="html-title">Configuração do Webservice SIGPES</ui:define>
+  
+  <ui:define name="main"> 
+    <h3>Configuração do Webservice SIGPES</h3>
+    <p:separator/>
+    <h:form prependId="false">
+      <p:messages id="msgs" showIcon="false"/>
+      <p:panelGrid>
+        <p:row>
+          <p:column><p:outputLabel value="Hora da Sincronização:"/></p:column>
+          <p:column>
+           <p:calendar id="hora-inicio" value="#{configuracaoSigpesWSBean.configuracaoWSSigpes.horaSincronizacao}" size="8" required="true" pattern="HH:mm" timeOnly="true"  />
+          </p:column>
+        </p:row>     
+        <p:row>
+          <p:column><p:outputLabel value="URL WSDL:"/></p:column>
+          <p:column>
+           <p:inputText id="url-wsdl" value="#{configuracaoSigpesWSBean.configuracaoWSSigpes.urlWSDL}" size="100" required="true"  requiredMessage="Campo URL WSDL é obrigatório"></p:inputText>
+          </p:column>
+        </p:row>         
+        <p:row>
+          <p:column><p:outputLabel value="URL Serviço:"/></p:column>
+          <p:column>
+           <p:inputText id="url-servico"  value="#{configuracaoSigpesWSBean.configuracaoWSSigpes.urlServico}" size="100" required="true"  requiredMessage="Campo URL do Servço é obrigatório"> </p:inputText>
+          </p:column>
+        </p:row>
+        <p:row>
+          <p:column><p:outputLabel value="Nome Serviço:"/></p:column>
+          <p:column>
+           <p:inputText id="nome_servico"  value="#{configuracaoSigpesWSBean.configuracaoWSSigpes.nomeServico}" size="40" required="true"  requiredMessage="Campo Nome do Serviço é obrigatório"></p:inputText>
+          </p:column>
+        </p:row>
+        <p:row>
+          <p:column><p:outputLabel value="Usuário:"/></p:column>
+          <p:column>
+           <p:inputText id="ws-usuario"  value="#{configuracaoSigpesWSBean.configuracaoWSSigpes.usuario}" size="40" maxlength="20" required="true"  requiredMessage="Campo Usuário é obrigatório"></p:inputText>
+          </p:column>
+        </p:row>
+        <p:row>
+          <p:column><p:outputLabel value="Senha:"/></p:column>
+          <p:column>
+           <p:inputText id="ws-senha"  value="#{configuracaoSigpesWSBean.configuracaoWSSigpes.senha}" size="40" required="true" requiredMessage="Campo senha é obrigatório"/>
+          </p:column>
+        </p:row>
+       </p:panelGrid>
+       
+      <div class="vgap-10"></div>
+      
+      <p:commandButton value="Salvar" styleClass="btn btn-success" icon="fa fa-save" validateClient="true"
+        action="#{configuracaoSigpesWSBean.salvar}" update="@form" id="salvar"/>
+        
+      <p:commandButton value="Testar Conexão" styleClass="btn margin-l-5" icon="fa fa-plug" validateClient="true"
+        action="#{configuracaoSigpesWSBean.testarConexao}" update="@form" id="testar"/> 
+           
+    </h:form>
+  </ui:define>
+  
+</ui:composition>

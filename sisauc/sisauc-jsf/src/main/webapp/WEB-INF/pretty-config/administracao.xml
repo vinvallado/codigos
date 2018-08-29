@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pretty-config xmlns="http://ocpsoft.org/schema/rewrite-config-prettyfaces" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://ocpsoft.org/schema/rewrite-config-prettyfaces
+                      http://ocpsoft.org/xml/ns/prettyfaces/rewrite-config-prettyfaces.xsd">
+
+
+	<!-- Administração Usuário -->
+	<url-mapping id="cadastro-usuario-lista">
+		<pattern value="/administracao/cadastro/usuario" />
+		<view-id value="/pages/administracao/cadastro/usuario/cadastro-usuario-lista.jsf" />
+	</url-mapping>
+
+	<url-mapping id="cadastro-usuario-formulario">
+		<pattern value="/administracao/cadastro/usuario/#{id}" />
+		<view-id value="/pages/administracao/cadastro/usuario/cadastro-usuario-formulario.jsf" />
+	</url-mapping>
+
+	<!-- Administração Beneficiario -->
+	<url-mapping id="cadastro-beneficiario-lista">
+		<pattern value="/administracao/cadastro/beneficiario" />
+		<view-id value="/pages/administracao/cadastro/beneficiario/dados-beneficiario-lista.jsf" />
+	</url-mapping>
+
+	<url-mapping id="cadastro-usuario-busca">
+		<pattern value="/administracao/cadastro/beneficiario/busca" />
+		<view-id value="/pages/administracao/cadastro/beneficiario/busca-beneficiario-sigameh.jsf" />
+	</url-mapping>
+
+	<url-mapping id="cadastro-usuario-formulario">
+		<pattern value="/administracao/cadastro/beneficiario/#{id}" />
+		<view-id value="/pages/administracao/cadastro/beneficiario/dados-beneficiario-formulario.jsf" />
+	</url-mapping>
+
+	<!-- Administração OM -->
+	<url-mapping id="cadastro-om-lista">
+		<pattern value="/administracao/cadastro/organizacao-militar" />
+		<view-id value="/pages/administracao/cadastro/organizacao-militar/cadastro-organizacao-militar-lista.jsf" />
+	</url-mapping>
+
+	<url-mapping id="cadastro-om-formulario">
+		<pattern value="/administracao/cadastro/organizacao-militar/#{id}" />
+		<view-id value="/pages/administracao/cadastro/organizacao-militar/cadastro-organizacao-militar-formulario.jsf" />
+	</url-mapping>
+
+	<!-- Administração Profissional -->
+	<url-mapping id="cadastro-medico-lista">
+		<pattern value="/administracao/cadastro/medico" />
+		<view-id value="/pages/administracao/cadastro/medico/cadastro-medico-lista.jsf" />
+	</url-mapping>
+
+	<url-mapping id="cadastro-medico-formulario">
+		<pattern value="/administracao/cadastro/medico/#{id}" />
+		<view-id value="/pages/administracao/cadastro/medico/cadastro-medico-formulario.jsf" />
+	</url-mapping>
+
+	<!-- Administração Credenciado -->
+	<url-mapping id="cadastro-credenciado-lista">
+		<pattern value="/administracao/cadastro/credenciado" />
+		<view-id value="/pages/administracao/cadastro/credenciado/cadastro-credenciado-lista.jsf" />
+	</url-mapping>
+
+	<url-mapping id="cadastro-credenciado-formulario">
+		<pattern value="/administracao/cadastro/credenciado/#{id}" />
+		<view-id value="/pages/administracao/cadastro/credenciado/cadastro-credenciado-formulario.jsf" />
+	</url-mapping>
+	
+	<!-- Administração Unidade Multiplicadora -->
+	<url-mapping id="cadastro-unidade-multiplicadora">
+		<pattern value="/administracao/cadastro/unidade-multiplicadora" />
+		<view-id value="/pages/administracao/sistema/configuracao-unidade-multiplicadora/configuracao-unidade-multiplicadora.jsf" />
+	</url-mapping>
+
+	<!-- Administração Portes -->
+	<url-mapping id="cadastro-portes-cbhpm2012-lista">
+		<pattern value="/administracao/cadastro/portes-cbhpm2012" />
+		<view-id value="/pages/administracao/cadastro/portes-cbhpm2012/cadastro-portes-cbhpm2012-wrapper.jsf" />
+	</url-mapping>
+
+	<!-- Configurações do Sistema -->
+	<url-mapping id="configuracoes-sistema-formulario">
+		<pattern value="/administracao/sistema/configuracoes-sistema" />
+		<view-id value="/pages/administracao/sistema/configuracoes-sistema-wrapper.jsf" />
+	</url-mapping>
+
+	<url-mapping id="configuracao-sigameh-ws">
+		<pattern value="/administracao/cadastro/sigpes-ws" />
+		<view-id value="/pages/administracao/sistema/regionais/configuracao-sigpes-ws.jsf" />
+	</url-mapping>
+
+	<url-mapping id="configuracao-sigameh-ws">
+		<pattern value="/administracao/definir-regional" />
+		<view-id value="/pages/administracao/regional/definir-regional.jsf" />
+	</url-mapping>
+
+	<!-- Administração Edital de Credenciamento -->
+	<url-mapping id="cadastro-edital-credenciamento-lista">
+		<pattern value="/administracao/cadastro/edital-credenciamento" />
+		<view-id value="/pages/administracao/edital-credenciamento/cadastro/cadastro-edital-credenciamento-lista.jsf" />
+	</url-mapping>
+
+	<url-mapping id="cadastro-edital-credenciamento-formulario">
+		<pattern value="/administracao/cadastro/edital-credenciamento/#{id}" />
+		<view-id value="/pages/administracao/edital-credenciamento/cadastro/cadastro-edital-credenciamento-formulario.jsf" />
+	</url-mapping>
+
+	<!-- Administração CONFIGURAR Edital de Credenciamento -->
+	<url-mapping id="configuracao-edital-credenciamento-lista">
+		<pattern value="/administracao/cadastro/configuracao-edital" />
+		<view-id value="/pages/administracao/edital-credenciamento/configuracao/configuracao-edital-credenciamento-lista.jsf" />
+	</url-mapping>
+
+	<url-mapping id="configuracao-edital-credenciamento-formulario">
+		<pattern value="/administracao/cadastro/configuracao-edital/#{id}" />
+		<view-id value="/pages/administracao/edital-credenciamento/configuracao/configuracao-edital-credenciamento-formulario.jsf" />
+	</url-mapping>
+
+	<!-- Administração - Controle de Empenhos -->
+	<url-mapping id="edital-controle-empenhos">
+		<pattern value="/administracao/cadastro/controle-empenho" />
+		<view-id value="/pages/administracao/controle-empenho/cadastro/controle-empenho-lista.jsf" />
+	</url-mapping>
+
+	<url-mapping id="edital-controle-empenhos">
+		<pattern value="/administracao/cadastro/controle-empenho/#{id}" />
+		<view-id value="/pages/administracao/controle-empenho/cadastro/controle-empenho-form.jsf" />
+	</url-mapping>
+
+</pretty-config>

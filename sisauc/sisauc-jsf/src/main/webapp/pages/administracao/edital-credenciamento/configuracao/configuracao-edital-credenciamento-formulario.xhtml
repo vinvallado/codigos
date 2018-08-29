@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" template="/resources/template/template.xhtml">
+
+  <ui:define name="html-title">Lista de Editais</ui:define>
+
+  <ui:define name="html-body-bottom">
+    <script type="text/javascript" src="#{request.contextPath}/resources/vendor/js/jquery.maskMoney.min.js" />
+  </ui:define>
+
+  <ui:define name="dialogs">
+    <ui:include src="configuracao-edital-credenciamento-dialog-procedimento.xhtml" />
+    <ui:include src="editar-procedimento-dialog.xhtml" />
+  </ui:define>
+
+
+  <ui:define name="main">
+
+    <h3>Configurar Edital de Credenciamento</h3>
+    <!-- ATENCAO - É AQUI EH O VIEWUTILSBEAN SABE QUAL TIPO DE TABELA ESTA USANDO NESTE ESCOPO DE VIEW -->
+	<c:set target="#{viewUtilsBean}" property="tipoTabelaAutocomplete" value="#{cadastroConfiguracaoEditalFormularioBean.edital.tabela.name()}"/>
+
+    <p:separator />
+
+    <h:form id="configuracao-edital-form">
+
+      <p:panelGrid>
+        <p:row>
+          <p:column>
+            <strong>Número:</strong>
+          </p:column>
+          <p:column>
+            <h:outputText value="#{cadastroConfiguracaoEditalFormularioBean.edital.numero}" />
+          </p:column>
+          <p:column>
+            <strong>Início:</strong>
+          </p:column>
+          <p:column>
+            <h:outputText value="#{cadastroConfiguracaoEditalFormularioBean.edital.inicio}">
+              <f:convertDateTime pattern="dd/MM/yyyy" />
+            </h:outputText>
+          </p:column>
+          <p:column>
+            <strong>Fim:</strong>
+          </p:column>
+          <p:column>
+            <h:outputText value="#{cadastroConfiguracaoEditalFormularioBean.edital.fim}">
+              <f:convertDateTime pattern="dd/MM/yyyy" />
+            </h:outputText>
+          </p:column>
+        </p:row>
+        <p:row>
+          <p:column>
+            <strong>Decrição:</strong>
+          </p:column>
+          <p:column colspan="5">
+            <h:outputText value="#{cadastroConfiguracaoEditalFormularioBean.edital.descricao}" />
+          </p:column>
+        </p:row>
+        <p:row>
+          <p:column>
+            <strong>Tabela:</strong>
+          </p:column>
+          <p:column>
+            <h:outputText value="#{cadastroConfiguracaoEditalFormularioBean.edital.tabela.nome}" />
+          </p:column>
+        </p:row>
+        <p:row>
+          <p:column>
+            <strong>Credenciado:</strong>
+          </p:column>
+          <p:column colspan="5">
+            <p:selectOneMenu value="#{cadastroConfiguracaoEditalFormularioBean.credenciado}" id="credenciado"
+              converter="jsonConverter" filter="true" filterMatchMode="contains">
+              <f:selectItem itemLabel="" noSelectionOption="true" />
+              <p:ajax event="change" listener="#{cadastroConfiguracaoEditalFormularioBean.atualizarListaProcedimentos}"
+                update="@form" />
+              <f:selectItems var="credenciado" value="#{cadastroConfiguracaoEditalFormularioBean.credenciados}"
+                itemLabel="#{credenciado.credenciado.nomeFantasia}" itemValue="#{credenciado}" />
+            </p:selectOneMenu>
+          </p:column>
+        </p:row>
+      </p:panelGrid>
+      <div class="vgap-10"></div>
+      <p:messages id="msgs" showIcon="false" />
+      <div class="vgap-10"></div>
+      
+      <p:dataTable value="#{cadastroConfiguracaoEditalFormularioBean.lazyModel}" paginator="true" rows="5"
+        emptyMessage="#{msgs.no_records_found}" paginatorPosition="bottom" paginatorAlwaysVisible="false"
+        rowsPerPageTemplate="5, 10, 15, 25, 50" filterDelay="300"
+        paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+        var="procedimentoLista" id="lista-procedimentos" lazy="true" 
+        selection="#{cadastroConfiguracaoEditalFormularioBean.procedimentosSelecionados}">
+        <f:facet name="header">
+          <p:commandButton action="#{cadastroConfiguracaoEditalFormularioBean.iniciarNovasConfiguracaoes}"
+            rendered="#{cadastroConfiguracaoEditalFormularioBean.credenciado!=null}"
+            update=":adicionar-procedimento-form" styleClass="btn btn-primary" value="Vincular novo procedimento"
+            process="@this" />
+          <p:commandButton update="@form"
+            id="excluir-selecionadas" value="Excluir Selecionados"
+            action="#{cadastroConfiguracaoEditalFormularioBean.desativarSelecionados}">
+            <p:confirm header="Atenção" message="Tem certeza que deseja remover estes procedimentos?"/> 
+          </p:commandButton>
+        </f:facet>
+        <p:column style="width:16px; text-align:center" selectionMode="multiple"/>
+        <p:column headerText="Credenciado" sortBy="#{credenciado}">
+          <h:outputText value="#{procedimentoLista.configuracaoEditalCredenciado.credenciado.nomeFantasia}" />
+        </p:column>
+		<p:column headerText="Procedimento" filterBy="#{procedimento}" sortBy="#{procedimento}">
+			<h:outputText value="#{formatterBean.configuracaoProcedimentoFormatter.getCodigoNomeSiglaEspecialidade(procedimentoLista)}" />
+		</p:column>
+
+		<p:column headerText="Tipo" width="80" styleClass="text-center" sortBy="#{tipo}" rendered="#{cadastroConfiguracaoEditalFormularioBean.edital.tabela == 'CBHPM2012'}"
+          filterBy="#{tipo}" filterOptions="#{cadastroConfiguracaoEditalFormularioBean.tipoCobrancaFiltroOptions}">
+			<h:outputText value="#{procedimentoLista.tipo.label}" />
+		</p:column>
+
+		<p:column headerText="Valor" width="80" styleClass="text-center" sortBy="#{valor}" rendered="#{cadastroConfiguracaoEditalFormularioBean.edital.tabela == 'CBHPM2012'}">
+			<h:outputText value="#{procedimentoLista.valor}">
+				<f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR"  />
+			</h:outputText>
+		</p:column>
+
+        <p:column width="40" styleClass="text-center">
+          <p:commandButton id="editar-configuracao" styleClass="btn btn-link" title="Editar procedimento"
+            icon="fa fa-pencil" action="#{cadastroConfiguracaoEditalFormularioBean.editar(procedimentoLista.id)}"
+            process="@this" update=":editar-procedimento-form" />
+        </p:column>
+        <p:column width="40" styleClass="text-center">
+          <p:commandButton id="excluir-configuracao" styleClass="btn btn-link" title="Excluir procedimento"
+            icon="fa fa-times text-error" process="@this" action="#{cadastroConfiguracaoEditalFormularioBean.desativar(procedimentoLista.id)}"
+            update="@form">
+            <p:confirm header="Atenção" message="Tem certeza que deseja remover este procedimento?"/>            
+          </p:commandButton>
+        </p:column>
+
+      </p:dataTable>
+
+      <div class="vgap-15"></div>
+
+      <a href="../configuracao-edital" class="btn" id="voltar">Voltar</a>
+
+
+    </h:form>
+
+  </ui:define>
+
+
+</ui:composition>

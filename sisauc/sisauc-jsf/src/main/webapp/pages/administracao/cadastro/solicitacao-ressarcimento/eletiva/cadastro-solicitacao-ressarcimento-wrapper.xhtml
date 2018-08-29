@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" template="/resources/template/template.xhtml">
+
+  <ui:define name="html-title">Solicitação de Ressarcimento</ui:define>
+
+  <ui:define name="dialogs">
+    <ui:include src="../cadastro-solicitacao-ressarcimento-dialog-procedimento.xhtml"></ui:include>
+    <ui:include src="../dialog-ver-pdf.xhtml"/>
+  </ui:define>
+
+  <ui:define name="main">
+
+    <h3>Formulário de Solicitação de Ressarcimento</h3>
+
+    <p:separator />
+
+    <ui:include src="cadastro-solicitacao-ressarcimento-formulario.xhtml"/>
+    <ui:include src="../cadastro-solicitacao-ressarcimento-visualizar.xhtml"/>
+
+  </ui:define>
+
+    <ui:define name="html-body-bottom">
+      <script type="text/javascript" src="#{request.contextPath}/resources/vendor/js/jquery.maskMoney.min.js" />
+      <script type="text/javascript" src="#{request.contextPath}/resources/vendor/js/pdfjs/pdf.js" />
+      <script type="text/javascript" src="#{request.contextPath}/resources/js/ver-pdf.js" />
+    </ui:define>
+</ui:composition>

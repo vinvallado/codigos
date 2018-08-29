@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pretty-config xmlns="http://ocpsoft.org/schema/rewrite-config-prettyfaces" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://ocpsoft.org/schema/rewrite-config-prettyfaces
+                      http://ocpsoft.org/xml/ns/prettyfaces/rewrite-config-prettyfaces.xsd">
+
+<!-- 	<url-mapping id="empenho-form"> -->
+<!-- 		<pattern value="/intendencia/empenho/#{id}" /> -->
+<!-- 		<view-id value="/pages/intendencia/empenho/controle-empenho-form.jsf" /> -->
+<!-- 	</url-mapping> -->
+
+<!-- 	<url-mapping id="empenho-lista">  -->
+<!-- 		<pattern value="/intendencia/empenho" /> -->
+<!-- 		<view-id value="/pages/intendencia/empenho/controle-empenho-lista.jsf" /> -->
+<!-- 	</url-mapping> -->
+
+	<!-- Descontos - Pagamento  -->
+	<url-mapping id="intendencia-relatorios-desconto-beneficiario">
+		<pattern value="/desconto-beneficiario/relatorio-desconto-beneficiario" />
+		<view-id value="/pages/intendencia/desconto-beneficiarios/relatorio-desconto/relatorio-desconto-beneficiario-lista.jsf" />
+	</url-mapping>
+	
+	<url-mapping id="intendencia-relatorios-desconto-beneficiario-visualizacao">
+		<pattern value="/desconto-beneficiario/relatorio-desconto-beneficiario/#{id}"/>
+		<view-id value="/pages/intendencia/desconto-beneficiarios/relatorio-desconto/relatorio-desconto-beneficiario-visualizacao.jsf"/>
+	</url-mapping>
+	
+	<url-mapping id="intendencia-relatorios-desconto-beneficiario-geracao">
+		<pattern value="/desconto-beneficiario/relatorio-desconto-beneficiario-geracao-relatorio" />
+		<view-id value="/pages/intendencia/desconto-beneficiarios/relatorio-desconto/relatorio-desconto-beneficiario-formulario.jsf" />
+	</url-mapping>
+	
+	<!-- Ressarcimento  -->
+	
+	<url-mapping id="intendencia-relatorios-ressarcimento-beneficiario">
+		<pattern value="/ressarcimento-beneficiario/relatorio-ressarcimento-beneficiario" />
+		<view-id value="/pages/intendencia/ressarcimento-beneficiarios/relatorio-ressarcimento/relatorio-ressarcimento-beneficiario-lista.jsf" />
+	</url-mapping>
+	
+	
+	
+	
+	<url-mapping id="intendencia-descontar-beneficiario">
+		<pattern value="/desconto-beneficiario/descontar-beneficiario" />
+		<view-id value="/pages/intendencia/desconto-beneficiarios/descontar-beneficiarios.jsf" />
+	</url-mapping>
+	
+	<url-mapping id="intendencia-desconto-beneficiarios-lista"> 
+		<pattern value="/desconto-beneficiario/descontos-realizados" />
+		<view-id value="/pages/intendencia/desconto-beneficiarios/desconto-beneficiario-lista.jsf" />
+	</url-mapping>
+	
+	<url-mapping id="intendencia-desconto-beneficiarios-form"> 
+		<pattern value="/desconto-beneficiario/descontos-realizados/#{id}" />
+		<view-id value="/pages/intendencia/desconto-beneficiarios/desconto-beneficiario-form.jsf" />
+	</url-mapping>
+	
+	<url-mapping id="relatorio-analitico-fatura-lista"> 
+		<pattern value="/desconto-beneficiario/listar-relatorios" />
+		<view-id value="/pages/intendencia/desconto-beneficiarios/relatorio-analitico-fatura-lista.jsf" />
+	</url-mapping>
+	
+	<url-mapping id="impressao-relatorio-analitico-fatura">
+		<pattern value="/auditoria-retrospectiva/impressao-relatorio-analitico-fatura/#{id}" />
+		<view-id value="/pages/intendencia/desconto-beneficiarios/impressao-relatorio-analitico-fatura.jsf" />
+	</url-mapping>	
+
+		
+
+</pretty-config>

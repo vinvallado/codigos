@@ -1,0 +1,2 @@
+versaoExterna=2.3.0
+versaoInterna=${project.version}

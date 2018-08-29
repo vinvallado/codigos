@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" template="/resources/template/template.xhtml">
+
+  <ui:define name="html-title">Configuração de Unidade Multiplicadora</ui:define>
+
+  <ui:define name="html-body-bottom">
+    <script type="text/javascript" src="#{request.contextPath}/resources/vendor/js/jquery.maskMoney.min.js"/>
+    <script type="text/javascript">
+      $(document).ready(function(){
+    	  maskPrefixOnlyPositiveNumbers('R$ ');
+      });
+    </script>
+  </ui:define>
+
+  <ui:define name="main">
+    <h3>Formulário de Unidade Multiplicadora</h3>
+    <h:form id="configuracao-unidade-multiplicadora">
+      <p:messages id="msgs" showIcon="false" />
+
+      <div class="vgap-15"></div>
+
+      <p:fieldset legend="Alterar Valores">
+        <p:panelGrid>
+          <p:row>
+            <p:column>
+              <h:outputLabel value="Valor do Filme:" />
+            </p:column>
+            <p:column>
+              <p:inputText styleClass="number" converter="doubleConverter"
+                value="#{configuracaoUnidadeMultiplicadoraBean.unidadeMultiplicadora.valorFilme}"
+                id="valor-filme-alterado"
+                onfocus="maskPrefixOnlyPositiveNumbers('R$ ')" />
+            </p:column>
+          </p:row>
+          <p:row>
+            <p:column>
+              <h:outputText value="Valor de UCO(CBHPM2012):" />
+            </p:column>
+            <p:column>
+              <h:inputText styleClass="number" converter="doubleConverter"
+                value="#{configuracaoUnidadeMultiplicadoraBean.unidadeMultiplicadora.valorUco}" id="valor-uco-alterado"
+                onchange="maskPrefixOnlyPositiveNumbers('R$ ')" />
+            </p:column>
+          </p:row>
+          <p:row>
+            <p:column>
+              <h:outputText value="Valor de USM(CISSFA):" />
+            </p:column>
+            <p:column>
+              <h:inputText styleClass="number" converter="doubleConverter"
+                value="#{configuracaoUnidadeMultiplicadoraBean.unidadeMultiplicadora.valorUsm}" id="valor-usm-alterado"
+                onchange="maskPrefixOnlyPositiveNumbers('R$ ')" />
+            </p:column>
+          </p:row>
+        </p:panelGrid>
+
+        <div class="vgap-10"></div>
+
+        <p:commandButton value="Salvar" styleClass="btn btn-success" icon="fa fa-save" validateClient="true"
+          action="#{configuracaoUnidadeMultiplicadoraBean.salvar}" update="@form" id="salvar-modificacao" />
+
+      </p:fieldset>
+
+    </h:form>
+
+  </ui:define>
+
+</ui:composition>

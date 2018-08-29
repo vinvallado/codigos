@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<changeSet id="incluir-novas-especialidades-tipos-profissionais" author="januarioacsj">
+		<sql>
+			UPDATE sch_sisauc.especialidade SET tipo = 'FISIOTERAPIA' WHERE id=114;
+			UPDATE sch_sisauc.especialidade SET tipo = 'FONOAUDIOLOGIA' WHERE id=115;
+			UPDATE sch_sisauc.especialidade SET tipo = 'PSICOLOGIA' WHERE id=116;
+			
+			INSERT INTO sch_sisauc.especialidade (id,sigla,nome,ativo,tipo) VALUES (130,'NUT','NUTRIÇÃO',true,'NUTRICAO');
+			INSERT INTO sch_sisauc.especialidade (id,sigla,nome,ativo,tipo) VALUES (131,'TOC','TERAPIA OCUPACIONAL',true,'TERAPIA_OCUPACIONAL');
+		</sql>
+	</changeSet>
+	
+	<changeSet id="seq_auditoria_retrospectiva_ressarcimento" author="brunobjm">
+		<sql>
+			CREATE SEQUENCE sch_sisauc.auditoria_retrospectiva_ressarcimento_id_seq
+				  INCREMENT 1
+				  MINVALUE 1
+				  MAXVALUE 9223372036854775807
+				  START 1
+				  CACHE 1;
+				ALTER TABLE sch_sisauc.auditoria_retrospectiva_ressarcimento_id_seq
+				  OWNER TO sisauc;
+		</sql>
+	</changeSet>
+
+
+	<changeSet id="correcao-item-ar" author="brunobjm">
+		<sql>
+			ALTER TABLE sch_sisauc.item_ar
+				ADD COLUMN id_procedimento_base integer;
+
+			ALTER TABLE sch_sisauc.item_ar
+				ADD CONSTRAINT fk_item_ar_procedimento_base FOREIGN KEY (id_procedimento_base)
+				REFERENCES sch_sisauc.procedimento_base (id) MATCH SIMPLE
+				ON UPDATE NO ACTION ON DELETE NO ACTION;
+			
+			update sch_sisauc.item_ar set id_procedimento_base = id_procedimento;
+
+			alter table sch_sisauc.item_ar drop constraint fk_item_ar_procedimento;
+			alter table sch_sisauc.item_ar drop COLUMN id_procedimento;
+			
+			ALTER TABLE sch_sisauc.item_ar ALTER COLUMN id_procedimento_base SET NOT NULL;
+		</sql>
+	</changeSet> 
+	
+	
+</databaseChangeLog>

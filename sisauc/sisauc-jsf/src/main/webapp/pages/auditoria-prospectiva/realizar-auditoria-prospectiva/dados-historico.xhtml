@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:sisauc="http://java.sun.com/jsf/composite/sisaucjsf">
+
+    <h:form>
+    <div class="vgap-10" />
+      <p:panelGrid>
+        <p:column>
+          <p:inputText id="textoPesquisar" size="70" value="#{realizarAuditoriaProspectivaBean.procedimentoPesquisa}"
+            placeholder="Digite o código ou a descrição ou a especialidade do procedimento" />
+        </p:column>
+        <p:column>
+          <p:commandButton value="Buscar" id="buscar-procedimento" styleClass="btn btn-success" icon="fa fa-search"
+            validateClient="true" action="#{realizarAuditoriaProspectivaBean.pesquisarHistorico}" update="tabela"
+            process="textoPesquisar @this" />
+        </p:column>
+      </p:panelGrid>
+      
+      <div class="vgap-10" />
+
+
+        <p:dataTable id="tabela" value="#{realizarAuditoriaProspectivaBean.auditorias}" var="auditoria" paginator="true"
+          rows="5" paginatorPosition="bottom" paginatorAlwaysVisible="false" rowsPerPageTemplate="5, 10"
+          emptyMessage="#{msgs.no_records_found}"
+          paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+          filteredValue="#{viewUtilsBean.filtrados}" filterDelay="300" widgetVar="datatable">
+
+          <p:columnGroup type="header">
+            <p:row>
+              <p:column headerText="Procedimento" width="580" />
+              <p:column headerText="Aprovado" width="60" />
+              <p:column headerText="Justificativa" width="70" />
+              <p:column headerText="" width="30" />
+            </p:row>
+          </p:columnGroup>
+
+          <p:subTable var="resposta" value="#{auditoria.procedimentos}">
+            <f:facet name="header">
+              <h:outputText value=" "/>
+              <h:panelGroup rendered="#{auditoria['class'].simpleName == 'AuditoriaProspectiva'}" styleClass="label label-info">
+                GAB
+              </h:panelGroup>
+              <h:panelGroup rendered="#{auditoria['class'].simpleName == 'AuditoriaProspectivaRessarcimento'}" styleClass="label">
+                RES
+              </h:panelGroup>
+              <h:outputText value=" "/>
+              <h:outputText value="Auditoria realizada em " />
+              <h:outputText value="#{auditoria.dataFinalAuditoria}">
+                <f:convertDateTime pattern="dd/MM/yyyy" />
+              </h:outputText>
+              <h:outputText value=" para a #{auditoria.solicitacao.numero}" />
+              <h:outputText value=" #{auditoria.solicitacao.divisao.label}" />
+            </f:facet>
+            <p:column width="790">
+              <h:panelGroup rendered="#{auditoria['class'].simpleName == 'AuditoriaProspectiva'}">
+                <h:outputText value="#{resposta.credenciado.procedimento.codigo} - " />
+                <h:outputText value="#{resposta.credenciado.procedimento.descricao} " />
+                <h:outputText value="(#{resposta.credenciado.especialidade.sigla})"
+                  rendered="#{resposta.credenciado.especialidade.sigla != null}" />
+              </h:panelGroup>
+              <h:panelGroup rendered="#{auditoria['class'].simpleName == 'AuditoriaProspectivaRessarcimento'}">
+                <h:outputText value="#{resposta.procedimento.codigo} - " />
+                <h:outputText value="#{resposta.procedimento.descricao} " />
+                <h:outputText value="(#{resposta.especialidade.sigla})" rendered="#{resposta.especialidade.sigla != null}" />
+              </h:panelGroup>
+            </p:column>
+            <p:column width="80" styleClass="text-center">
+              <h:panelGroup
+                styleClass="fa #{resposta.aprovado ? 'fa-thumbs-o-up text-success' : 'fa-thumbs-o-down text-error'}"></h:panelGroup>
+            </p:column>
+            <p:column id="justificativa" headerText="Justificativa" width="30" style="text-align:center">
+              <h:outputLabel id="justificativa-procedimento" styleClass="btn btn-link fa fa-info"
+                rendered="#{!resposta.aprovado}" />
+              <p:tooltip id="toolTipJustificativaGAB" for="justificativa-procedimento"
+                value="#{resposta.justificativa}" />
+              <h:outputLabel value="Não há" styleClass="muted" rendered="#{resposta.justificativa == null}" />
+            </p:column>
+            <p:column width="30" styleClass="text-center">
+              <p:commandButton action="#{realizarAuditoriaProspectivaBean.selecionarAuditoria(auditoria.id)}"
+                icon="fa fa-search" styleClass="btn btn-link" update=":historico-form ver-pdf" />
+            </p:column>
+          </p:subTable>
+        </p:dataTable>
+    </h:form>
+
+</ui:composition>

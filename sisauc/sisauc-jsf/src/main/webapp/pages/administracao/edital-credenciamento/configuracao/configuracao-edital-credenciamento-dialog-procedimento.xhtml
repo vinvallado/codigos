@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:sisauc="http://java.sun.com/jsf/composite/sisaucjsf">
+
+  <p:dialog header="Vincular procedimentos" id="adicionar-procedimento-dialog" widgetVar="adicionarProcedimentoDialog"
+    modal="true" resizable="false" onShow="maskPrefix('R$ ')">
+    <h:form id="adicionar-procedimento-form">
+      <div class="text-center">
+        <p:selectOneButton value="#{cadastroConfiguracaoEditalFormularioBean.tipoInsercaoProcedimento}">
+          <f:selectItem itemLabel="Individual" itemValue="INDIVIDUAL" />
+          <f:selectItem itemLabel="Subgrupo" itemValue="SUBGRUPO" />
+          <f:selectItem itemLabel="Grupo" itemValue="GRUPO" />
+          <p:ajax event="change" process="@this" update="grid" oncomplete="maskPrefix('R$ ')"
+            listener="#{cadastroConfiguracaoEditalFormularioBean.mudarFormaInsercaoProcedimento}" />
+        </p:selectOneButton>
+      </div>
+      <div class="vgap-10"></div>
+      <p:panelGrid id="grid">
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Credenciado:" for="credenciado" />
+          </p:column>
+          <p:column>
+            <h:outputText value="#{cadastroConfiguracaoEditalFormularioBean.credenciado.credenciado.nomeFantasia}"
+              id="credenciado">
+            </h:outputText>
+          </p:column>
+        </p:row>
+        <p:row rendered="#{cadastroConfiguracaoEditalFormularioBean.tipoInsercaoProcedimento == 'INDIVIDUAL'}">
+          <p:column>
+            <p:outputLabel value="Procedimento:" for="procedimento" />
+          </p:column>
+          <p:column>
+            <p:autoComplete value="#{cadastroConfiguracaoEditalFormularioBean.procedimento.procedimento}"
+              required="true" completeMethod="#{viewUtilsBean.procurarProcedimento}" size="50" forceSelection="true"
+              id="procedimento" var="procedimento" itemValue="#{procedimento}"
+              itemLabel="#{formatterBean.procedimentoFormatter.getCodigoDescricao(procedimento)}" minQueryLength="3"
+              converter="jsonConverter" maxResults="5" panelStyle="width:400px;" scrollHeight="200">
+              <p:ajax event="itemSelect" process="@this" update="grid" oncomplete="maskPrefix('R$ ')" />
+              <p:column>
+                <sisauc:detalharProcedimento procedimento="#{procedimento}" />
+              </p:column>
+            </p:autoComplete>
+          </p:column>
+
+        </p:row>
+
+        <p:row rendered="#{cadastroConfiguracaoEditalFormularioBean.tipoInsercaoProcedimento == 'SUBGRUPO'}">
+          <p:column>
+            <p:outputLabel value="Subgrupo:" for="subGrupo" />
+          </p:column>
+          <p:column>
+            <p:autoComplete value="#{cadastroConfiguracaoEditalFormularioBean.subGrupo}" required="true"
+              completeMethod="#{viewUtilsBean.procurarSubgrupos}" size="50" forceSelection="true" id="subGrupo"
+              var="subGrupo" itemValue="#{subGrupo}"
+              itemLabel="#{formatterBean.subgrupoFormatter.getCodigoDescricao(subGrupo)}" minQueryLength="3"
+              converter="jsonConverter" maxResults="5" panelStyle="width:400px;" scrollHeight="200">
+              <p:ajax event="itemSelect" process="@this" update="grid" oncomplete="maskPrefix('R$ ')" />
+            </p:autoComplete>
+          </p:column>
+        </p:row>
+
+        <p:row rendered="#{cadastroConfiguracaoEditalFormularioBean.tipoInsercaoProcedimento == 'GRUPO'}">
+          <p:column>
+            <p:outputLabel value="Grupo:" for="grupo" />
+          </p:column>
+          <p:column>
+            <p:autoComplete value="#{cadastroConfiguracaoEditalFormularioBean.grupo}" required="true"
+              completeMethod="#{viewUtilsBean.procurarGrupos}" size="50" forceSelection="true" id="grupo" var="grupo"
+              itemValue="#{grupo}" itemLabel="#{formatterBean.grupoFormatter.getCodigoDescricao(grupo)}"
+              minQueryLength="3" converter="jsonConverter" maxResults="5" panelStyle="width:400px;" scrollHeight="200">
+              <p:ajax event="itemSelect" process="@this" update="grid" oncomplete="maskPrefix('R$ ')" />
+            </p:autoComplete>
+          </p:column>
+        </p:row>
+
+        <p:row
+          rendered="#{cadastroConfiguracaoEditalFormularioBean.procedimento.procedimento.subGrupo.codigo == '10101004' or cadastroConfiguracaoEditalFormularioBean.subGrupo.codigo == '10101004' or cadastroConfiguracaoEditalFormularioBean.grupo.codigo == '10100008' }">
+          <p:column>
+            <p:outputLabel value="Especialidade:" for="especialidade" />
+          </p:column>
+          <p:column>
+            <p:selectCheckboxMenu value="#{cadastroConfiguracaoEditalFormularioBean.especialidadesSelecionadas}"
+              converter="jsonConverter" style="width: 545px" filter="true" filterMatchMode="contains" id="especialidade">
+              <f:selectItems value="#{cadastroConfiguracaoEditalFormularioBean.especialidades}" var="especialidade"
+                itemValue="#{especialidade}" itemLabel="#{especialidade.sigla} - #{especialidade.nome}"
+                id="sel-especialidade" />
+            </p:selectCheckboxMenu>
+          </p:column>
+        </p:row>
+
+        <p:row rendered="#{cadastroConfiguracaoEditalFormularioBean.edital.tabela == 'CBHPM2012'}">
+          <p:column>
+            <p:outputLabel value="Tipo:" for="tipo" />
+          </p:column>
+          <p:column>
+            <p:selectOneMenu value="#{cadastroConfiguracaoEditalFormularioBean.procedimento.tipo}"
+              converter="genericEnumConverter" id="tipo" style="width: 80px">
+              <f:selectItems value="#{cadastroConfiguracaoEditalFormularioBean.tiposCobranca}" var="tipo"
+                itemValue="#{tipo}" itemLabel="#{tipo.label}" />
+            </p:selectOneMenu>
+          </p:column>
+        </p:row>
+
+        <p:row rendered="#{cadastroConfiguracaoEditalFormularioBean.edital.tabela == 'CBHPM2012'}">
+          <p:column>
+            <p:outputLabel value="Valor:" for="valor" />
+          </p:column>
+          <p:column>
+            <p:inputText styleClass="number" converter="doubleConverter" size="10" required="true"
+              value="#{cadastroConfiguracaoEditalFormularioBean.procedimento.valor}" id="valor" 
+              onfocus="maskPrefixOnlyPositiveNumbers('R$ ')" />
+          </p:column>
+        </p:row>
+
+      </p:panelGrid>
+
+      <h:panelGroup styleClass="dialog-footer" layout="block">
+        <p:commandButton value="Salvar" styleClass="btn btn-success" icon="fa fa-save" validateClient="true"
+          id="adicionar" action="#{cadastroConfiguracaoEditalFormularioBean.salvarNovasConfiguracoes}"
+          update=":configuracao-edital-form:lista-procedimentos :configuracao-edital-form:msgs"
+          onclick="PF('adicionarProcedimentoDialog').hide()" />
+      </h:panelGroup>
+
+    </h:form>
+  </p:dialog>
+
+</ui:composition>

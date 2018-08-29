@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      @page {
+        @top-right {
+          text-align: right;
+          font-size: 9pt;
+          content: '(FL ' counter(page)'/'counter(pages)' do ${relatorio.codigo})' !important; 
+        }
+      }
+      #include("estilo-pdf.css");
+    </style>
+  </head>
+  <body>
+    <div class="text-center">
+      #include("timbre.txt")<br/>
+      <strong>MINISTÉRIO DA DEFESA</strong><br/>
+      COMANDO DA AERONÁUTICA<br/>
+      $relatorio.autor.organizacaoMilitar.nome.toUpperCase()<br/>
+      SUBDIVISÃO DE AUDITORIA TÉCNICA
+    </div>
+    <div class="vgap-10"></div>
+    <div class="text-center">
+      <u>RELATATÓRIO Nº $relatorio.codigo</u>
+    </div>
+    <div class="vgap-30"></div>
+    
+     <table>
+      <tr class="table-header">
+        <td class="text-center text-bold" colspan="8">RELATÓRIO PARA DESCONTO DE BENEFICIÁRIOS</td>
+      </tr>
+      <tr class="table-header">
+        <td class="text-center text-bold" style="max-width:1.5cm; min-width:1.5cm; width:1.5cm;">Saram Titular</td>
+        <td class="text-center text-bold" style="max-width:1.5cm; min-width:1.5cm; width:1.5cm;">Posto/Graduação Titular</td>
+        <td class="text-center text-bold">Beneficiário Titular</td>
+        <td class="text-center text-bold" style="width: 1.5cm;">OM Titular</td>
+        <td class="text-center text-bold">Beneficiário</td>
+        <td class="text-center text-bold" style="width: 1.5cm;">AMH/AMHC</td>
+        <td class="text-center text-bold" style="width: 3.5cm;">Item da GAB</td>
+        <td class="text-center text-bold" style="width: 2.3cm;">Valor a descontar</td>
+      </tr>
+      
+      #foreach ($item in $relatorio.itens)
+        <tr class="#if($foreach.count%2!=0) row-odd #end">
+          <td class="text-center">
+            #if ($item.itemGab.gab.beneficiario.beneficiarioTitular)
+              $item.itemGab.gab.beneficiario.beneficiarioTitular.saram
+             #else
+              $item.itemGab.gab.beneficiario.saram
+             #end
+          </td>
+          <td class="text-center">
+             #if ($item.itemGab.gab.beneficiario.beneficiarioTitular)
+               #if($item.itemGab.gab.beneficiario.beneficiarioTitular.postoGraduacao)
+                 $item.itemGab.gab.beneficiario.beneficiarioTitular.postoGraduacao.sigla
+               #end
+             #else
+              #if($item.itemGab.gab.beneficiario.postoGraduacao)
+                $item.itemGab.gab.beneficiario.postoGraduacao.sigla
+              #end
+             #end
+          </td>
+          <td>
+            #if ($item.itemGab.gab.beneficiario.beneficiarioTitular)
+              $item.itemGab.gab.beneficiario.beneficiarioTitular.nome
+             #else
+              $item.itemGab.gab.beneficiario.nome
+             #end
+          </td>
+          <td class="text-center">
+            #if ($item.itemGab.gab.beneficiario.beneficiarioTitular)
+              #if($item.itemGab.gab.beneficiario.beneficiarioTitular.organizacaoMilitar)
+              	$item.itemGab.gab.beneficiario.beneficiarioTitular.organizacaoMilitar.sigla
+              #end
+            #else
+              #if($item.itemGab.gab.beneficiario.organizacaoMilitar)
+                $item.itemGab.gab.beneficiario.organizacaoMilitar.sigla
+              #end
+            #end
+          </td>
+          
+          <td>
+            $item.itemGab.gab.beneficiario.nome
+          </td>
+          <td class="text-center">
+            $item.itemGab.gab.beneficiario.convenio.sigla
+          </td>
+          <td class="text-center">
+            $item.itemGab.codigo
+          </td>
+          <td class="text-center">
+            #set ($valorDescontado = $item.itemGab.valorADescontar)
+            $number.currency($valorDescontado)
+          </td>
+        </tr>
+      #end
+
+      <tr class="table-header">
+        <td class="text-center text-bold" colspan="8">Valor total a descontar: $number.currency($relatorio.valorTotalDesconto)</td>
+      </tr>
+     </table>
+     
+  </body>
+</html>

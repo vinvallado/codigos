@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" template="/resources/template/template.xhtml">
+
+  <ui:define name="html-title">Auditoria Retrospectiva Ressarcimento</ui:define>
+
+  <ui:define name="main">
+    <h3>Auditoria Retrospectiva Ressarcimento</h3>
+    <p:separator />
+    <div class="vgap-10"></div>
+    <h:form prependId="false">
+      <p:messages id="msgs" showIcon="false" />
+      <div class="vgap-10"></div>
+      <p:panel id="panel-itens-gab">
+
+        <p:dataTable id="lista-ar-em-auditoria" value="#{auditoriaRetrospectivaRessarcimentoListaBean.listaARs}" var="ar"
+          paginator="true" sortBy="#{ar.codigo}" paginatorAlwaysVisible="false" paginatorPosition="bottom"
+          emptyMessage="#{msgs.no_records_found}" rowsPerPageTemplate="10, 30, 50" rows="10"
+          paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+          filteredValue="#{viewUtilsBean.filtrados}" filterDelay="300">
+
+          <f:facet name="header">
+            <h:outputText value="Autorizações de Ressarcimento Apresentadas/Em Auditoria"></h:outputText>
+          </f:facet>
+
+	        <p:column id="tipo_divisao" headerText="Divisão" width="90" styleClass="text-center" filterOptions="#{viewUtilsBean.divisoesOptions()}" filterBy="#{ar.divisao}">
+	          <a title="Divisão Médica"><h:panelGroup styleClass="fa fa-tag muted" rendered="#{ar.divisao == 'DIVISAO_MEDICA'}" /></a>
+	          <a title="Divisão Odonológica"><h:panelGroup styleClass="fa fa-tag text-info" rendered="#{ar.divisao == 'DIVISAO_ODONTOLOGICA'}" /></a>
+	        </p:column>
+
+          <p:column headerText="Código" width="150" filterMatchMode="contains" sortBy="#{ar.codigo}"
+            id="codigo-ar" filterBy="#{ar.codigo}" styleClass="text-center">
+            <h:outputText value="#{ar.codigo}" />
+          </p:column>
+
+          <p:column headerText="Beneficiário" filterBy="#{ar.beneficiario.nome}" sortBy="#{ar.beneficiario.nome}"
+            filterMatchMode="contains" filterFunction="#{viewUtilsBean.filterIgnoreCase}" id="beneficiario">
+            <h:outputText value="#{ar.beneficiario.nome}" />
+          </p:column>
+
+          <p:column headerText="Saram Titular" id="saram" width="80" styleClass="text-center">
+            <h:outputText value="#{ar.beneficiario.saramTitular}" />
+          </p:column>
+          
+          <p:column headerText="Data Apresentação" width="100" id="data-apresentacao" sortBy="#{ar.dataApresentacao}"
+            styleClass="text-center">
+            <h:outputText value="#{ar.dataApresentacao}">
+              <f:convertDateTime pattern="dd/MM/yyyy" />
+            </h:outputText>
+          </p:column>
+
+           <p:column headerText="Estado" width="100" id="estado" sortBy="#{ar.estado}" styleClass="text-center">
+            <h:outputText value="#{ar.estado.label}"/>
+          </p:column>
+          
+          <p:column width="50" styleClass="text-center muted">
+            <h:outputLink id="abrir-gab" styleClass="btn btn-link" value="realizar-auditoria/#{ar.id}"
+              title="Visualizar">
+              <span id="editar" class="fa fa-pencil"></span>
+            </h:outputLink>
+          </p:column>
+
+        </p:dataTable>
+      </p:panel>
+    </h:form>
+  </ui:define>
+</ui:composition>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+	
+	<changeSet id="alterar-tamanho-coluna-verba-tabela-empenho" author="ferrazlffm">
+		<sql>
+			ALTER TABLE sch_sisauc.empenho ALTER COLUMN verba TYPE character varying(255);
+			ALTER TABLE sch_sisauc.historico_empenho ALTER COLUMN verba TYPE character varying(255);
+		</sql>
+	</changeSet>
+	
+	<changeSet id="alterar-tamanho-coluna-descricao-tabela-edital_credenciamento" author="januarioacsj">
+		<sql>
+			ALTER TABLE sch_sisauc.edital_credenciamento ALTER COLUMN descricao TYPE character varying(255);
+		</sql>
+	</changeSet>
+
+</databaseChangeLog>

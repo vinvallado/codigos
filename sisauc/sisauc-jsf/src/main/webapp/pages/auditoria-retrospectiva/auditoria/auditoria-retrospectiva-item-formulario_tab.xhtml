@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets">
+
+  <c:set var="auditoria" value="#{auditoriaRetrospectivaFormularioBean.itemGAB.auditoriaRetrospectiva}" scope="view" />
+  <p:panelGrid>
+    <p:row>
+      <p:column>
+        <h4>
+          Item GAB nº
+          <h:outputText value="#{auditoriaRetrospectivaFormularioBean.itemGAB.codigo}" />
+        </h4>
+      </p:column>
+    </p:row>
+
+    <p:row>
+      <p:column>
+        <h:outputText value="Divisão: " style="font-weight:bold;" />
+        <h:outputText value="#{auditoriaRetrospectivaFormularioBean.gab.auditoriaProspectiva.solicitacao.divisao.label}" />
+      </p:column>
+    </p:row>
+
+    <p:row>
+      <p:column>
+        <h:outputText value="Procedimento: " style="font-weight:bold;" />
+        <h:outputText
+          value="#{auditoriaRetrospectivaFormularioBean.itemGAB.configuracao.procedimento.codigo} - #{auditoriaRetrospectivaFormularioBean.itemGAB.configuracao.procedimento.descricao}" />
+        <h:outputText value=" (#{auditoriaRetrospectivaFormularioBean.itemGAB.configuracao.especialidade.sigla})"
+          rendered="#{auditoriaRetrospectivaFormularioBean.itemGAB.configuracao.especialidade.sigla != null}" />
+      </p:column>
+    </p:row>
+    
+    <p:row>
+      <p:column>
+        <h:outputText value="Observação da GAB: " style="font-weight:bold;" rendered="#{auditoriaRetrospectivaFormularioBean.itemGAB.observacaoGAB != null}" />
+        <h:outputText value="#{auditoriaRetrospectivaFormularioBean.itemGAB.observacaoGAB}" rendered="#{auditoriaRetrospectivaFormularioBean.itemGAB.observacaoGAB != null}"/>
+      </p:column>
+    </p:row>
+
+    <p:row>
+      <p:column>
+        <h:outputText value="Obs. da Apresentação: " style="font-weight:bold;" />
+        <h:outputText value="#{auditoria.observacaoApresentacao}" rendered="#{auditoria.observacaoApresentacao != null}" />
+        <h:outputText value="Não há observação" styleClass="muted"
+          rendered="#{auditoria.observacaoApresentacao == null}" />
+      </p:column>
+    </p:row>
+  </p:panelGrid>
+
+  <div class="vgap-10"></div>
+  <p:panel>
+    <ui:include src="dados-anteriores.xhtml" />
+  </p:panel>
+
+  <p:separator />
+  
+  <p:panelGrid>
+    
+    <p:row>
+      <p:column>
+        <h:outputText value="Valor Auditado:" style="font-weight:bold; margin-right: 310px;"/>
+      </p:column>
+      <p:column>
+        <h:outputText value="Valor Final:" style="font-weight:bold;"/>
+      </p:column>
+    </p:row>
+    
+    <p:row>
+      <p:column>
+        <p:inputText id="valor-auditado" value="#{auditoria.valorAuditado}"
+          onfocus="maskPrefixOnlyPositiveNumbers('R$ ')" converter="doubleConverter" styleClass="number">
+           <p:ajax event="blur"/>
+         </p:inputText>
+      </p:column>
+      <p:column>
+        <p:inputText id="valor-final" value="#{auditoria.valorFinal}" onfocus="maskPrefixOnlyPositiveNumbers('R$ ')"
+          disabled="#{auditoriaRetrospectivaFormularioBean.auditoriaAceitaCredenciado}" converter="doubleConverter"
+          styleClass="number" />
+        <p:commandButton value="Copiar valor auditado" style="margin-left: 10px;" update="valor-final"
+          actionListener="#{auditoriaRetrospectivaFormularioBean.copiarValorAuditado}" oncomplete="onCopyValorAuditado()"/>
+      </p:column>
+    </p:row>
+    
+    <p:row>
+      <p:column>
+        <h:outputText value="Justificativa: " style="font-weight:bold;"/>
+        <h:outputText value="(Não conformidade)"/>
+      </p:column>
+      <p:column>
+        <h:outputText value="Justificativa: " style="font-weight:bold;"/>
+        <h:outputText value="(Valor final)"/>
+      </p:column>
+    </p:row>
+    
+    <p:row>
+      <p:column id="nao-conformidades-group" style="vertical-align: top;">
+      	<p:selectOneMenu id="itens-motivos" value="#{auditoria.motivo}" converter="jsonConverter" style="width: 310px;" 
+          filter="true" filterMatchMode="contains" var="item">
+            <p:ajax event="change" immediate="true" update="@(.mostrar-inputTextarea)" />
+            <f:selectItem itemLabel=":: Selecione ::" noSelectionOption="true" />
+      		<f:selectItems  value="#{auditoriaRetrospectivaFormularioBean.motivos}" var="item" 
+              itemLabel="#{item.grupo} - #{item.codigo} - #{item.descricao}" itemValue="#{item}"/>
+            <p:column>
+              <strong>#{item.grupo}</strong> - #{item.codigo} - #{item.descricao}
+            </p:column>
+              
+      	</p:selectOneMenu>  
+        <div class="vgap-10"></div>
+        <h:panelGroup styleClass="mostrar-inputTextarea" id="mostrar-inputTextarea">
+          <h:outputText value="Detalhes não conformidade: " style="font-weight:bold; display: block;"/>
+          <div class="vgap-10"></div>
+          <p:inputTextarea value="#{auditoria.justificativaValorAuditado}" cols="54" rows="6" styleClass="text-left"
+            autoResize="false" style="margin-right: 30px;"/>
+        </h:panelGroup>        
+      </p:column>
+      <p:column>
+        <p:inputTextarea value="#{auditoria.justificativaValorFinal}" cols="54" rows="9" styleClass="text-left" style="height: 100%;"
+          disabled="#{auditoriaRetrospectivaFormularioBean.auditoriaAceitaCredenciado}" id="justificativa-final"
+          autoResize="false" />
+      </p:column>
+    </p:row>
+
+       
+    <p:row>
+      <p:column colspan="4">
+        <div class="vgap-15"></div>
+      </p:column>
+    </p:row>
+       
+    <p:row>
+      <p:column colspan="4">
+        <p:commandButton value="Conforme" id="finalizar-auditoria-conforme" styleClass="btn btn-success"
+          icon="fa fa-gavel" validateClient="true"
+          action="#{auditoriaRetrospectivaFormularioBean.confirmaAuditoriaConforme(auditoria)}" />
+
+        <p:commandButton value="Não Conforme" id="finalizar-auditoria-nao-conforme" styleClass="btn btn-danger"
+          icon="fa fa-gavel" validateClient="true"
+          action="#{auditoriaRetrospectivaFormularioBean.confirmaAuditoriaNaoConforme(auditoria)}" />
+
+        <p:commandButton value="Salvar sem finalizar" id="salvar-item" styleClass="btn btn-primary" icon="fa fa-save"
+          validateClient="true" action="#{auditoriaRetrospectivaFormularioBean.confirmaSalvarItem}" />
+
+        <a href="../realizar-auditoria" id="cancelar" class="btn">Cancelar</a>
+      </p:column>
+    </p:row>
+  </p:panelGrid>
+
+  <script type="text/javascript">
+      function onCopyValorAuditado(){
+          $(PrimeFaces.escapeClientId('tabview-auditoria-retrospectiva-item:valor-final')).focus();
+      }
+  </script>
+    
+</ui:composition>

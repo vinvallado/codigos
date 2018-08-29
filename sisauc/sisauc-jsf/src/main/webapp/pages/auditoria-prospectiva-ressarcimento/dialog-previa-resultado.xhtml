@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets">
+
+  <p:dialog header="Finalizar Auditoria" id="finalizar-auditoria-dialog" widgetVar="finalizarDialog"
+    modal="true" resizable="false">
+    <h:form id="finalizar-form">
+      <p:messages/>
+      <div class="vgap-15"></div>
+      <h:outputText value="Esta solicitação será "/>
+      <strong>
+        <h:outputText value="#{realizarAuditoriaProspectivaRessarcimentoBean.auditoria.estado == 'APROVADO' ? 'APROVADA' : 'REPROVADA'}"
+          styleClass="#{realizarAuditoriaProspectivaRessarcimentoBean.auditoria.estado == 'APROVADO' ? 'text-success' : 'text-error'}"/>
+      </strong>
+      <h:outputText value="#{realizarAuditoriaProspectivaRessarcimentoBean.auditoria.estado == 'APROVADO' 
+        ? ' pois ao menos um dos procedimentos foi aprovado e será gerada uma ARE' 
+        : ' pois nenhum dos procedimentos foi aprovado'}"/>
+      <div class="vgap-15"></div>
+      
+      <h:outputText value="Deseja realmente finalizar a auditoria? "/>
+      <div class="vgap-15"></div>
+      
+      <h:panelGroup styleClass="dialog-footer" layout="block">
+        <p:commandButton styleClass="btn btn-success" value="Finalizar Auditoria" icon="fa fa-gavel" validateClient="true" id="salvar"
+          action="#{realizarAuditoriaProspectivaRessarcimentoBean.salvar}" update="@form"/>
+      </h:panelGroup>
+    </h:form>
+  </p:dialog>
+
+</ui:composition>

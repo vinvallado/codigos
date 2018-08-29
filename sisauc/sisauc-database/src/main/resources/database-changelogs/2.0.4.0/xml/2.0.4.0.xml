@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+         
+	<changeSet id="desfazer_relatorio_desconto_beneficiario" author="januarioacsj">
+		<sql>
+			CREATE TABLE sch_sdga.desfazer_relatorio_desconto_beneficiario
+			(
+			  id integer NOT NULL,
+			  data_execucao timestamp without time zone,
+			  host character varying(255),
+			  ip character varying(255),
+			  justificativa character varying(255),
+			  nome_guerra_autor character varying(255),
+			  id_relatorio integer NOT NULL,
+			  id_autor integer,
+			  CONSTRAINT desfazer_relatorio_desconto_beneficiario_pkey PRIMARY KEY (id ),
+			  CONSTRAINT id_autor_fk FOREIGN KEY (id_autor)
+			      REFERENCES sch_sisauc.usuario (id) MATCH SIMPLE
+			      ON UPDATE NO ACTION ON DELETE NO ACTION,
+			  CONSTRAINT id_relatorio_fk FOREIGN KEY (id_relatorio)
+			      REFERENCES sch_sisauc.relatorio_desconto_beneficiario (id) MATCH SIMPLE
+			      ON UPDATE NO ACTION ON DELETE NO ACTION
+			)
+			WITH (
+			  OIDS=FALSE
+			);
+			ALTER TABLE sch_sdga.desfazer_relatorio_desconto_beneficiario
+			  OWNER TO sisauc;
+			  
+			CREATE SEQUENCE sch_sdga.desfazer_relatorio_desconto_beneficiario_seq
+			  INCREMENT 1
+			  MINVALUE 1
+			  MAXVALUE 9223372036854775807
+			  START 1
+			  CACHE 1;
+			ALTER TABLE sch_sdga.desfazer_relatorio_desconto_beneficiario_seq
+			  OWNER TO sisauc;		  
+		</sql>
+	</changeSet>
+	
+	<changeSet id="add-column-cancelado-no-relatorio-desconto-beneficiario" author="januarioacsj">
+		<sql>
+			ALTER TABLE sch_sisauc.relatorio_desconto_beneficiario ADD COLUMN cancelado boolean DEFAULT
+			FALSE;
+		</sql>
+	</changeSet>
+
+	<changeSet id="historico-configuracao-webservice-sigpes" author="tadeutbc">
+		<sql>
+			CREATE SEQUENCE sch_sisauc.historico_configuracao_ws_sigpes_id_seq
+			  INCREMENT 1
+			  MINVALUE 1
+			  MAXVALUE 9223372036854775807
+			  START 1
+			  CACHE 1;
+			ALTER TABLE sch_sisauc.historico_configuracao_ws_sigpes_id_seq
+			  OWNER TO sisauc;
+			
+			CREATE TABLE sch_sisauc.historico_configuracao_ws_sigpes
+			(
+			  id integer NOT NULL DEFAULT nextval('sch_sisauc.historico_configuracao_ws_sigpes_id_seq'::regclass),
+			
+			  url_wsdl character varying(500),
+			  url_servico character varying(200),
+			  nome_servico character varying(100),
+			  usuario_webservice character varying(20),
+			  senha character varying(20),
+			  hora_diaria_sincronizacao time without time zone DEFAULT '00:00:00'::time without time zone,
+			
+			  id_usuario integer NOT NULL,
+			  data_alteracao timestamp without time zone NOT NULL,
+			  CONSTRAINT pk_historico_configuracao_ws_sigpes PRIMARY KEY (id),
+			  CONSTRAINT fk_historico_configuracao_ws_sigpes_usuario FOREIGN KEY (id_usuario)
+			      REFERENCES sch_sisauc.usuario (id) MATCH SIMPLE
+			      ON UPDATE NO ACTION ON DELETE NO ACTION
+			)
+			WITH (
+			  OIDS=FALSE
+			);
+			ALTER TABLE sch_sisauc.historico_configuracao_ws_sigpes
+			  OWNER TO sisauc;
+			  
+			select setval('sch_sisauc.configuracao_ws_sigameh_id_seq', (select max(id) from sch_sisauc.configuracao_ws_sigpes));
+			
+			INSERT INTO sch_sisauc.historico_configuracao_ws_sigpes(url_wsdl, url_servico, nome_servico, usuario_webservice, senha, hora_diaria_sincronizacao, id_usuario, data_alteracao)
+			(select url_wsdl, url_servico, nome_servico, usuario, senha, hora_diaria_sincronizacao, 1, current_date from sch_sisauc.configuracao_ws_sigpes where id = currval('sch_sisauc.configuracao_ws_sigameh_id_seq'));
+						
+		</sql>
+	</changeSet>
+
+	
+         
+</databaseChangeLog>

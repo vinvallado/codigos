@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets">
+
+  <h:panelGroup rendered="#{cadastroPorteBean.porte == null}">
+
+    <p:dataTable id="tabela-porte" value="#{cadastroPorteBean.portes}" var="porte" sortBy="#{porte.valor}"
+      paginator="true" rows="15" paginatorPosition="bottom" paginatorAlwaysVisible="false"
+      rowsPerPageTemplate="10, 15, 25" emptyMessage="#{msgs.no_records_found}"
+      paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+      filteredValue="#{viewUtilsBean.filtrados}" filterDelay="300">
+
+      <p:column id="codigo" headerText="Código" width="160" filterBy="#{porte.codigo}" sortBy="#{porte.codigo}"
+        filterFunction="#{viewUtilsBean.filterIgnoreCase}">
+        <h:outputText value="#{porte.codigo}" />
+      </p:column>
+
+      <p:column id="valor" headerText="Valor" filterBy="#{porte.valor}" sortBy="#{porte.valor}"
+        filterFunction="#{viewUtilsBean.filterValor}">
+        <h:outputText value="#{porte.valor}">
+          <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR"  />
+        </h:outputText>
+      </p:column>
+
+      <p:column id="btn-editar" width="40" styleClass="text-center">
+        <p:commandLink id="editar" styleClass="btn btn-link" title="Editar"
+          actionListener="#{cadastroPorteBean.editar(porte)}" update="@form">
+          <span id="editar" class="fa fa-pencil"></span>
+        </p:commandLink>
+      </p:column>
+
+    </p:dataTable>
+
+  </h:panelGroup>
+
+</ui:composition>

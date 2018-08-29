@@ -1,0 +1,235 @@
+/* LOGIN PAGE */
+/* TEMPLATE PAGE */
+/* -- TOPO */
+/* -- MENU */
+/* -- CONTEÚDO */
+/* -- LOADING */
+
+/* LOGIN PAGE */
+html {
+	height: 100%;
+}
+.login {
+	height: 100%;
+	background: -webkit-radial-gradient(circle at 50% 30%, #fefdfe 10%, #d3dbdd 90%); /* Safari 5.1-6.0 */
+	background: -o-radial-gradient(circle at 50% 30%, #fefdfe 10%, #d3dbdd 90%); /* For Opera 11.6-12.0 */
+	background: -moz-radial-gradient(circle at 50% 30%, #fefdfe 10%, #d3dbdd 90%); /* For Firefox 3.6-15 */
+	background: radial-gradient(circle at 50% 30%, #fefdfe 10%, #d3dbdd 90%); /* Standard syntax */
+}
+
+
+
+.login .ui-corner-all {
+	border-radius: 0;
+}
+
+.login .form-horizontal .controls {
+	margin-left: 75px;
+}
+
+.login input.ui-inputfield {
+	width: 200px;
+}
+
+.login .btn {
+	width: 237px;
+  	-webkit-border-radius: 0;
+	   -moz-border-radius: 0;
+			border-radius: 0;
+}
+
+.login .bottom {
+	position: absolute;
+	bottom: 10px;
+	left: 0;
+	right: 0;
+}
+
+
+@media screen and (max-height: 709px) {
+	.login .logo {
+		margin-top: 80px;		
+	}
+}
+
+@media screen and (max-height: 819px) {
+	.login .logo {
+		margin-top: 100px;		
+	}
+}
+
+@media  screen and (min-height: 820px) {
+	.login .logo {
+		margin-top: 150px;		
+	}
+	
+	.login .bottom {
+		bottom: 30px;
+	}
+	
+}
+
+@media  screen and (max-width: 1025px) {
+	
+	* {
+		font-size: 98%;
+	}
+	
+	
+}
+
+
+/* TEMPLATE PAGE */
+/* -- TOPO */
+.topo {
+	background: url("../imagens/topo.png") no-repeat #111a41;
+	color: #fff;
+	height: auto;
+}
+
+.topo a, .topo .btn-link {
+	color: #fff !important;
+	border-radius: 0;
+}
+
+.topo a:hover, .topo .btn-link {
+	color: #eee !important;
+}
+
+.topo .ui-button {
+	margin: 0;
+	border: 0;
+	padding: 14px 4px;
+}
+
+.topo .ui-button:hover {
+	transition: background-color 0.2s ease;	
+	background-color: #0056CC;
+}
+
+.blink {
+  animation: blink 1s steps(5, start) infinite;
+  -webkit-animation: blink 1s steps(5, start) infinite;
+}
+@keyframes blink {
+  to {
+    visibility: hidden;
+  }
+}
+@-webkit-keyframes blink {
+  to {
+    visibility: hidden;
+  }
+}
+
+.breadcrumb a {
+	color: #08c;
+}
+
+.equipe strong {
+	display: block;	
+}
+
+/* LOADING */
+.loading-dialog .ui-dialog-titlebar {
+	display: none;
+}
+
+.dialog-footer {
+	text-align: right;
+	border-top: 1px solid #ddd;
+	padding-top: 15px;
+	margin-top: 5px
+}
+
+.formulario-vertical .ui-outputlabel {
+	text-align: left;
+}
+
+.menu-sisauc {
+	border: 1px solid #E5E5E5;
+}
+
+.menu-sisauc.ui-accordion .ui-icon {
+	display: block !important;	
+}
+
+.menu-sisauc .ui-accordion-header {
+	background: #f5f5f5;	
+	border: 0 !important;
+}
+
+.menu-sisauc.ui-accordion .ui-accordion-content.ui-widget-content {
+	padding: 0;	
+	overflow: hidden;
+	border: 0 !important;
+}
+
+.menu-sisauc.ui-accordion .ui-accordion-content .ui-menu {
+	border: 0 !important;
+}
+
+
+.rodape, .rodape-links{
+	color: #989898;
+	text-shadow: #fff 1px 1px 1px;
+	font-size: 12px;
+}
+
+.rodape {
+	padding: 30px 0;	
+	background: #eee;
+}
+
+
+.rodape-links {
+	background: #d7d7d7;
+	line-height: 30px;
+	color: #575757;	
+}
+
+.rodape-links a, .rodape-links a:VISITED, .rodape-links a:HOVER {
+	color: #575757;	
+}
+
+.check-icon {
+	color: green;
+	font-size: 22px;
+	padding-left: 5px;
+	padding-right: 10px;
+}
+
+
+#footer {
+    position:fixed;
+    bottom: -190px;
+    width: 100%;
+}
+#footer .handle {
+    text-align:center;
+    z-index: 9999 !important;
+    position: relative;
+}
+#footer .handle a {
+	border-top: 1px solid #fff;
+	width: 90px;
+    display:block; 
+    -webkit-border-radius: 4px;
+       -moz-border-radius: 4px;
+   	        border-radius: 4px;
+	-moz-box-shadow:    0px -1px 3px #d3d3d3;
+	-webkit-box-shadow: 0px -1px 3px #d3d3d3;
+	box-shadow:         0px -1px 3px #d3d3d3;
+
+    padding: 6px 10px;
+    margin: -5px auto -10px auto;
+    background: #eee;
+}
+#footer .content {
+    background: #eee;
+    border-top: 2px solid #fff;
+	-moz-box-shadow:    0px -1px 3px #d3d3d3;
+	-webkit-box-shadow: 0px -1px 3px #d3d3d3;
+	box-shadow:         0px -1px 3px #d3d3d3;
+    z-index: 9997 !important;
+}

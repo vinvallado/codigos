@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:sisauc="http://java.sun.com/jsf/composite/sisaucjsf">
+
+	<p:dialog header="Histórico" id="historico-dialog"
+		widgetVar="detalhesAuditoriaDialog" modal="true" resizable="false"
+		width="940">
+		<p:tabView id="historico-tab-view">
+
+      <!-- dados da solicitação -->
+			<p:tab title="Solicitação">
+			  <h:panelGroup rendered="#{listarHistoricoAuditoriaProspectivaBean.auditoriaSelecionada['class'].simpleName == 'AuditoriaProspectiva'}">
+					<sisauc:exibirSolicitacao solicitacao="#{listarHistoricoAuditoriaProspectivaBean.auditoriaSelecionada.solicitacao}" />
+			  </h:panelGroup>
+         <h:panelGroup rendered="#{listarHistoricoAuditoriaProspectivaBean.auditoriaSelecionada['class'].simpleName == 'AuditoriaProspectivaRessarcimento'}">
+					<sisauc:exibirSolicitacaoRessarcimento solicitacao="#{listarHistoricoAuditoriaProspectivaBean.auditoriaSelecionada.solicitacao}" />
+        </h:panelGroup>
+			</p:tab>
+
+
+      <!-- dados da auditoria -->
+	  <p:tab title="Auditoria Prospectiva">
+        <h:panelGroup rendered="#{listarHistoricoAuditoriaProspectivaBean.auditoriaSelecionada['class'].simpleName == 'AuditoriaProspectiva'}">
+          <sisauc:dadosAuditoriaProspectiva auditoria="#{listarHistoricoAuditoriaProspectivaBean.auditoriaSelecionada}"/>
+        </h:panelGroup>
+        <h:panelGroup rendered="#{listarHistoricoAuditoriaProspectivaBean.auditoriaSelecionada['class'].simpleName == 'AuditoriaProspectivaRessarcimento'}">
+          <sisauc:dadosAuditoriaProspectivaRessarcimento auditoria="#{listarHistoricoAuditoriaProspectivaBean.auditoriaSelecionada}"/>
+        </h:panelGroup>
+	  </p:tab>
+
+
+      <!-- GABS -->
+      <p:tab title="GAB geradas" rendered="#{listarHistoricoAuditoriaProspectivaBean.auditoriaSelecionada['class'].simpleName == 'AuditoriaProspectiva'}">
+
+        <p:dataTable value="#{listarHistoricoAuditoriaProspectivaBean.gabs}" paginator="true" rows="5"
+          emptyMessage="#{msgs.no_records_found}" paginatorPosition="bottom" paginatorAlwaysVisible="false"
+          rowsPerPageTemplate="5, 10"
+          paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+          var="gab" id="lista-gabs-historico" scrollable="true" scrollHeight="300">
+          
+          <p:columnGroup type="header">
+            <p:row>
+              <p:column headerText="Código Item" />
+              <p:column headerText="Procedimento" width="520" />
+              <p:column headerText="Estado Item" width="90" />
+            </p:row>
+          </p:columnGroup>
+          
+          <p:subTable var="item" value="#{gab.itens}" id="subtabela">
+          
+            <f:facet name="header">
+              <div class="row-fluid">
+                <div class="span10" style="line-height: 30px;">
+                  <h:outputText value="#{gab.codigo}" />
+                  <h:outputText value=" gerada dia " />
+                  <h:outputText value="#{gab.dataGeracao}">
+                    <f:convertDateTime pattern="dd/MM/yyyy" />
+                  </h:outputText>
+                  <h:outputText value=" (#{gab.estado.label})" styleClass="muted" />
+                  <h:outputLabel id="btn-justificativa" styleClass="btn btn-link fa fa-info"
+                    rendered="#{gab.justificativaCancelamentoGab != null}" />
+                  <p:tooltip id="toolTipJustificativaGAB" for="btn-justificativa"
+                    value="#{gab.justificativaCancelamentoGab}" />
+                </div>
+              </div>
+            </f:facet>
+            
+            <p:column>
+		      <h:outputText value="#{item.codigo}" />
+		    </p:column>
+        
+            <p:column width="520">
+              <h:outputText value="#{item.configuracao.procedimento.codigo} - "/>
+			  <h:outputText value="#{item.configuracao.procedimento.descricao} "/>
+			  <h:outputText value="(#{item.configuracao.especialidade.sigla})" rendered="#{item.configuracao.especialidade.sigla != null}"/>
+              <h:outputLabel id="observacao-gab" styleClass="btn btn-link fa fa-info" rendered="#{item.observacaoGAB != null}" />
+              <p:tooltip id="toolTipObservacaoGAB" for="observacao-gab" styleClass="preformatted" value="OBS: #{item.observacaoGAB}" />
+            </p:column>
+	
+            <p:column width="90" >
+              <h:outputText value="#{item.estadoItemGAB.label}" />      
+            </p:column>         				
+        
+          </p:subTable>
+
+        </p:dataTable>
+
+      </p:tab>
+
+      <!-- ARES -->
+      <p:tab title="ARE geradas" rendered="#{listarHistoricoAuditoriaProspectivaBean.auditoriaSelecionada['class'].simpleName == 'AuditoriaProspectivaRessarcimento'}">
+
+        <p:dataTable value="#{listarHistoricoAuditoriaProspectivaBean.ares}" paginator="true" rows="5"
+          emptyMessage="#{msgs.no_records_found}" paginatorPosition="bottom" paginatorAlwaysVisible="false"
+          rowsPerPageTemplate="5, 10"
+          paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+          var="autorizacao" id="lista-ares-historico" scrollable="true" scrollHeight="300">
+
+          <p:columnGroup type="header">
+            <p:row>
+              <p:column headerText="Código Item" />
+              <p:column headerText="Procedimento" width="520" />
+              <p:column headerText="Estado Item" width="90" />
+            </p:row>
+          </p:columnGroup>
+          
+          <p:subTable var="item" value="#{autorizacao.itens}" id="subtabela">
+          
+            <f:facet name="header">
+              <div class="row-fluid">
+                <div class="span10" style="line-height: 30px;">
+                  <h:outputText value="#{autorizacao.codigo}" />
+                  <h:outputText value=" gerada dia " />
+                  <h:outputText value="#{autorizacao.dataGeracao}">
+                    <f:convertDateTime pattern="dd/MM/yyyy" />
+                  </h:outputText>
+                  <h:outputText value=" (#{autorizacao.estado.label})" styleClass="muted" />
+                  <h:outputLabel id="btn-justificativa" styleClass="btn btn-link fa fa-info"
+                    rendered="#{autorizacao.justificativaCancelamentoAR != null}" />
+                  <p:tooltip id="toolTipJustificativaAR" for="btn-justificativa"
+                    value="#{autorizacao.justificativaCancelamentoAR}" />
+                </div>
+              </div>
+            </f:facet>
+            
+            <p:column>
+          <h:outputText value="#{item.codigo}" />
+        </p:column>
+        
+            <p:column width="520">
+              <h:outputText value="#{item.procedimento.codigo} - "/>
+              <h:outputText value="#{item.procedimento.descricao} "/>
+              <h:outputText value="(#{item.especialidade.sigla})" rendered="#{item.especialidade.sigla != null}"/>
+              <h:outputText rendered="#{item.dente != null}" value=" - Dente #{item.dente}" />
+              <h:outputText rendered="#{item.faceDental != null}" value=" - Face #{item.faceDental.label}" />
+              <h:outputLabel id="observacao-are" styleClass="btn btn-link fa fa-info" rendered="#{item.observacaoARE != null}" />
+              <p:tooltip id="toolTipObservacaoARE" for="observacao-are" styleClass="preformatted" value="OBS: #{item.observacaoARE}" />
+            </p:column>
+  
+            <p:column width="90" >
+              <h:outputText value="#{item.estadoItemAR.label}" />      
+            </p:column>                 
+        
+          </p:subTable>
+
+        </p:dataTable>
+
+      </p:tab>
+			
+			
+		</p:tabView>
+	</p:dialog>
+
+</ui:composition>

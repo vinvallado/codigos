@@ -1,0 +1,475 @@
+/* Arquivo no qual ficarão as correções necessárias ao tema do Primefaces */
+
+/* tipografia */
+/* inputs */
+/* botões */
+/* menu */
+/* panelgrid */
+/* data-table */
+
+form {
+	margin: auto;
+}
+
+/* tipografia */
+.text-small, .text-small * {
+	font-size: 97% !important;
+}
+
+.ui-widget, .ui-widget .ui-widget {
+	font-size: 100% !important;
+}
+
+.ui-widget h1, .ui-widget h2,.ui-widget h3{
+	line-height: inherit;	
+}
+
+.text-bold {
+	font-weight: bold;
+}
+
+.fa.ui-icon {
+	text-indent: 0;
+	background-image: none;
+}
+
+label {
+	margin-bottom: 0;
+}
+
+/* inputs */
+
+.inner-addon { 
+    position: relative; 
+}
+
+.ui-autocomplete .ui-autocomplete-dropdown {
+	right: -1px;
+}
+
+.ui-autocomplete-panel {
+	max-width: 600px;
+}
+
+.ui-autocomplete-large input{
+	width: 550px;
+	margin: 0;
+}
+
+.ui-autocomplete-item.ui-autocomplete-row.ui-state-highlight .muted {
+	color: #fff;
+}
+
+.ui-selectonemenu-items-wrapper {
+	padding-right: 10px;
+}
+
+.ui-selectonemenu {
+	display: inline-block;
+	vertical-align: top;
+}
+
+/* style icon */
+.inner-addon .fa {
+  position: absolute;
+  padding: 0;
+  pointer-events: none;
+  color: #666 !important;
+  clear: both;
+  top: 3px;
+  margin-left: 10px;
+}
+
+/* align icon */
+.left-addon .fa {
+	left: 0px;
+}
+
+.right-addon .fa {
+	right: 0px;
+}
+
+/* add padding  */
+.left-addon input,
+.left-addon input[type="text"],
+.ui-widget-content .left-addon input.ui-widget {
+	padding-left: 30px !imporant;
+}
+
+.right-addon input,
+.right-addon input[type="text"],
+.ui-widget-content .right-addon input.ui-widget {
+	padding-right: 30px !imporant;
+}
+
+.left-addon select,
+.left-addon textarea,
+.left-addon input[type="text"],
+.left-addon input[type="password"],
+.left-addon input[type="datetime"],
+.left-addon input[type="datetime-local"],
+.left-addon input[type="date"],
+.left-addon input[type="month"],
+.left-addon input[type="time"],
+.left-addon input[type="week"],
+.left-addon input[type="number"],
+.left-addon input[type="email"],
+.left-addon input[type="url"],
+.left-addon input[type="search"],
+.left-addon input[type="tel"],
+.left-addon input[type="color"],
+.uneditable-input {
+	padding-left: 30px;
+}
+
+.right-addon select,
+.right-addon textarea,
+.right-addon input[type="text"],
+.right-addon input[type="password"],
+.right-addon input[type="datetime"],
+.right-addon input[type="datetime-local"],
+.right-addon input[type="date"],
+.right-addon input[type="month"],
+.right-addon input[type="time"],
+.right-addon input[type="week"],
+.right-addon input[type="number"],
+.right-addon input[type="email"],
+.right-addon input[type="url"],
+.right-addon input[type="search"],
+.right-addon input[type="tel"],
+.right-addon input[type="color"],
+.uneditable-input {
+	padding-right: 30px;
+}
+
+
+input, textarea, .uneditable-input {
+	width: auto;
+}
+
+.ui-selectmanycheckbox label {
+	padding: 0 20px 0 5px;	
+	margin-top: 0;
+}
+
+.ui-spinner-input {
+	padding-right: 20px !important;
+}
+
+/* botões */
+.btn-small {
+	font-size: 11.9px !important;
+}
+
+.btn .ui-button-text {
+	padding-top: 0;
+	padding-bottom: 0;
+	line-height: 20px;
+}
+
+.btn.ui-button-text-icon-left .ui-button-text {
+	padding-left: 20px;
+}
+
+
+.ui-widget .btn-link,
+.ui-widget .btn-link:active,
+.ui-widget .btn-link[disabled] {
+  background-color: transparent;
+  background-image: none;
+  -webkit-box-shadow: none;
+     -moz-box-shadow: none;
+          box-shadow: none;
+}
+
+.ui-widget .btn-link {
+  color: #0088cc;
+  cursor: pointer;
+  border-color: transparent;
+  -webkit-border-radius: 0;
+     -moz-border-radius: 0;
+          border-radius: 0;
+}
+
+.ui-widget .btn-link:hover,
+.ui-widget .btn-link:focus {
+  color: #005580;
+  text-decoration: underline;
+  background-color: transparent;
+}
+
+.ui-widget .btn-link[disabled]:hover,
+.ui-widget .btn-link[disabled]:focus {
+  color: #333333;
+  text-decoration: none;
+}
+
+.ui-widget .btn-success {
+  color: #ffffff;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  background-color: #5bb75b;
+  *background-color: #51a351;
+  background-image: -moz-linear-gradient(top, #62c462, #51a351);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#62c462), to(#51a351));
+  background-image: -webkit-linear-gradient(top, #62c462, #51a351);
+  background-image: -o-linear-gradient(top, #62c462, #51a351);
+  background-image: linear-gradient(to bottom, #62c462, #51a351);
+  background-repeat: repeat-x;
+  border-color: #51a351 #51a351 #387038;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff62c462', endColorstr='#ff51a351', GradientType=0);
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+}
+
+.ui-widget .btn-success:hover,
+.ui-widget .btn-success:focus,
+.ui-widget .btn-success:active,
+.ui-widget .btn-success.active,
+.ui-widget .btn-success.disabled,
+.ui-widget .btn-success[disabled] {
+  color: #ffffff;
+  background-color: #51a351;
+  *background-color: #499249;
+}
+
+.ui-widget .btn-success:active,
+.ui-widget .btn-success.active {
+  background-color: #408140 \9;
+}
+
+
+.ui-widget .btn-primary.active,
+.ui-widget .btn-warning.active,
+.ui-widget .btn-danger.active,
+.ui-widget .btn-success.active,
+.ui-widget .btn-info.active,
+.ui-widget .btn-inverse.active {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.ui-widget .btn-primary {
+  color: #ffffff;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  background-color: #006dcc;
+  *background-color: #0044cc;
+  background-image: -moz-linear-gradient(top, #0088cc, #0044cc);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#0088cc), to(#0044cc));
+  background-image: -webkit-linear-gradient(top, #0088cc, #0044cc);
+  background-image: -o-linear-gradient(top, #0088cc, #0044cc);
+  background-image: linear-gradient(to bottom, #0088cc, #0044cc);
+  background-repeat: repeat-x;
+  border-color: #0044cc #0044cc #002a80;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0044cc', GradientType=0);
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+}
+
+.ui-widget .btn-primary:hover,
+.ui-widget .btn-primary:focus,
+.ui-widget .btn-primary:active,
+.ui-widget .btn-primary.active,
+.ui-widget .btn-primary.disabled,
+.ui-widget .btn-primary[disabled] {
+  color: #ffffff;
+  background-color: #0044cc;
+  *background-color: #003bb3;
+}
+
+.ui-widget .btn-primary:active,
+.ui-widget .btn-primary.active {
+  background-color: #003399 \9;
+}
+
+
+.menu-sisauc.ui-accordion .ui-menuitem-link.ui-state-hover .ui-icon {
+	background-image: none !important;	
+}
+
+.ui-widget .btn-warning {
+  color: #ffffff;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  background-color: #faa732;
+  *background-color: #f89406;
+  background-image: -moz-linear-gradient(top, #fbb450, #f89406);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fbb450), to(#f89406));
+  background-image: -webkit-linear-gradient(top, #fbb450, #f89406);
+  background-image: -o-linear-gradient(top, #fbb450, #f89406);
+  background-image: linear-gradient(to bottom, #fbb450, #f89406);
+  background-repeat: repeat-x;
+  border-color: #f89406 #f89406 #ad6704;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fffbb450', endColorstr='#fff89406', GradientType=0);
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+}
+
+.ui-widget .btn-warning:hover,
+.ui-widget .btn-warning:focus,
+.ui-widget .btn-warning:active,
+.ui-widget .btn-warning.active,
+.ui-widget .btn-warning.disabled,
+.ui-widget .btn-warning[disabled] {
+  color: #ffffff;
+  background-color: #f89406;
+  *background-color: #df8505;
+}
+
+.ui-widget .btn-warning:active,
+.ui-widget .btn-warning.active {
+  background-color: #c67605 \9;
+}
+
+.ui-widget .btn-danger {
+  color: #ffffff;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  background-color: #da4f49;
+  *background-color: #bd362f;
+  background-image: -moz-linear-gradient(top, #ee5f5b, #bd362f);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ee5f5b), to(#bd362f));
+  background-image: -webkit-linear-gradient(top, #ee5f5b, #bd362f);
+  background-image: -o-linear-gradient(top, #ee5f5b, #bd362f);
+  background-image: linear-gradient(to bottom, #ee5f5b, #bd362f);
+  background-repeat: repeat-x;
+  border-color: #bd362f #bd362f #802420;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffee5f5b', endColorstr='#ffbd362f', GradientType=0);
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+}
+
+.ui-widget .btn-danger:hover,
+.ui-widget .btn-danger:focus,
+.ui-widget .btn-danger:active,
+.ui-widget .btn-danger.active,
+.ui-widget .btn-danger.disabled,
+.ui-widget .btn-danger[disabled] {
+  color: #ffffff;
+  background-color: #bd362f;
+  *background-color: #a9302a;
+}
+
+.ui-widget .btn-danger:active,
+.ui-widget .btn-danger.active {
+  background-color: #942a25 \9;
+}
+
+
+
+/* .ui-state-hover .ui-icon { */
+/* 	background-image: none !important;	 */
+/* } */
+
+
+/* menu */
+.ui-menu {
+	width: auto;
+}
+
+/* panelgrid */
+.ui-panelgrid-cell input {
+	margin: auto;
+}
+
+.ui-panelgrid tr, .ui-panelgrid .ui-panelgrid-cell {
+	border: 0;	
+}
+
+.ui-panelgrid-cell .ui-outputlabel {
+	text-align: right;
+}
+
+/* data-table */
+.ui-datatable .ui-column-filter {
+	width: 90%
+}
+
+.ui-paginator {
+	padding-top: 15px !important;
+	background: none;
+	border: 0;
+}
+
+.ui-paginator .ui-paginator-rpp-options {
+	margin: 0 10px;
+	width: auto;
+}
+
+.ui-datatable tbody tr.error > td {
+  background-color: #f2dede;
+}
+
+
+
+.clean-legend, .clean-legend legend.ui-fieldset-legend  {
+	background: #fff;
+	border: none;
+	box-shadow: none;
+}
+
+
+/* legend */
+fieldset.ui-fieldset legend.ui-fieldset-legend {
+	font-size: 14px;
+	line-height: 15px;
+	width: 16%;
+	margin-bottom: 5px;
+	background: #f0f0f0;
+}
+
+fieldset.ui-fieldset legend.ui-fieldset-legend span.ui-fieldset-toggler.ui-icon-plusthick:before,
+fieldset.ui-fieldset legend.ui-fieldset-legend.ui-state-hover span.ui-fieldset-toggler.ui-icon-plusthick:before {
+	background: none;
+	content: "\f00e";
+}
+fieldset.ui-fieldset legend.ui-fieldset-legend span.ui-fieldset-toggler.ui-icon-minusthick:before,
+fieldset.ui-fieldset legend.ui-fieldset-legend.ui-state-hover span.ui-fieldset-toggler.ui-icon-minusthick:before {
+	background: none;
+	content: "\f010" !important;
+}
+
+.ui-dialog.ui-widget-content .ui-dialog-titlebar {
+	background-color: #f5f5f5;
+}
+
+.ui-dialog.ui-widget-content .ui-dialog-title {
+	font-size: 18px;
+}
+
+.ui-state-highlight .ui-icon {
+    background-image: url('/sisauc/javax.faces.resource/images/ui-icons_333333_256x240.png.jsf?ln=primefaces-bootstrap');
+}
+
+
+.no-margin {
+	margin: 0 !important;
+}
+
+.ui-messages-error-icon {
+	width: 0px;
+}
+
+.ui-tooltip {
+    max-width: 800px;
+}
+
+.preformatted {
+    white-space: pre-wrap;
+}
+
+.ui-selectlistbox-listcontainer .ui-chkbox.ui-widget {
+	margin-right: 10px;
+}
+
+.ui-tabs .ui-tabs-nav.ui-widget-header li a{
+	color: #000000;
+}
+
+.ui-tabs .ui-tabs-nav.ui-widget-header li{
+	background: rgb(219, 219, 219);
+}
+
+.ui-widget-content .ui-datalist-content{
+    border: none;
+}
+
+.ui-picklist.nao-conformidades .ui-picklist-list{
+    width:400px;
+}

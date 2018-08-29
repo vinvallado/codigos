@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<changeSet id="motivo-inconsistencia-em-ar" author="brunobjm">
+		<sql>
+			ALTER TABLE sch_sisauc.ar ADD COLUMN motivo_inconsistencia VARCHAR;
+		</sql>
+	</changeSet> 
+	
+	<changeSet id="estrutura_da_funcionalidade_auditoria_retrospectiva_ressarcimento" author="brunobjm">
+		<sql>
+			CREATE TABLE sch_sisauc.auditoria_retrospectiva_ressarcimento
+			(
+  				id integer NOT NULL,
+  				nao_realizado boolean NOT NULL,
+  				valor_apresentado double precision,
+  				valor_estimado double precision,
+  				valor_ressarcimento double precision,
+  				CONSTRAINT auditoria_retrospectiva_ressarcimento_pkey PRIMARY KEY (id)
+			)
+			WITH (
+  				OIDS=FALSE
+			);
+			ALTER TABLE sch_sisauc.auditoria_retrospectiva_ressarcimento
+  				OWNER TO sisauc;
+
+			ALTER TABLE sch_sisauc.item_ar ADD COLUMN id_auditoria_retrospectiva integer;
+			ALTER TABLE sch_sisauc.item_ar ADD CONSTRAINT fk_item_ar_id_auditoria_retrospectiva
+				FOREIGN KEY (id_auditoria_retrospectiva) REFERENCES sch_sisauc.auditoria_retrospectiva_ressarcimento (id); 				
+  		</sql>
+	</changeSet>
+	     
+	<changeSet id="criar-tabela-nao-conformidade" author="tadeutbc">
+		<sql>
+			CREATE SEQUENCE sch_sisauc.nao_conformidade_id_seq
+			  INCREMENT 1
+			  MINVALUE 1
+			  MAXVALUE 9223372036854775807
+			  START 1
+			  CACHE 1;
+			ALTER TABLE sch_sisauc.nao_conformidade_id_seq
+			  OWNER TO sisauc;
+
+			CREATE TABLE sch_sisauc.nao_conformidade
+			(
+			  id integer  NOT NULL DEFAULT nextval('sch_sisauc.nao_conformidade_id_seq'),
+			  descricao character varying(255) NOT NULL,
+			  CONSTRAINT nao_conformidade_pkey PRIMARY KEY (id)
+			)
+			WITH (
+			  OIDS=FALSE
+			);
+			ALTER TABLE sch_sisauc.nao_conformidade
+			  OWNER TO sisauc;
+			  
+
+
+			ALTER SEQUENCE sch_sisauc.nao_conformidade_id_seq OWNED BY sch_sisauc.nao_conformidade.id;
+			
+			INSERT INTO sch_sisauc.nao_conformidade(descricao) VALUES ('Outros');
+			INSERT INTO sch_sisauc.nao_conformidade(descricao) VALUES ('Valor acima do pactuado');
+			INSERT INTO sch_sisauc.nao_conformidade(descricao) VALUES ('Procedimento não autorizado');
+			INSERT INTO sch_sisauc.nao_conformidade(descricao) VALUES ('Cobrança em duplicidade');
+			INSERT INTO sch_sisauc.nao_conformidade(descricao) VALUES ('Procedimento incluído no código principal');
+			INSERT INTO sch_sisauc.nao_conformidade(descricao) VALUES ('Incompatível com sexo');
+			INSERT INTO sch_sisauc.nao_conformidade(descricao) VALUES ('Incompatível com idade');
+			INSERT INTO sch_sisauc.nao_conformidade(descricao) VALUES ('Acomodação acima do previsto');
+			INSERT INTO sch_sisauc.nao_conformidade(descricao) VALUES ('Não coberto pelo FUNSA');
+			INSERT INTO sch_sisauc.nao_conformidade(descricao) VALUES ('Material incompatível com procedimento');
+			INSERT INTO sch_sisauc.nao_conformidade(descricao) VALUES ('Medicação incompatível com procedimento');
+			INSERT INTO sch_sisauc.nao_conformidade(descricao) VALUES ('Diária excedente');
+			INSERT INTO sch_sisauc.nao_conformidade(descricao) VALUES ('Taxa não prevista');
+			
+		</sql>
+	</changeSet>
+	
+	<changeSet id="add-nao-conformidade-a-auditoria" author="tadeutbc">
+		<sql>
+			ALTER TABLE sch_sisauc.auditoria_retrospectiva ADD COLUMN id_nao_conformidade INTEGER;
+			ALTER TABLE sch_sisauc.auditoria_retrospectiva
+				ADD CONSTRAINT fk_auditoria_retrospectiva_nao_conformidade FOREIGN KEY (id_nao_conformidade)
+				REFERENCES sch_sisauc.nao_conformidade (id) MATCH SIMPLE
+				ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+			UPDATE sch_sisauc.auditoria_retrospectiva SET id_nao_conformidade = 1 WHERE 
+				justificativa_valor_auditado IS NOT NULL AND 
+				justificativa_valor_auditado != '';		
+		</sql>
+	</changeSet>
+	
+</databaseChangeLog>

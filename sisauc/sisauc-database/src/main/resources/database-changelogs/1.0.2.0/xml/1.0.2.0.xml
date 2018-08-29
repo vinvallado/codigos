@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<changeSet id="add-estado-conselho-regional" author="tadeutbc">
+		<sql>
+			ALTER TABLE sch_sisauc.medico ADD COLUMN id_estado_conselho_regional INTEGER;;
+			ALTER TABLE sch_sisauc.medico
+				ADD CONSTRAINT fk_medico_estado_conselho_regional FOREIGN KEY (id_estado_conselho_regional)
+				REFERENCES sch_sisauc.estado (id) MATCH SIMPLE
+				ON UPDATE NO ACTION ON DELETE NO ACTION;
+		</sql>
+	</changeSet>
+	
+	<changeSet id="add-chave-composta-beneficiario" author="tadeutbc">
+		<sql>
+			alter table sch_sisauc.beneficiario drop constraint fk_beneficiario_beneficiario_titular;
+			
+			alter table sch_sisauc.solicitacao drop constraint fk_solicitacao_beneficiario;
+			alter table sch_sisauc.gab drop constraint fk_gab_beneficiario;
+			alter table sch_sisauc.desconto_beneficiario drop constraint fk_desconto_beneficiario_beneficiario;
+			
+			alter table sch_sisauc.beneficiario drop constraint pk_beneficiario ;
+			
+			alter table sch_sisauc.beneficiario add column titular boolean not null;
+			alter table sch_sisauc.beneficiario add column fk_beneficiario_titular boolean;
+			alter table sch_sisauc.desconto_beneficiario add column titular_beneficiario boolean;
+			alter table sch_sisauc.gab add column titular_beneficiario boolean;
+			alter table sch_sisauc.solicitacao add column titular_beneficiario boolean;
+			
+			alter table sch_sisauc.beneficiario add constraint pk_beneficiario primary key (id,titular);
+			
+			alter table sch_sisauc.beneficiario add constraint fk_beneficiario_beneficiario_titular 
+				foreign key (id_beneficiario_titular,fk_beneficiario_titular) 
+				references sch_sisauc.beneficiario (id,titular);
+			
+			alter table sch_sisauc.desconto_beneficiario add constraint fk_desconto_beneficiario_beneficiario
+				foreign key (id_beneficiario,titular_beneficiario) 
+				references sch_sisauc.beneficiario (id,titular);
+			
+			alter table sch_sisauc.gab add constraint fk_gab_beneficiario
+				foreign key (id_beneficiario,titular_beneficiario) 
+				references sch_sisauc.beneficiario (id,titular);
+			
+			alter table sch_sisauc.solicitacao add constraint fk_solicitacao_beneficiario
+				foreign key (id_beneficiario,titular_beneficiario) 
+				references sch_sisauc.beneficiario (id,titular);
+		
+		
+		</sql>
+	</changeSet>       
+	
+	<changeSet id="add-novas-unidades" author="tadeutbc">
+		<sql>
+			insert into sch_sisauc.organizacao_militar (sigla, nome, ativo, tipo_om) values ('SAC CP','SERVIÇO DE AVIAÇÃO CIVIL DE CAMPOS','t','SUBORDINADA');
+			insert into sch_sisauc.organizacao_militar (sigla, nome, ativo, tipo_om) values ('SAC GO','SERVIÇO DE AVIAÇÃO CIVIL DE GOIANIA','t','SUBORDINADA');
+			insert into sch_sisauc.organizacao_militar (sigla, nome, ativo, tipo_om) values ('SAC JF','SERVIÇO DE AVIAÇÃO CIVIL DE JUIZ FORA','t','SUBORDINADA');
+			insert into sch_sisauc.organizacao_militar (sigla, nome, ativo, tipo_om) values ('SAC JP','SERVIÇO DE AVIAÇÃO CIVIL DE JOÃO PESSOA','t','SUBORDINADA');
+			insert into sch_sisauc.organizacao_militar (sigla, nome, ativo, tipo_om) values ('SAC KP','SERVIÇO DE AVIAÇÃO CIVIL DE CAMPINAS','t','SUBORDINADA');
+			insert into sch_sisauc.organizacao_militar (sigla, nome, ativo, tipo_om) values ('SAC MC','SERVIÇO DE AVIAÇÃO CIVIL DE MONTES CLAROS','t','SUBORDINADA');
+			insert into sch_sisauc.organizacao_militar (sigla, nome, ativo, tipo_om) values ('SAC PC','SERVIÇO DE AVIAÇÃO CIVIL DE POÇOS DE CALDAS','t','SUBORDINADA');
+			insert into sch_sisauc.organizacao_militar (sigla, nome, ativo, tipo_om) values ('SAC PJ','SERVIÇO DE AVIAÇÃO CIVIL DE PALMAS','t','SUBORDINADA');
+			insert into sch_sisauc.organizacao_militar (sigla, nome, ativo, tipo_om) values ('SAC RP','SERVIÇO DE AVIAÇÃO CIVIL DE RIBEIRÃO PRETO','t','SUBORDINADA');
+			insert into sch_sisauc.organizacao_militar (sigla, nome, ativo, tipo_om) values ('SAC SJRP','SERVIÇO DE AVIAÇÃO CIVIL DE SÃO JOSE DO RIO PRETO','t','SUBORDINADA');
+			insert into sch_sisauc.organizacao_militar (sigla, nome, ativo, tipo_om) values ('SAC TE','SERVIÇO DE AVIAÇÃO CIVIL DE TERESINA','t','SUBORDINADA');
+			insert into sch_sisauc.organizacao_militar (sigla, nome, ativo, tipo_om) values ('SAC UL','SERVIÇO DE AVIAÇÃO CIVIL DE UBERLANDIA','t','SUBORDINADA');
+			insert into sch_sisauc.organizacao_militar (sigla, nome, ativo, tipo_om) values ('SAC UR','SERVIÇO DE AVIAÇÃO CIVIL DE UBERABA','t','SUBORDINADA');
+			insert into sch_sisauc.organizacao_militar (sigla, nome, ativo, tipo_om) values ('SAC VT','SERVIÇO DE AVIAÇÃO CIVIL DE VITORIA','t','SUBORDINADA');
+			insert into sch_sisauc.organizacao_militar (sigla, nome, ativo, tipo_om) values ('SEM OM','SEM ORGANIZAÇÃO MILITAR','t','SUBORDINADA');
+		</sql>
+	</changeSet>
+
+</databaseChangeLog>

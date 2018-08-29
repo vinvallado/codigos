@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" template="/resources/template/template.xhtml">
+
+  <ui:define name="html-title">Cadastro de usuários</ui:define>
+
+  <ui:define name="main">
+
+    <h3>Formulário de Usuário</h3>
+
+    <p:separator />
+
+    <div class="vgap-10" />
+
+    <h:form prependId="false">
+
+      <p:messages id="msgs" showIcon="false" autoUpdate="true" />
+
+      <p:panelGrid>
+
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Nome completo:" for="nome-completo" />
+          </p:column>
+          <p:column>
+            <p:inputText value="#{cadastroUsuarioFormularioBean.usuario.nome}" size="40" maxlength="255" required="true"
+              id="nome-completo" />
+          </p:column>
+        </p:row>
+
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Login:" for="login"/>
+          </p:column>
+          <p:column>
+            <p:inputText rendered="#{cadastroUsuarioFormularioBean.usuario.id == null}" value="#{cadastroUsuarioFormularioBean.usuario.login}" size="20" required="true"
+              id="login" maxlength="20" />
+            <h:outputText styleClass="text-align: left;" rendered="#{cadastroUsuarioFormularioBean.usuario.id != null}" value="#{cadastroUsuarioFormularioBean.usuario.login}" />
+          </p:column>
+        </p:row>
+
+        <p:row rendered="#{cadastroUsuarioFormularioBean.usuario.id != null}">
+          <p:column>
+            <p:outputLabel value="Ativo:" for="ativo" />
+          </p:column>
+          <p:column>
+            <p:selectBooleanCheckbox value="#{cadastroUsuarioFormularioBean.usuario.ativo}" id="ativo" />
+          </p:column>
+        </p:row>
+
+        <p:row>
+          <p:column>
+            <p:outputLabel value="E-mail:" for="email" />
+          </p:column>
+          <p:column>
+            <p:inputText value="#{cadastroUsuarioFormularioBean.usuario.email}" size="20" required="true" id="email" maxlength="255" />
+          </p:column>
+        </p:row>
+
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Organização Militar:" for="om" />
+          </p:column>
+          <p:column>
+            <p:selectOneMenu required="true" value="#{cadastroUsuarioFormularioBean.usuario.organizacaoMilitar}" id="om"
+              converter="jsonConverter" filter="true" filterMatchMode="contains">
+              <f:selectItems value="#{cadastroUsuarioFormularioBean.oms}" var="om" itemLabel="#{om.sigla}"
+                itemValue="#{om}" />
+            </p:selectOneMenu>
+          </p:column>
+        </p:row>
+
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Perfis:" for="perfis" />
+          </p:column>
+          <p:column>
+            <p:selectManyCheckbox required="true" value="#{cadastroUsuarioFormularioBean.usuario.perfis}" id="perfis" columns="2"
+              layout="grid" converter="genericEnumConverter">
+              <f:attribute name="collectionType" value="java.util.HashSet" />
+              <f:selectItems value="#{cadastroUsuarioFormularioBean.perfis}" var="perfil" itemLabel="#{perfil.label}"
+                id="name" />
+            </p:selectManyCheckbox>
+          </p:column>
+        </p:row>
+
+      </p:panelGrid>
+      <div class="vgap-10"></div>
+
+      <p:commandButton value="Salvar" styleClass="btn btn-success" icon="fa fa-save" id="salvar" validateClient="true"
+        action="#{cadastroUsuarioFormularioBean.salvar}" update="@form" />
+
+      <p:commandButton value="Resetar senha" id="resetar-senha" icon="fa fa-key"
+        rendered="#{cadastroUsuarioFormularioBean.usuario.id != null}"
+        action="#{cadastroUsuarioFormularioBean.resetarSenha}" update="msgs" />
+
+      <a href="../usuario" id="voltar" class="btn">Voltar</a>
+
+    </h:form>
+
+  </ui:define>
+
+</ui:composition>

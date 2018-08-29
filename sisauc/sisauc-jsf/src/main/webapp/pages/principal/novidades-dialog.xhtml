@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets">
+  
+  <p:dialog widgetVar="novidades-tab" modal="true" showEffect="fade" hideEffect="fade" width="650" minHeight="600" header="O que há de novo?">
+   	<div class="text-center">
+      <img src="#{request.contextPath}/resources/imagens/logo-sisauc.png"/>
+   	</div>
+    <p:tabView>
+      <p:tab title="Notas">
+        <h3>1.6.3</h3>
+        <ul>
+          <li><span class="label label-success">novo</span> Criação da tela "Notas da Versão"</li>
+          <li><span class="label label-success">novo</span> Documentos em PDF (GAB, Relatório de lote, Relatório Analítico de Fatura e Relatório de não conformidade)</li>
+          <li><span class="label label-warning">bug</span> Ajuste na exportação de colunas nos relatórios XLS</li>
+        </ul>
+      </p:tab>
+      <p:tab title="Equipe de Desenvolvimento">
+      </p:tab>
+    </p:tabView>    
+  </p:dialog>
+  
+</ui:composition>

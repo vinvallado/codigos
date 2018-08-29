@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pretty-config xmlns="http://ocpsoft.org/schema/rewrite-config-prettyfaces" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://ocpsoft.org/schema/rewrite-config-prettyfaces
+                      http://ocpsoft.org/xml/ns/prettyfaces/rewrite-config-prettyfaces.xsd">
+
+	<!-- Auditoria Retrospectiva -->
+	<url-mapping id="apresentar-gab-lista">
+		<pattern value="/auditoria-retrospectiva/apresentar-gab" />
+		<view-id value="/pages/auditoria-retrospectiva/apresentacao/apresentar-lista.jsf" />
+	</url-mapping>
+
+	<url-mapping id="apresentar-gab-formulario">
+		<pattern value="/auditoria-retrospectiva/apresentar-gab/#{id}" />
+		<view-id value="/pages/auditoria-retrospectiva/apresentacao/apresentar-formulario.jsf" />
+	</url-mapping>
+
+	<url-mapping id="auditoria-retrospectiva-lista">
+		<pattern value="/auditoria-retrospectiva/realizar-auditoria" />
+		<view-id value="/pages/auditoria-retrospectiva/auditoria/auditoria-retrospectiva-lista.jsf" />
+	</url-mapping>
+
+	<url-mapping id="auditoria-retrospectiva-item-formulario">
+		<pattern value="/auditoria-retrospectiva/realizar-auditoria-item/#{id}" />
+		<view-id value="/pages/auditoria-retrospectiva/auditoria/auditoria-retrospectiva-item-formulario.jsf" />
+	</url-mapping>
+
+	<url-mapping id="auditoria-retrospectiva-lotes-lista">
+		<pattern value="/auditoria-retrospectiva/gerenciar-lotes" />
+		<view-id value="/pages/auditoria-retrospectiva/lotes/gerenciar-lotes-lista.jsf" />
+	</url-mapping>
+
+	<url-mapping id="auditoria-retrospectiva-lotes-formulario">
+		<pattern value="/auditoria-retrospectiva/gerenciar-lotes/#{id}" />
+		<view-id value="/pages/auditoria-retrospectiva/lotes/gerenciar-lotes-formulario.jsf" />
+	</url-mapping>
+
+	<url-mapping id="apresentar-nota-fiscal-lote">
+		<pattern value="/auditoria-retrospectiva/apresentar-nota-fiscal/#{id}" />
+		<view-id value="/pages/auditoria-retrospectiva/lotes/apresentar-nota-fiscal.jsf" />
+	</url-mapping>
+	
+	<url-mapping id="auditoria-retrospectiva-lotes-ressarcimento-lista">
+		<pattern value="/auditoria-retrospectiva/gerenciar-lotes-ressarcimento" />
+		<view-id value="/pages/auditoria-retrospectiva/lotes-ressarcimento/gerenciar-lotes-ressarcimento-lista.jsf" />
+	</url-mapping>
+	
+	<url-mapping id="auditoria-retrospectiva-lotes-ressarcimento-formulario">
+		<pattern value="/auditoria-retrospectiva/gerenciar-lotes-ressarcimento/#{id}" />
+		<view-id value="/pages/auditoria-retrospectiva/lotes-ressarcimento/gerenciar-lotes-ressarcimento-formulario.jsf" />
+	</url-mapping>
+	
+	<url-mapping id="visualizar-lote-ressarcimento-lote">
+		<pattern value="/auditoria-retrospectiva/visualizar-lote-ressarcimento/#{id}" />
+		<view-id value="/pages/auditoria-retrospectiva/lotes-ressarcimento/visualizar-lote-ressarcimento.jsf" />
+	</url-mapping>
+
+	<url-mapping id="auditoria-retrospectiva-nao-conformidade-formulario">
+		<pattern value="/auditoria-retrospectiva/relatorio-nao-conformidade" />
+		<view-id value="/pages/auditoria-retrospectiva/nao-conformidade/nao-conformidade-formulario.jsf" />
+	</url-mapping>
+	
+	<url-mapping id="buscar-gab-lista">
+		<pattern value="/auditoria-retrospectiva/buscar-gab" />
+		<view-id value="/pages/auditoria-retrospectiva/buscar-gab/busca-gab-lista.jsf" />
+	</url-mapping>	
+	
+	<url-mapping id="buscar-gab-formulario">
+		<pattern value="/auditoria-retrospectiva/buscar-gab/#{id}" />
+		<view-id value="/pages/auditoria-retrospectiva/buscar-gab/busca-gab-formulario-wrapper.jsf" />
+	</url-mapping>
+	
+	<url-mapping id="buscar-are-lista">
+		<pattern value="/auditoria-retrospectiva/buscar-are" />
+		<view-id value="/pages/auditoria-retrospectiva/buscar-are/busca-are-lista.jsf" />
+	</url-mapping>	
+	
+	<url-mapping id="buscar-are-formulario">
+		<pattern value="/auditoria-retrospectiva/buscar-are/#{id}" />
+		<view-id value="/pages/auditoria-retrospectiva/buscar-are/busca-are-formulario-wrapper.jsf" />
+	</url-mapping>	
+		
+	<url-mapping id="auditoria-retrospectiva-ar-lista">
+		<pattern value="/auditoria-retrospectiva-ressarcimento/realizar-auditoria" />
+		<view-id value="/pages/auditoria-retrospectiva-ressarcimento/auditoria/auditoria-retrospectiva-ressarcimento-lista.jsf" />
+	</url-mapping>
+	
+	<url-mapping id="auditoria-retrospectiva-ar-formulario">
+		<pattern value="/auditoria-retrospectiva-ressarcimento/realizar-auditoria/#{id}"/>
+		<view-id value="/pages/auditoria-retrospectiva-ressarcimento/auditoria/auditoria-retrospectiva-ar-formulario.jsf"/>
+	</url-mapping>
+
+</pretty-config>

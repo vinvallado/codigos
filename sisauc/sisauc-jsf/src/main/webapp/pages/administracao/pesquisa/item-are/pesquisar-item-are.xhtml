@@ -1,0 +1,447 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:sec="http://www.springframework.org/security/tags"
+  template="/resources/template/template.xhtml">
+
+  <ui:define name="html-title">Relatórios de Item de ARE</ui:define>
+  <ui:define name="html-body-bottom">
+    <script type="text/javascript" src="#{request.contextPath}/resources/vendor/js/jquery.maskMoney.min.js" />
+    <script type="text/javascript">
+					$(document).ready(function() {
+						maskPrefix('R$ ');
+					});
+					
+					$(document).ready(function () {
+						   $('input').keypress(function (e) {
+						        var code = null;
+						        code = (e.keyCode ? e.keyCode : e.which);                
+						        return (code == 13) ? false : true;
+						   });
+						});
+				</script>
+  </ui:define>
+
+  <ui:define name="main">
+    <h3>Relatórios de Item de ARE</h3>
+    <p:separator />
+    <div class="vgap-10"></div>
+    <h:form id="pesquisa-item-are-form">
+      <p:panelGrid>
+        <sec:authorize ifAllGranted="PERFIL_DIRETOR">
+          <p:row>
+            <p:column>
+              <p:outputLabel value="Organizações Militares:" />
+            </p:column>
+            <p:column>
+              <p:selectCheckboxMenu id="organizacoesMilitares"
+                value="#{pesquisarItemAREBean.parametros.organizacoesMilitares}" label="Organizações Militares"
+                filter="true" filterMatchMode="contains" panelStyle="width:250px" converter="jsonConverter">
+                <f:attribute name="collectionType" value="java.util.ArrayList" />
+                <f:selectItems value="#{pesquisarItemAREBean.organizacoesMilitares}" var="om" itemLabel="#{om.sigla}"
+                  itemValue="#{om}" />
+              </p:selectCheckboxMenu>
+            </p:column>
+          </p:row>
+        </sec:authorize>
+        
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Divisão:" />
+          </p:column>
+          <p:column>
+            <p:selectManyCheckbox value="#{pesquisarItemAREBean.parametros.divisoes}"
+              converter="genericEnumConverter" id="divisoes" style="width:200px;"
+              showCheckbox="true">
+              <f:selectItems value="#{pesquisarItemAREBean.divisoes}" var="divisao"
+                itemLabel="#{divisao.label}" itemValue="#{divisao}" />
+            </p:selectManyCheckbox>
+          </p:column>
+        </p:row>
+
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Nº Item ARE:" for="item-are" />
+          </p:column>
+          <p:column>
+            <p:inputText value="#{pesquisarItemAREBean.parametros.codigoItemARE}" id="item-are" />
+          </p:column>
+        </p:row>
+
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Nº ARE:" for="are" />
+          </p:column>
+          <p:column>
+            <p:inputText value="#{pesquisarItemAREBean.parametros.numeroARE}" id="are" />
+          </p:column>
+        </p:row>
+        
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Beneficiário:" for="beneficiario" />
+          </p:column>
+          <p:column>
+            <p:inputText value="#{pesquisarItemAREBean.parametros.nomeBeneficiario}" id="beneficiario" />
+          </p:column>
+        </p:row>
+        
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Idade Beneficiário"/>
+          </p:column>
+          <p:column>
+            <h:outputText value="De "/>
+            <p:inputMask id="idade-minima" size="3" value="#{pesquisarItemAREBean.parametros.idadeMinimaBeneficiario}"
+              mask="9?99"/>
+            <h:outputText value=" Até "/>
+            <p:inputMask id="idade-maxima" size="3" value="#{pesquisarItemAREBean.parametros.idadeMaximaBeneficiario}"
+              mask="9?99"/>
+          </p:column>
+        </p:row>
+        <p:row>
+          <p:column>
+            <p:outputLabel value="SARAM:" for="saram" />
+          </p:column>
+          <p:column>
+            <p:inputText value="#{pesquisarItemAREBean.parametros.saram}" id="saram" />
+          </p:column>
+        </p:row>
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Procedimento:" for="procedimento" />
+          </p:column>
+          <p:column>
+            <p:inputText value="#{pesquisarItemAREBean.parametros.procedimento}" id="procedimento" />
+          </p:column>
+        </p:row>
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Data de geração:" />
+          </p:column>
+          <p:column>
+            <h:outputText value="De " />
+            <p:calendar value="#{pesquisarItemAREBean.parametros.inicioDataGeracao}" size="8" id="inicio-data-geracao">
+              <p:ajax event="change" update="fim-data-geracao" />
+              <p:ajax event="dateSelect" update="fim-data-geracao" />
+            </p:calendar>
+            <h:outputText value=" Até " />
+            <p:calendar value="#{pesquisarItemAREBean.parametros.fimDataGeracao}" size="8" id="fim-data-geracao"
+              mindate="#{pesquisarItemAREBean.parametros.inicioDataGeracao}" />
+          </p:column>
+        </p:row>
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Data de emissão:" />
+          </p:column>
+          <p:column>
+            <h:outputText value="De " />
+            <p:calendar value="#{pesquisarItemAREBean.parametros.inicioDataEmissao}" size="8" id="inicio-data-emissao">
+              <p:ajax event="change" update="fim-data-emissao" />
+              <p:ajax event="dateSelect" update="fim-data-emissao" />
+            </p:calendar>
+            <h:outputText value=" Até " />
+            <p:calendar value="#{pesquisarItemAREBean.parametros.fimDataEmissao}" size="8" id="fim-data-emissao"
+              mindate="#{pesquisarItemAREBean.parametros.inicioDataEmissao}" />
+          </p:column>
+        </p:row>
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Data de apresentacao:" />
+          </p:column>
+          <p:column>
+            <h:outputText value="De " />
+            <p:calendar value="#{pesquisarItemAREBean.parametros.inicioDataApresentacao}" size="8"
+              id="inicio-data-apresentacao">
+              <p:ajax event="change" update="fim-data-apresentacao" />
+              <p:ajax event="dateSelect" update="fim-data-apresentacao" />
+            </p:calendar>
+            <h:outputText value=" Até " />
+            <p:calendar value="#{pesquisarItemAREBean.parametros.fimDataApresentacao}" size="8"
+              id="fim-data-apresentacao" mindate="#{pesquisarItemAREBean.parametros.inicioDataApresentacao}" />
+          </p:column>
+        </p:row>
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Data nota fiscal:" />
+          </p:column>
+          <p:column>
+            <h:outputText value="De " />
+            <p:calendar value="#{pesquisarItemAREBean.parametros.inicioDataNotaFiscal}" size="8"
+              id="inicio-data-nota-fiscal">
+              <p:ajax event="change" update="fim-data-nota-fiscal" />
+              <p:ajax event="dateSelect" update="fim-data-nota-fiscal" />
+            </p:calendar>
+            <h:outputText value=" Até " />
+            <p:calendar value="#{pesquisarItemAREBean.parametros.fimDataNotaFiscal}" size="8" id="fim-data-nota-fiscal"
+              mindate="#{pesquisarItemAREBean.parametros.inicioDataNotaFiscal}" />
+          </p:column>
+        </p:row>
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Número nota fiscal:" for="numero-nota-fiscal-input" />
+          </p:column>
+          <p:column>
+            <p:inputText value="#{pesquisarItemAREBean.parametros.numeroNotaFiscal}" id="numero-nota-fiscal-input" />
+          </p:column>
+        </p:row>
+        <p:row>
+          <p:column>
+            <p:outputLabel value="CPF/CNPJ nota fiscal:" for="cpfCnpj-nota-fiscal-input" />
+          </p:column>
+          <p:column>
+            <p:inputText value="#{pesquisarItemAREBean.parametros.cpfCnpjNotaFiscal}" id="cpfCnpj-nota-fiscal-input" />
+          </p:column>
+        </p:row>        
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Estado de Item:" />
+          </p:column>
+          <p:column>
+            <p:selectManyMenu value="#{pesquisarItemAREBean.parametros.estadosItemARE}" converter="genericEnumConverter"
+              id="estados-itens-are" showCheckbox="true" style="width:170px" >
+              <f:selectItems value="#{pesquisarItemAREBean.estadosItemARE}" var="estado" itemLabel="#{estado.label}"
+                itemValue="#{estado}" />
+            </p:selectManyMenu>
+          </p:column>
+        </p:row>
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Estado ARE:" />
+          </p:column>
+          <p:column>
+            <p:selectManyMenu value="#{pesquisarItemAREBean.parametros.estadosARE}" converter="genericEnumConverter" 
+              id="estados-are" showCheckbox="true" style="width:170px" >
+              <f:selectItems value="#{pesquisarItemAREBean.estadosARE}" var="estado" itemLabel="#{estado.label}" itemValue="#{estado}"  />
+            </p:selectManyMenu>
+          </p:column>
+        </p:row>
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Titular:" />
+          </p:column>
+          <p:column>
+            <p:selectOneButton value="#{pesquisarItemAREBean.parametros.titular}" converter="genericEnumConverter"
+              id="titular">
+              <f:selectItems value="#{pesquisarItemAREBean.opcoesPesquisaBooleanList}" var="opcao"
+                itemLabel="#{opcao.label}" itemValue="#{opcao}" />
+            </p:selectOneButton>
+          </p:column>
+        </p:row>
+        
+        <p:row>
+          <p:column>
+            <p:outputLabel value="Comparar valores:" />
+          </p:column>
+          <p:column>
+            <h:panelGroup id="panel-comparacao">
+              <p:dataList id="comparacoes" var="comparacao" value="#{pesquisarItemAREBean.parametros.comparacoes}" type="definition">
+                <p:selectOneMenu id="valor1" value="#{comparacao.valor1}" style="width:150px"
+                  converter="genericEnumConverter">
+                  <f:selectItem itemLabel="" noSelectionOption="true" />
+                  <f:selectItems value="#{pesquisarItemAREBean.opcoesPesquisaValoresList.subList(0,3)}" var="valor"
+                    itemLabel="#{valor.label}" itemValue="#{valor}" />
+                </p:selectOneMenu>
+                <p:selectOneMenu value="#{comparacao.opcaoComparacao}" converter="genericEnumConverter"
+                  id="opcao-comparacao" style="width:150px">
+                  <f:selectItem itemLabel="" noSelectionOption="true" />
+                  <f:selectItems value="#{pesquisarItemAREBean.opcoesPesquisaNumeroList}" var="opcao"
+                    itemLabel="#{opcao.label}" itemValue="#{opcao}" />
+                </p:selectOneMenu>
+                <p:selectOneMenu id="valor2" value="#{comparacao.valor2}" style="width:150px"
+                  converter="genericEnumConverter">
+                  <f:selectItem itemLabel="" noSelectionOption="true" />
+                  <f:selectItems value="#{pesquisarItemAREBean.opcoesPesquisaValoresList}" var="valor"
+                    itemLabel="#{valor.label}" itemValue="#{valor}" />
+                  <p:ajax event="change" update="digitar-valor-panel" />
+                </p:selectOneMenu>
+                <h:panelGroup id="digitar-valor-panel">
+                  <p:inputText value="#{comparacao.valorDigitado}" size="8" id="input-valor-digitado"
+                    converter="doubleConverter" onfocus="maskPrefixOnlyPositiveNumbers('R$ ')"
+                    rendered="#{comparacao.valor2 == 'VALOR_DIGITADO'}" styleClass="number">
+                  </p:inputText>
+                </h:panelGroup>
+                <p:commandButton id="btn-adic-comparacao" action="#{pesquisarItemAREBean.adicionarComparacao()}"
+                  update=":pesquisa-item-are-form:panel-comparacao" styleClass="btn" icon="fa fa-plus-circle"
+                  rendered="#{comparacao == pesquisarItemAREBean.parametros.getComparacoes().get(pesquisarItemAREBean.parametros.getComparacoes().size() -1)}" />
+                <p:commandButton id="btn-remover-comparacao" action="#{pesquisarItemAREBean.removerComparacao(comparacao)}"
+                  update=":pesquisa-item-are-form:panel-comparacao" styleClass="btn" icon="fa fa-minus-circle"
+                  rendered="#{comparacao == pesquisarItemAREBean.parametros.getComparacoes().get(0) ? 
+                      comparacao != pesquisarItemAREBean.parametros.getComparacoes().get(pesquisarItemAREBean.parametros.getComparacoes().size() -1) : true}" />
+              </p:dataList>
+            </h:panelGroup>
+          </p:column>
+
+        </p:row>
+
+      </p:panelGrid>
+
+      <div class="vgap-10"></div>
+      <p:commandButton id="pesquisar" icon="fa fa-search" title="Pesquisar" styleClass="btn btn-success"
+        value="Pesquisar" label="Pesquisar" action="#{pesquisarItemAREBean.pesquisar}" update="resultado" />
+
+      <div class="vgap-10"></div>
+
+      <p:dataTable value="#{pesquisarItemAREBean.itens}" var="item" id="resultado" styleClass="text-small"
+        paginator="true" rows="10" emptyMessage="#{msgs.no_records_found}" paginatorPosition="bottom"
+        paginatorAlwaysVisible="false" rowsPerPageTemplate="10, 15, 25" resizableColumns="false"
+        paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+        filteredValue="#{viewUtilsBean.filtrados}" filterDelay="300" rowHover="true">
+        
+        <f:facet name="header">
+          <div class="text-right">
+            <span class="fa fa-file-excel-o"> <h:commandButton value="exportar" styleClass="btn btn-link">
+                <p:dataExporter target="resultado" type="xls" fileName="RelatorioItemARE" />
+              </h:commandButton>
+            </span>
+            <h:outputText value="Itens: #{pesquisarItemAREBean.itens.size()}" styleClass="margin-l-10" />
+            <p:commandButton id="toggler" type="button" value="Colunas" icon="fa fa-columns" styleClass="margin-l-10" />
+            <p:columnToggler datasource="resultado" trigger="toggler">
+              <p:ajax event="toggle" listener="#{pesquisarItemAREBean.toggleHandler}" />
+            </p:columnToggler>
+            <p:panelGrid styleClass="text-center">
+              <p:row>
+                <p:column>
+                  <h:outputLabel value="TOTAL" styleClass="text-left" style="font-weight:bold" />
+                </p:column>
+                <p:column>
+                  <h:outputLabel value="Valor de Referência:" />
+                </p:column>
+                <p:column>
+                  <h:outputText value="#{pesquisarItemAREBean.valorTotalEstimado}">
+                    <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR"  />
+                  </h:outputText>
+                </p:column>
+                <p:column>
+                  <h:outputLabel value="Valor Apresentado:" />
+                </p:column>
+                <p:column>
+                  <h:outputText value="#{pesquisarItemAREBean.valorTotalApresentado}">
+                    <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR"  />
+                  </h:outputText>
+                </p:column>
+                <p:column>
+                  <h:outputLabel value="Valor Ressarcido" />
+                </p:column>
+                <p:column>
+                  <h:outputText value="#{pesquisarItemAREBean.valorTotalRessarcimento}">
+                    <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR"  />
+                  </h:outputText>
+                </p:column>
+              </p:row>
+            </p:panelGrid>
+          </div>
+        </f:facet>
+
+        <p:column styleClass="text-center" width="90" headerText="Divisão" sortBy="#{item.ar.divisao.label}"
+          visible="#{pesquisarItemAREBean.colunas[0]}" exportable="#{pesquisarItemAREBean.colunas[0]}">
+          <h:outputText value="#{item.ar.divisao.label}" />
+        </p:column>
+
+        <p:column styleClass="text-center" width="200" headerText="Item" sortBy="#{item.codigo}"
+          visible="#{pesquisarItemAREBean.colunas[1]}" exportable="#{pesquisarItemAREBean.colunas[1]}">
+          <h:outputText value="#{item.codigo}" />
+        </p:column>
+        
+        <p:column styleClass="text-center" width="70" headerText="OM" sortBy="#{item.ar.organizacaoMilitar.sigla}"
+          visible="#{pesquisarItemAREBean.colunas[2]}" exportable="#{pesquisarItemAREBean.colunas[2]}">
+          <h:outputText value="#{item.ar.organizacaoMilitar.sigla}" />
+        </p:column>
+
+        <p:column styleClass="text-center" headerText="Geração" width="60" sortBy="#{item.ar.dataGeracao}"
+          visible="#{pesquisarItemAREBean.colunas[3]}" exportable="#{pesquisarItemAREBean.colunas[3]}">
+          <h:outputText value="#{item.ar.dataGeracao}">
+            <f:convertDateTime pattern="dd/MM/yy" />
+          </h:outputText>
+        </p:column>
+
+        <p:column styleClass="text-center" headerText="Emissão" width="60" sortBy="#{item.ar.dataEmissao}"
+          visible="#{pesquisarItemAREBean.colunas[4]}" exportable="#{pesquisarItemAREBean.colunas[4]}">
+          <h:outputText value="#{item.ar.dataEmissao}">
+            <f:convertDateTime pattern="dd/MM/yy" />
+          </h:outputText>
+        </p:column>
+
+        <p:column styleClass="text-center" headerText="Apresent." width="60" sortBy="#{item.ar.dataApresentacao}"
+          visible="#{pesquisarItemAREBean.colunas[5]}" exportable="#{pesquisarItemAREBean.colunas[5]}">
+          <h:outputText value="#{item.ar.dataApresentacao}">
+            <f:convertDateTime pattern="dd/MM/yy" />
+          </h:outputText>
+        </p:column>
+
+        <p:column styleClass="text-center" width="60" headerText="Estado Item" sortBy="#{item.estadoItemAR.label}"
+          visible="#{pesquisarItemAREBean.colunas[6]}" exportable="#{pesquisarItemAREBean.colunas[6]}">
+          <h:outputText value="#{item.estadoItemAR.label}" />
+        </p:column>
+
+        <p:column styleClass="text-center" width="70" headerText="Estado ARE" sortBy="#{item.ar.estado.label}"
+          visible="#{pesquisarItemAREBean.colunas[7]}" exportable="#{pesquisarItemAREBean.colunas[7]}">
+          <h:outputText value="#{item.ar.estado.label}" />
+        </p:column>
+
+        <p:column headerText="Procedimento" width="300" sortBy="#{item.procedimento.codigo}"
+          visible="#{pesquisarItemAREBean.colunas[8]}" exportable="#{pesquisarItemAREBean.colunas[8]}">
+          <h:outputText value="#{item.procedimento.codigo} - " />
+          <h:outputText value="#{item.procedimento.descricao}" />
+          <h:outputText value=" - #{item.especialidade}" rendered="#{item.especialidade != null}" />
+        </p:column>
+        
+        <p:column headerText="Observação Item" width="300"
+          visible="#{pesquisarItemAREBean.colunas[9]}" exportable="#{pesquisarItemAREBean.colunas[9]}">
+          <h:outputText value="#{item.observacaoARE}" />
+        </p:column>
+
+        <p:column headerText="Beneficiário" width="200" sortBy="#{item.ar.beneficiario.nome}"
+          visible="#{pesquisarItemAREBean.colunas[10]}" exportable="#{pesquisarItemAREBean.colunas[10]}">
+          <h:outputText value="#{item.ar.beneficiario.nome}" />
+        </p:column>
+
+        <p:column headerText="Idade Beneficiário" visible="#{pesquisarItemAREBean.colunas[11]}" 
+          exportable="#{pesquisarItemAREBean.colunas[11]}" width="60" styleClass="text-center">
+          <h:outputText value="#{item.ar.beneficiario.idade}"/>
+        </p:column>
+
+        <p:column headerText="OM do Titular" styleClass="text-center"  width="60"
+            visible="#{pesquisarItemAREBean.colunas[12]}" exportable="#{pesquisarItemAREBean.colunas[12]}">
+          <h:outputText value="#{item.ar.beneficiario.organizacaoMilitar.sigla}" rendered="#{item.ar.beneficiario.titular}" />
+          <h:outputText value="#{item.ar.beneficiario.beneficiarioTitular.organizacaoMilitar.sigla}" rendered="#{!item.ar.beneficiario.titular}" />
+        </p:column>
+        
+        <p:column headerText="Saram Titular" width="60"
+          sortBy="#{item.ar.beneficiario.saram != null ? item.ar.beneficiario.saram : item.ar.beneficiario.beneficiarioTitular.saram}"
+          visible="#{pesquisarItemAREBean.colunas[13]}" exportable="#{pesquisarItemAREBean.colunas[13]}">
+          <h:outputText
+            value="#{item.ar.beneficiario.saram != null ? item.ar.beneficiario.saram : item.ar.beneficiario.beneficiarioTitular.saram}" />
+        </p:column>
+        
+        <p:column styleClass="text-right" width="70" headerText="Valor Referencia" sortBy="#{item.auditoriaRetrospectiva.valorEstimado}"
+          visible="#{pesquisarItemAREBean.colunas[14]}" exportable="#{pesquisarItemAREBean.colunas[14]}">
+          <h:outputText value="#{item.auditoriaRetrospectiva.valorEstimado}">
+            <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR"  />
+          </h:outputText>
+        </p:column>
+
+        <p:column styleClass="text-right" width="70" headerText="Valor Apresentado"
+          sortBy="#{item.auditoriaRetrospectiva.valorApresentado}" visible="#{pesquisarItemAREBean.colunas[15]}"
+          exportable="#{pesquisarItemAREBean.colunas[15]}">
+          <h:outputText value="#{item.auditoriaRetrospectiva.valorApresentado}">
+            <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR"  />
+          </h:outputText>
+        </p:column>
+
+        <p:column styleClass="text-right" width="70" headerText="Valor Ressarcido"
+          sortBy="#{item.auditoriaRetrospectiva.valorRessarcimento}" visible="#{pesquisarItemAREBean.colunas[16]}"
+          exportable="#{pesquisarItemAREBean.colunas[16]}">
+          <h:outputText value="#{item.auditoriaRetrospectiva.valorRessarcimento}">
+            <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR"  />
+          </h:outputText>
+        </p:column>
+
+      </p:dataTable>
+
+
+    </h:form>
+
+  </ui:define>
+
+</ui:composition>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets">
+
+  <p:dialog header="Justificativa" id="justificativa-dialog" widgetVar="justificativaDialog" modal="true" resizable="true" width="700">
+    <h:form id="justificativa-form-dialog">
+      <strong><h:outputText value="Procedimento: " /></strong>
+      <h:outputText value="#{formatterBean.procedimentoFormatter.getCodigoDescricao(realizarAuditoriaProspectivaBean.resultadoSelecionado.credenciado.procedimento)}" />
+      <div class="vgap-10" />
+      <p:fieldset>
+        <h:outputText value="#{realizarAuditoriaProspectivaBean.resultadoSelecionado.justificativa}" />
+      </p:fieldset>
+    </h:form>
+  </p:dialog>
+
+</ui:composition>

@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:sec="http://www.springframework.org/security/tags"
+  xmlns:composite="http://java.sun.com/jsf/composite" xmlns:sisauc="http://java.sun.com/jsf/composite/sisaucjsf">
+
+  <composite:interface>
+    <composite:attribute name="solicitacao" required="true"/>
+    <composite:attribute name="showDadosBeneficiario" default="true"/>
+  </composite:interface>
+
+  <composite:implementation>
+
+    <p:panelGrid id="grid">
+      <p:row>
+        <p:column>
+          <h4>
+          <h:outputText value="#{cc.attrs.solicitacao.numero} do dia " />
+          <h:outputText value="#{cc.attrs.solicitacao.dataSolicitacaoSistema}" >
+             <f:convertDateTime pattern="dd/MM/yyyy" readonly="true" />
+          </h:outputText>
+          <h:outputText value=" -" rendered="#{cc.attrs.solicitacao.urgente == true}" />
+          <h:outputText value=" URGENTE" style="color:red;" rendered="#{cc.attrs.solicitacao.urgente == true}" />
+          </h4>
+        </p:column>
+      </p:row>
+      
+      <p:row>
+        <p:column>
+          <h:outputText value="Divisão: " style="font-weight:bold;" />
+          <h:outputText value="#{cc.attrs.solicitacao.divisao.label}" />
+        </p:column>
+      </p:row>
+      
+      <p:row>
+        <p:column>
+          <h:outputText value="Enviada por: " style="font-weight:bold;" />
+          <h:outputText value="#{cc.attrs.solicitacao.autorSolicitacaoSistema.nome}" />
+        </p:column>
+      </p:row>
+      <p:row rendered="#{cc.attrs.showDadosBeneficiario}">
+        <p:column>
+          <sisauc:dadosBeneficiario beneficiario="#{cc.attrs.solicitacao.beneficiario}"/>
+        </p:column>
+      </p:row>
+      <p:row rendered="#{cc.attrs.solicitacao.beneficiario.beneficiarioTitular.nome != null}">
+        <p:column>
+          <h:outputText value="Responsável: " style="font-weight:bold;" />
+          <h:outputText value="#{cc.attrs.solicitacao.beneficiario.beneficiarioTitular.postoGraduacao.descricao} " />
+          <h:outputText value="#{cc.attrs.solicitacao.beneficiario.beneficiarioTitular.nome} " />
+          <h:outputText value="do(a) " />
+          <h:outputText value=" #{cc.attrs.solicitacao.beneficiario.beneficiarioTitular.organizacaoMilitar.sigla}" style="font-weight:bold;text-decoration: underline;" />
+        </p:column>        
+      </p:row>
+      <p:row>
+        <p:column>
+          <h:outputText value="Isento: " style="font-weight:bold;" rendered="#{cc.attrs.solicitacao.isento == false}" />
+          <h:outputText value="Isento: " style="font-weight:bold;color:red;" rendered="#{cc.attrs.solicitacao.isento == true}" />
+          <h:outputText value="#{cc.attrs.solicitacao.isento ? 'SIM' : 'NÃO'}" />
+          <h:outputText value=" (#{cc.attrs.solicitacao.especificacao.tipoCobranca})" rendered="#{cc.attrs.solicitacao.isento == true}" />
+        </p:column>
+      </p:row>
+      <p:row>
+        <p:column>
+          <h:outputText value="Internação: " style="font-weight:bold;" />
+          <h:outputText value="#{cc.attrs.solicitacao.internacao ? 'SIM' : 'NÃO'}" />
+          <h:outputText value=" (#{cc.attrs.solicitacao.localInternacao.label})" rendered="#{cc.attrs.solicitacao.internacao == true}" />
+        </p:column>
+      </p:row>
+      <p:row rendered="#{cc.attrs.solicitacao.hipoteseDiagnostica != null}">
+        <p:column>
+          <h:outputText value="Hipótese Diagnóstica (CID): " style="font-weight:bold;" />
+          <h:outputText value="#{cc.attrs.solicitacao.hipoteseDiagnostica.descricao}" />
+        </p:column>
+      </p:row>
+      <p:row>
+        <p:column>
+          <h:outputText value="Profissional Solicitante: " style="font-weight:bold;" />
+          <h:outputText value="#{cc.attrs.solicitacao.medicoSolicitante.nome}" />
+        </p:column>
+      </p:row>
+      <p:row rendered="#{cc.attrs.solicitacao.inspecaoSaude} != null">
+        <p:column>
+          <h:outputText value="Inspeção de Saúde: " style="font-weight:bold;" />
+          <input type="checkbox" name="vehicle" value="Car" checked="#{cc.attrs.solicitacao.inspecaoSaude}"></input>
+        </p:column>
+      </p:row>
+      <p:row>
+        <p:column>
+          <h:outputText value="Dados Clínicos" style="font-weight:bold;" /><br/>
+          <h:outputText value="#{cc.attrs.solicitacao.dadosClinicos}" />
+        </p:column>
+      </p:row>
+      <p:row>
+        <p:column>
+          <h:outputText value="Observações da divisão médica" style="font-weight:bold;" /><br/>
+          <h:outputText value="#{cc.attrs.solicitacao.observacoes}" rendered="#{cc.attrs.solicitacao.observacoes != null}"/>
+          <h:outputText value="Não há observação" styleClass="muted" rendered="#{cc.attrs.solicitacao.observacoes == null}"/>
+        </p:column>
+      </p:row>
+      
+      <p:row>
+        <p:column rendered="#{cc.attrs.solicitacao.arquivo != null}">
+          <h:outputText value="Arquivo" style="font-weight:bold;" /><br/>
+          <a href="#{request.contextPath}/download/solicitacao/#{cc.attrs.solicitacao.id}" class="btn btn-link">
+          <span class="fa fa-download" ></span> <span>Download</span>
+          </a>
+          ou
+          <a class="btn btn-link" onclick="verPdf('#{request.contextPath}/download/solicitacao/#{cc.attrs.solicitacao.id}');PF('verPdf').show()">
+            <span class="fa fa-file-pdf-o"></span>
+            <span>Visualizar</span>
+          </a>
+        </p:column>
+      </p:row>
+      
+    </p:panelGrid>
+    
+    <div class="vgap-10" />
+
+    <p:dataTable value="#{cc.attrs.solicitacao.procedimentos}" paginator="true" rows="5"
+      emptyMessage="#{msgs.no_records_found}" paginatorPosition="bottom" paginatorAlwaysVisible="false"
+      rowsPerPageTemplate="5, 10"
+      paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+      var="pedido" id="tabela">
+
+      <f:facet name="header">
+        <h:outputText value="Procedimentos solicitados" />
+      </f:facet>
+
+      <p:column id="tabela" headerText="Tabela">
+        <h:outputText value="#{pedido.credenciado.procedimento.tabela.nome}" />
+      </p:column>
+
+      <p:column id="procedimento" headerText="Procedimento">
+        <h:outputText value="#{formatterBean.procedimentoFormatter.getCodigoDescricao(pedido.credenciado.procedimento)}" />
+        <h:outputText rendered="#{pedido.credenciado.especialidade.sigla != null}"
+          value=" (#{pedido.credenciado.especialidade.sigla})" />
+      </p:column>
+
+      <p:column id="credenciado" headerText="Credenciado" width="250">
+        <h:outputText value="#{pedido.credenciado.configuracaoEditalCredenciado.credenciado.nomeFantasia}" />
+      </p:column>
+
+      <p:column id="quantidade" headerText="Qtde" width="40" style="text-align:center">
+        <h:outputText value="#{pedido.quantidade}" />
+      </p:column>
+
+    </p:dataTable>
+
+    <div class="vgap-15" />
+
+  </composite:implementation>
+
+</ui:composition>

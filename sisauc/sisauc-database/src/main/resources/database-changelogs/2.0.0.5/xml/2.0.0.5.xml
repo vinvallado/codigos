@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<changeSet id="criar-tabela-auditoria-prospectiva-ressarcimento" author="brunobjm">
+		<sql>
+			CREATE TABLE sch_sisauc.auditoria_prospectiva_ressarcimento
+			(
+  				id integer NOT NULL,
+  				data_final_auditoria timestamp without time zone NOT NULL,
+  				estado character varying(255) NOT NULL,
+  				isento boolean,
+  				observacoes text,
+  				id_usuario_auditor integer NOT NULL,
+  				id_especificacao_isencao_cobranca integer,
+  				id_solicitacao_ressarcimento integer NOT NULL,
+  				CONSTRAINT auditoria_prospectiva_ressarcimento_pkey PRIMARY KEY (id),
+  				CONSTRAINT fk_auditoria_prospectiva_ressarcimento_solicitacao FOREIGN KEY (id_solicitacao_ressarcimento)
+      				REFERENCES sch_sisauc.solicitacao (id) MATCH SIMPLE
+      				ON UPDATE NO ACTION ON DELETE NO ACTION,
+  				CONSTRAINT fk_auditoria_prospectiva_ressarcimento_isencao_cobranca FOREIGN KEY (id_especificacao_isencao_cobranca)
+      				REFERENCES sch_sisauc.especificacao_isencao_cobranca (id) MATCH SIMPLE
+      				ON UPDATE NO ACTION ON DELETE NO ACTION,
+  				CONSTRAINT fk_auditoria_prospectiva_ressarcimento_auditor FOREIGN KEY (id_usuario_auditor)
+      				REFERENCES sch_sisauc.usuario (id) MATCH SIMPLE
+      				ON UPDATE NO ACTION ON DELETE NO ACTION
+			)
+			WITH (
+  				OIDS=FALSE
+			);
+			ALTER TABLE sch_sisauc.auditoria_prospectiva_ressarcimento
+  				OWNER TO sisauc;
+		</sql>
+	</changeSet>
+	
+	<changeSet id="criar-tabela-resposta_ressarcimento_auditoria" author="brunobjm">
+		<sql>
+			CREATE TABLE sch_sisauc.resposta_ressarcimento_auditoria
+			(
+  				id integer NOT NULL,
+  				aprovado boolean,
+  				descricao_outros character varying(255),
+  				justificativa character varying(255),
+  				observacao character varying(255),
+  				opme boolean,
+  				opme_descricao character varying(255),
+  				opme_justificativa character varying(255),
+  				opme_valor double precision,
+  				orcamento double precision,
+  				id_especialidade integer,
+  				id_procedimento integer,
+  				id_auditoria_prospectiva integer NOT NULL,
+  				CONSTRAINT resposta_ressarcimento_auditoria_pkey PRIMARY KEY (id),
+  				CONSTRAINT fk_resposta_ressarcimento_auditoria_especialidade FOREIGN KEY (id_especialidade)
+      				REFERENCES sch_sisauc.especialidade (id) MATCH SIMPLE
+      				ON UPDATE NO ACTION ON DELETE NO ACTION,
+  				CONSTRAINT fk_resposta_ressarcimento_auditoria_procedimento FOREIGN KEY (id_procedimento)
+      				REFERENCES sch_sisauc.procedimento_base (id) MATCH SIMPLE
+      				ON UPDATE NO ACTION ON DELETE NO ACTION,
+  				CONSTRAINT fk_resposta_ressarcimento_auditoria_auditoria FOREIGN KEY (id_auditoria_prospectiva)
+      				REFERENCES sch_sisauc.auditoria_prospectiva_ressarcimento (id) MATCH SIMPLE
+      				ON UPDATE NO ACTION ON DELETE NO ACTION
+			)
+			WITH (
+  				OIDS=FALSE
+			);
+			ALTER TABLE sch_sisauc.resposta_ressarcimento_auditoria
+  				OWNER TO sisauc;
+		</sql>
+	</changeSet>
+
+</databaseChangeLog>

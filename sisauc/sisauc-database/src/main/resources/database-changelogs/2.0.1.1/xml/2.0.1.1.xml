@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<changeSet id="adicionar-colunas-tabela-edital-e-usm" author="tadeutbc">
+		<sql>
+			ALTER TABLE sch_sisauc.edital_credenciamento ADD COLUMN tabela character varying(255) NOT NULL default 'CBHPM2012';
+			ALTER TABLE sch_sisauc.unidade_multiplicadora ADD COLUMN valor_usm double precision NOT NULL default 0.36;
+		</sql>
+	</changeSet>	
+	
+	<changeSet id="adicionar-tabela-cissfa" author="tadeutbc">
+		<sql>
+			CREATE TABLE sch_sisauc.procedimento_cissfa
+			(
+			  id integer NOT NULL,
+			  valor_filme double precision,
+			  valor_usm double precision,
+			  id_subgrupo integer,
+			  CONSTRAINT procedimento_cissfa_pkey PRIMARY KEY (id),
+			  CONSTRAINT fk_procedimento_cissfa_subgrupo FOREIGN KEY (id_subgrupo)
+			      REFERENCES sch_sisauc.subgrupo (id) MATCH SIMPLE
+			      ON UPDATE NO ACTION ON DELETE NO ACTION,
+			  CONSTRAINT fk_procedimento_trs_procedimento_base FOREIGN KEY (id)
+			      REFERENCES sch_sisauc.procedimento_base (id) MATCH SIMPLE
+			      ON UPDATE NO ACTION ON DELETE NO ACTION
+			)
+			WITH (
+			  OIDS=FALSE
+			);
+			ALTER TABLE sch_sisauc.procedimento_cissfa
+			  OWNER TO sisauc;
+		</sql>
+	</changeSet>
+
+	<changeSet id="adicionar-colunas-tabela-grupo-adicionar-procedimentos-cissfa" author="tadeutbc">
+		<sql>
+			ALTER TABLE sch_sisauc.grupo ADD COLUMN tabela character varying(255) NOT NULL default 'CBHPM2012';
+
+			ALTER TABLE sch_sisauc.procedimento_base DROP CONSTRAINT verificar_tabelas;
+			ALTER TABLE sch_sisauc.procedimento_base ADD CONSTRAINT verificar_tabelas CHECK (tabela IN ('CBHPM2012','TRS', 'CISSFA'));
+			ALTER TABLE sch_sisauc.grupo ADD CONSTRAINT verificar_tabelas CHECK (tabela IN ('CBHPM2012','TRS', 'CISSFA'));
+
+			ALTER TABLE sch_sisauc.grupo DROP CONSTRAINT grupo_codigo_key;
+			ALTER TABLE sch_sisauc.grupo ADD CONSTRAINT grupo_codigo_key UNIQUE (codigo, tabela);
+
+			ALTER TABLE sch_sisauc.subgrupo DROP CONSTRAINT subgrupo_codigo_key;
+			ALTER TABLE sch_sisauc.subgrupo ADD CONSTRAINT subgrupo_codigo_key UNIQUE (codigo, id_grupo);
+			
+			INSERT INTO sch_sisauc.grupo(codigo, descricao, tabela) VALUES ('10100008', 'CONSULTAS', 'CISSFA');
+			INSERT INTO sch_sisauc.subgrupo(codigo, descricao, id_grupo) VALUES ('10101004', 'CONSULTAS', currval('sch_sisauc.grupo_id_seq'));
+			
+			INSERT INTO sch_sisauc.procedimento_base(codigo, descricao, tabela)
+			    VALUES ('10101012','Consulta em consultório (no horário normal ou preestabelecido)','CISSFA');
+			INSERT INTO sch_sisauc.procedimento_cissfa(id, valor_filme, valor_usm, id_subgrupo)
+			    VALUES (currval('sch_sisauc.procedimento_base_id_seq'), null, 84.00, currval('sch_sisauc.subgrupo_id_seq'));
+
+			INSERT INTO sch_sisauc.procedimento_base(codigo, descricao, tabela)
+			    VALUES ('10101020','Consulta em domicílio','CISSFA');
+			INSERT INTO sch_sisauc.procedimento_cissfa(id, valor_filme, valor_usm, id_subgrupo)
+			    VALUES (currval('sch_sisauc.procedimento_base_id_seq'), null, 138.00, currval('sch_sisauc.subgrupo_id_seq'));
+
+			INSERT INTO sch_sisauc.procedimento_base(codigo, descricao, tabela)
+			    VALUES ('10101039','Consulta em pronto socorro','CISSFA');
+			INSERT INTO sch_sisauc.procedimento_cissfa(id, valor_filme, valor_usm, id_subgrupo)
+			    VALUES (currval('sch_sisauc.procedimento_base_id_seq'), null, 84.00, currval('sch_sisauc.subgrupo_id_seq'));
+
+
+			INSERT INTO sch_sisauc.grupo(codigo, descricao, tabela) VALUES ('20100000', 'PROCEDIMENTOS CLÍNICOS AMBULATORIAIS', 'CISSFA');
+			INSERT INTO sch_sisauc.subgrupo(codigo, descricao, id_grupo) VALUES ('20101007', 'AVALIAÇÕES/ACOMPANHAMENTOS', currval('sch_sisauc.grupo_id_seq'));
+			
+			INSERT INTO sch_sisauc.procedimento_base(codigo, descricao, tabela)
+			    VALUES ('20101210','Acompanhamento clínico ambulatorial pós-transplante de córnea -por avaliação do 11º ao 30º dia até 3 avaliações','CISSFA');
+			INSERT INTO sch_sisauc.procedimento_cissfa(id, valor_filme, valor_usm, id_subgrupo)
+			    VALUES (currval('sch_sisauc.procedimento_base_id_seq'), null, 116.00, currval('sch_sisauc.subgrupo_id_seq'));
+
+			INSERT INTO sch_sisauc.procedimento_base(codigo, descricao, tabela)
+			    VALUES ('20101210','Acompanhamento clínico ambulatorial pós-transplante de medula óssea','CISSFA');
+			INSERT INTO sch_sisauc.procedimento_cissfa(id, valor_filme, valor_usm, id_subgrupo)
+			    VALUES (currval('sch_sisauc.procedimento_base_id_seq'), null, 150.00, currval('sch_sisauc.subgrupo_id_seq'));
+
+
+		</sql>
+	</changeSet>	
+
+	<changeSet id="adicionar-coluna-valor-usm-historico" author="januarioacsj">
+		<sql>
+			ALTER TABLE sch_sisauc.historico_valor_unidade_multiplicadora ADD COLUMN valor_usm double precision NOT NULL default 0;
+		</sql>
+	</changeSet>
+	
+	<changeSet id="corrigir-nome-coluna" author="tadeutbc">
+		<sql>
+			ALTER TABLE sch_sisauc.procedimento_cissfa RENAME COLUMN valor_filme TO quantidade_filme;
+			ALTER TABLE sch_sisauc.procedimento_cissfa RENAME COLUMN valor_usm TO quantidade_usm;
+		</sql>
+	</changeSet>
+	
+	<changeSet id="tirar-not-nulls-historico" author="tadeutbc">
+		<sql>
+			ALTER TABLE sch_sisauc.historico_valor_configuracao_edital_procedimento ALTER COLUMN valor DROP NOT NULL;
+			ALTER TABLE sch_sisauc.historico_valor_configuracao_edital_procedimento ALTER COLUMN id_tipo_cobranca DROP NOT NULL;
+		</sql>
+	</changeSet>
+	
+	<changeSet id="add-coluna-observacao-are-na-tabela-item-ar" author="januarioacsj">
+		<sql>
+			ALTER TABLE sch_sisauc.item_ar 
+			ADD column observacao_are text;
+		</sql>
+	</changeSet>
+	
+	<changeSet id="add-coluna-observacao-are-na-tabela-resposta-ressarcimento-auditoria" author="januarioacsj">
+		<sql>
+			ALTER TABLE sch_sisauc.resposta_ressarcimento_auditoria 
+			ADD column observacao_are text;
+		</sql>
+	</changeSet>	
+	
+</databaseChangeLog>

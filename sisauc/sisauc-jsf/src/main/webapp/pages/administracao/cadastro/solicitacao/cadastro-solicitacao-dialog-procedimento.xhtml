@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:sisauc="http://java.sun.com/jsf/composite/sisaucjsf">
+  
+  <p:dialog header="Adicionar procedimento" id="adicionar-procedimento-dialog" widgetVar="pedidoDialog" modal="true"
+    resizable="false" width="950">
+    <h:form id="adicionar-procedimento-form" prependId="false">
+    <script>
+   	 $(".naoaceitarenter").on("keypress", function(e) {
+      	  return e.keyCode != 13;
+   	 });
+    </script>
+      <p:messages id="msgs" showIcon="false" />
+      <p:panelGrid id="grid">
+        <p:row>
+          <p:column>
+            <p:panelGrid id="panel-procedimento">
+              <p:row>
+                <p:column>
+                  <p:outputLabel value="Procedimento:" for="procedimento" id="procedimento-label" />
+                </p:column>
+                <p:column>
+                  <p:autoComplete value="#{cadastroSolicitacaoFormularioBean.procedimento}" id="procedimento"
+                    var="procedimento" converter="jsonConverter"
+                    completeMethod="#{viewUtilsBean.procurarProcedimentoCBHPMouCISSFA}"
+                    itemLabel="#{formatterBean.procedimentoFormatter.getCodigoDescricao(procedimento)}"
+                    itemValue="#{procedimento}" scrollHeight="300" dropdown="true" styleClass="ui-autocomplete-large naoaceitarenter" forceSelection="true">
+                    <p:ajax event="itemSelect" process="@this" update="@form" listener="#{cadastroSolicitacaoFormularioBean.resetarEspecialidadeSelecionada}" />
+                    <p:column>
+	                    <sisauc:detalharProcedimento procedimento="#{procedimento}"/>
+                    </p:column>
+                  </p:autoComplete>
+                </p:column>
+                <p:column>
+                  <p:commandButton value="Buscar" styleClass="btn btn-success" icon="fa fa-search" validateClient="true"
+                    id="adicionar" action="#{cadastroSolicitacaoFormularioBean.buscarConfiguracoesPorProcedimento}"
+                    update="@form" style="margin-left:30px" />
+                </p:column>
+              </p:row>
+              <p:row rendered="#{cadastroSolicitacaoFormularioBean.procedimento.subGrupo.codigo == '10101004'}">
+                <p:column>
+                  <p:outputLabel value="Especialidade:" for="especialidade" id="especialidade-label" />
+                </p:column>
+                <p:column>
+                  <p:selectOneMenu value="#{cadastroSolicitacaoFormularioBean.especialidadeSelecionada}"
+                    converter="jsonConverter" style="width: 545px" filter="true" filterMatchMode="contains"
+                    id="especialidade">
+                    <f:selectItems value="#{cadastroSolicitacaoFormularioBean.especialidades}" var="especialidade"
+                      itemValue="#{especialidade}" itemLabel="#{especialidade.sigla} - #{especialidade.nome}"
+                      id="sel-especialidade" />
+                  </p:selectOneMenu>
+                </p:column>
+              </p:row>
+              <p:row>
+                <p:column>
+                  <h:outputLabel value="Quantidade:" for="quantidade" id="quantidade-label" />
+                </p:column>
+                <p:column headerText="Quant."  width="80">
+                  <p:spinner id="quantidade" value="#{cadastroSolicitacaoFormularioBean.pedido.quantidade}" size="2" min="1"
+                    maxlength="2" />
+                </p:column>
+              </p:row>
+            </p:panelGrid>
+          </p:column>
+        </p:row>
+        <p:row>
+          <p:column>
+            <div class="vgap-20"></div>
+            <p:dataTable value="#{cadastroSolicitacaoFormularioBean.configuracoes}" var="configuracao"
+              rendered="#{cadastroSolicitacaoFormularioBean.configuracoes != null}" id="dataTableConfiguracoes"
+              paginator="true" rows="5" emptyMessage="#{msgs.no_records_found}" paginatorPosition="bottom"
+              paginatorAlwaysVisible="false" rowsPerPageTemplate="5, 10"
+              paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página">
+              <p:column headerText="Nome Fantasia" id="nomeFantasia">
+                <h:outputText id="nomeFantasia-detalhes" value="#{configuracao.configuracaoEditalCredenciado.credenciado.nomeFantasia}" />
+              </p:column>
+              <p:column headerText="Cidade" id="cidade" width="150">
+                <h:outputText id="cidade-detalhes" value="#{configuracao.configuracaoEditalCredenciado.credenciado.cidade.nome}" />
+              </p:column>
+              <p:column headerText="Bairro" id="bairro" width="150">
+                <h:outputText id="bairro-detalhes" value="#{configuracao.configuracaoEditalCredenciado.credenciado.bairro}" />
+              </p:column>
+              <p:column headerText="Valor Unit" id="valor" width="90">
+                <h:outputText id="valor-detalhes"
+                  value="#{formatterBean.configuracaoProcedimentoFormatter.getCredenciadoValor(configuracao)}" />
+              </p:column>
+              <p:column headerText="Tabela" width="100">
+                <h:outputText id="tabela-detalhes" value="#{configuracao.procedimento.tabela.nome}"/>
+              </p:column>
+              <p:column headerText="" width="35" id="adicionar">
+                <p:commandButton value="" styleClass="btn btn-link" icon="fa fa-plus-circle"
+                  update=":formulario-solicitacao:lista-procedimentos" title="Adicionar Procedimento"
+                  action="#{cadastroSolicitacaoFormularioBean.adicionarPedido(configuracao)}" />
+              </p:column>
+            </p:dataTable>
+          </p:column>
+        </p:row>
+
+
+      </p:panelGrid>
+
+      <h:panelGroup styleClass="dialog-footer" layout="block">
+        <p:commandButton id="btn-cancelar" value="Cancelar" styleClass="btn" icon="fa" type="button" onclick="PF('pedidoDialog').hide()" />
+      </h:panelGroup>
+    </h:form>
+  </p:dialog>
+
+  <p:dialog header="Atenção!" id="removerPedidoDialog" widgetVar="removerPedidoDialog" modal="true" resizable="false">
+    <h:form id="remover-pedido-form-dialog">
+      <h:outputText value="Tem certeza que deseja remover este pedido?" />
+
+      <div class="vgap-30">
+        <!-- GAP 30px -->
+      </div>
+
+      <h:panelGroup styleClass="dialog-footer" layout="block">
+        <p:commandButton id="confirma-exclusao" value="Sim" styleClass="btn btn-success" icon="fa fa-save"
+          action="#{cadastroSolicitacaoFormularioBean.removerPedido}"
+          update=":formulario-solicitacao:lista-procedimentos" />
+        <p:commandButton id="cancela-exclusao" value="Cancelar" styleClass="btn" icon="fa" type="button"
+          onclick="PF('removerPedidoDialog').hide()" />
+      </h:panelGroup>
+
+    </h:form>
+  </p:dialog>
+
+  <p:dialog header="Atenção!" id="enviarAuditoriaDialog" widgetVar="enviarAuditoriaDialog" modal="true"
+    resizable="false">
+    <h:form id="enviar-auditoria-form-dialog">
+      <div class="vgap-15"></div>
+      <h:outputText value="Tem certeza que deseja enviar esta solicitação para Auditoria?" />
+      <div class="vgap-15"></div>
+      <h:outputText value="Ao confirmar, esta solicitação só poderá ser acessada por um AUDITOR." />
+
+      <div class="vgap-30">
+        <!-- GAP 30px -->
+      </div>
+
+      <h:panelGroup styleClass="dialog-footer" layout="block">
+        <p:commandButton id="confirma-envio-auditoria" value="Sim" styleClass="btn btn-success" icon="fa fa-save"
+          action="#{cadastroSolicitacaoFormularioBean.enviarAuditoria}" />
+        <p:commandButton id="cancela-envio-auditoria" value="Cancelar" styleClass="btn" icon="fa" type="button"
+          onclick="PF('enviarAuditoriaDialog').hide()" />
+      </h:panelGroup>
+
+    </h:form>
+  </p:dialog>
+</ui:composition>

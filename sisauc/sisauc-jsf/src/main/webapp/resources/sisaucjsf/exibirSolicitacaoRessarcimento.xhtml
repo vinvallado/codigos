@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+  xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:sec="http://www.springframework.org/security/tags"
+  xmlns:composite="http://java.sun.com/jsf/composite" xmlns:sisauc="http://java.sun.com/jsf/composite/sisaucjsf">
+
+  <composite:interface>
+    <composite:attribute name="solicitacao" required="true"/>
+    <composite:attribute name="showDadosBeneficiario" default="true"/>
+  </composite:interface>
+
+  <composite:implementation>
+
+    <p:panelGrid id="grid">
+      <p:row>
+        <p:column>
+          <h4>
+            <h:outputText value="#{cc.attrs.solicitacao.numero} do dia " />
+            <h:outputText value="#{cc.attrs.solicitacao.dataSolicitacaoSistema}">
+              <f:convertDateTime pattern="dd/MM/yyyy" readonly="true" />
+            </h:outputText>
+            <span class="muted">
+              <h:outputText value="#{cc.attrs.solicitacao.naoEletiva ? '(Não eletiva)' : '(Eletiva)'}" />
+            </span>
+          </h4>
+        </p:column>
+      </p:row>
+      
+      <p:row>
+        <p:column>
+          <h:outputText value="Divisão: " style="font-weight:bold;" />
+          <h:outputText value="#{cc.attrs.solicitacao.divisao.label}" />
+        </p:column>
+      </p:row>
+
+      <p:row rendered="#{cc.attrs.showDadosBeneficiario}">
+        <p:column>
+          <sisauc:dadosBeneficiario beneficiario="#{cc.attrs.solicitacao.beneficiario}"/>
+        </p:column>
+      </p:row>
+
+      <p:row>
+        <p:column>
+          <h:outputText value="Enviada por: " style="font-weight:bold;" />
+          <h:outputText value="#{cc.attrs.solicitacao.autorSolicitacaoSistema.nome}" />
+        </p:column>
+      </p:row>
+      
+      <p:row rendered="#{cc.attrs.solicitacao.medicoSolicitante != null}">
+        <p:column>
+          <h:outputText value="Profissional Solicitante: " style="font-weight:bold;" />
+          <h:outputText value="#{cc.attrs.solicitacao.medicoSolicitante.nome}" />
+        </p:column>
+      </p:row>
+      
+      <p:row>
+        <p:column>
+          <h:outputText value="Isento: " style="font-weight:bold;"
+            rendered="#{cc.attrs.solicitacao.isento == false}" />
+          <h:outputText value="Isento: " style="font-weight:bold;color:red;"
+            rendered="#{cc.attrs.solicitacao.isento == true}" />
+          <h:outputText value="#{cc.attrs.solicitacao.isento ? 'SIM' : 'NÃO'}" />
+          <h:outputText
+            value=" (#{cc.attrs.solicitacao.especificacao.tipoCobranca})"
+            rendered="#{cc.attrs.solicitacao.isento == true}" />
+        </p:column>
+      </p:row>
+
+      <p:row>
+        <p:column>
+          <h:outputText value="Internação: " style="font-weight:bold;" />
+          <h:outputText value="#{cc.attrs.solicitacao.internacao ? 'SIM' : 'NÃO'}" />
+          <h:outputText value=" (#{cc.attrs.solicitacao.localInternacao.label})"
+            rendered="#{cc.attrs.solicitacao.internacao == true}" />
+        </p:column>
+      </p:row>
+
+      <p:row rendered="#{cc.attrs.solicitacao.hipoteseDiagnostica != null}">
+        <p:column>
+          <h:outputText value="Hipótese Diagnóstica (CID): " style="font-weight:bold;" />
+          <h:outputText value="#{cc.attrs.solicitacao.hipoteseDiagnostica.descricao}" />
+        </p:column>
+      </p:row>
+
+      <p:row>
+        <p:column>
+          <h:outputText value="Dados Clínicos" style="font-weight:bold;" />
+          <br />
+          <h:outputText value="#{cc.attrs.solicitacao.dadosClinicos}" />
+        </p:column>
+      </p:row>
+      <p:row>
+        <p:column>
+          <h:outputText value="Observações da divisão médica" style="font-weight:bold;" />
+          <br />
+          <h:outputText value="#{cc.attrs.solicitacao.observacoes}"
+            rendered="#{cc.attrs.solicitacao.observacoes != null}" />
+          <h:outputText value="Não há observação" styleClass="muted"
+            rendered="#{cc.attrs.solicitacao.observacoes == null}" />
+        </p:column>
+      </p:row>
+
+      <p:row>
+        <p:column rendered="#{cc.attrs.solicitacao.arquivo != null}">
+          <h:outputText value="Arquivo" style="font-weight:bold;" />
+          <br />
+          <a href="#{request.contextPath}/download/solicitacao/#{cc.attrs.solicitacao.id}" class="btn btn-link"> <span
+            class="fa fa-download"></span> <span>Download</span>
+          </a>
+          ou
+          <a class="btn btn-link" onclick="verPdf('#{request.contextPath}/download/solicitacao/#{cc.attrs.solicitacao.id}');PF('verPdf').show()">
+            <span class="fa fa-file-pdf-o"></span>
+            <span>Visualizar</span>
+          </a>
+        </p:column>
+      </p:row>
+    </p:panelGrid>
+
+    <div class="vgap-10" />
+
+    <p:dataTable id="tabela-procedimentos-solicitados" value="#{cc.attrs.solicitacao.procedimentos}"
+      var="pedido" paginator="true" rows="5" paginatorPosition="bottom" paginatorAlwaysVisible="false"
+      rowsPerPageTemplate="5, 10" emptyMessage="#{msgs.no_records_found}"
+      paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} resultados por página"
+      filterDelay="300" widgetVar="datatable">
+
+      <f:facet name="header">
+        <h:outputText value="Procedimentos solicitados" />
+      </f:facet>
+
+      <p:column headerText="Tabela" style="width: 150px;">
+        <h:outputText value="#{pedido.procedimento.tabela.nome}" />
+        <h:outputText value="Outros" rendered="#{pedido.procedimento == null}" />
+      </p:column>
+
+      <p:column headerText="Procedimento">
+        <h:outputText value="#{formatterBean.procedimentoFormatter.getCodigoDescricao(pedido.procedimento)}" />
+        <h:outputText rendered="#{pedido.especialidade.sigla != null}" value=" (#{pedido.especialidade.sigla})" />
+        <h:outputText rendered="#{pedido.dente != null}" value=" - Dente #{pedido.dente}" />
+        <h:outputText rendered="#{pedido.faceDental != null}" value=" - Face #{pedido.faceDental.label}" />
+        <h:outputText value="#{pedido.descricaoOutros}" />
+      </p:column>
+
+      <p:column width="60" headerText="Qt">
+        <h:outputText value="#{pedido.quantidade}"/>
+      </p:column>
+
+      <p:column width="80" headerText="Orçamento">
+        <h:outputText value="#{pedido.orcamento}">
+          <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR"  />
+        </h:outputText>
+      </p:column>
+
+    </p:dataTable>
+
+  </composite:implementation>
+
+</ui:composition>

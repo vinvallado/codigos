@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      @page {
+        @top-right {
+          text-align: right;
+          font-size: 9pt;
+          content: '(FL ' counter(page)'/'counter(pages)' do ${nomeRelatorioPaginacao})' !important; 
+        }
+      }
+      #include("estilo-pdf.css");
+    </style>
+  </head>
+  <body class="text-bold">
+  
+    <table>
+      <tr height="50%">
+        <td rowspan="2" class="text-center" width="25%">
+          Comando da Aeronáutica<br /> 
+          Comando Geral do Pessoal<br /> 
+          Diretoria de Saúde<br /> 
+          <span style="font-size: 18px;">$organizacaoMilitar.sigla</span>
+        </td>
+        <td rowspan="2" class="text-center">
+          <span style="font-size: 18px;">Requerimento de Ressarcimento</span><br />
+        </td>
+        <td width="27%" >
+          Número: $!ar.codigo
+        </td>
+      </tr>
+      <tr height="50%">
+        <td>Data: 
+          #if ($ar.dataEmissao)
+            $date.format('dd/M/yyyy' , $ar.dataEmissao) 
+          #end
+        </td>
+      </tr>
+    </table>
+    
+    <div class="vgap-10"></div>
+    
+    <table class="estrutural">
+      <tr>
+        <td colspan="2">Nome do Titular: 
+          #if (! $beneficiario.beneficiarioTitular.nome)
+            $!beneficiario.nome 
+          #end 
+          $!beneficiario.beneficiarioTitular.nome
+        </td>
+        <td>SARAM:
+          #if (!$benecifiario.saram)
+            $!beneficiario.beneficiarioTitular.saram 
+          #end
+          $!beneficiario.saram
+        </td>
+      </tr>
+      <tr>
+        <td>Posto/Graduação/Cat: $!beneficiario.postoGraduacao.descricao $!beneficiario.beneficiarioTitular.postoGraduacao.descricao</td>
+        <td>CPF: 
+          $formatter.beneficiarioFormatter.getCpfFormatadoTitular( $beneficiario ) 
+        </td>
+        <td>OM: 
+          #if (! $beneficiario.beneficiarioTitular.organizaoMilitar.sigla) 
+            $!beneficiario.organizacaoMilitar.sigla 
+          #end
+          $!beneficiario.beneficiarioTitular.organizacaoMilitar.sigla
+        </td>
+      </tr>
+    </table>
+    
+    <div class="vgap-10"></div>
+    
+    <table>
+      <tr>
+        <td colspan="4">
+          Dados Cadastrais (Preenchimento obrigatório)
+        </td>
+      </tr>
+      <tr>
+        <td colspan="3">Endereço:</td>
+        <td width="150pt">Bairro:</td>
+      </tr>
+      <tr>
+        <td width="220pt">Cidade:</td>
+        <td width="50pt">UF:</td>
+        <td>CEP:</td>
+        <td>Telefone: (&#160; &#160; &#160; &#160;)</td>
+      </tr>
+      <tr>
+        <td colspan="4">
+          Email (Internet/Intraer):
+        </td>
+      </tr>
+      <tr>
+        <td colspan="4">
+          Dados Bancários (Preenchimento obrigatório com Nº da conta do pagamento COMAER)
+        </td>
+      </tr>
+      <tr>
+        <td>Banco:</td>
+        <td colspan="2">Agência:</td>
+        <td>Conta Corrente:</td>
+      </tr>
+      <tr>
+        <td colspan="4">
+          Ao: ________________________________________________.<br/>
+          Assunto: Ressarcimento de Despesas Médicas ou Odontológicas.<br/>
+          Requeiro a V. Exa. o ressarcimento da importância de R$ _____________________
+          (_____________________________________________<br/><br/>____________________________________________________________________________________________________________________)<br/>
+          <div style="padding-left: 225pt; font-weight: normal; font-style: italic; font-size: 8pt;">(valor por extenso)</div><br/>
+          de acordo com a legislação em vigor referente à ____________________________________________________________________________
+          <div style="padding-left: 305pt; font-weight: normal; font-style: italic; font-size: 8pt;">(internação/cirurgia/outros)</div><br/>
+          realizado(a) por _______________________________________________________________________________________________________
+          <div style="padding-left: 195pt; font-weight: normal; font-style: italic; font-size: 8pt;">(próprio ou dependente - nome por extenso - grau de parentesco)</div><br/>
+          conforme documentos anexos ___________________________________________________________________________________________.
+          <div style="padding-left: 280pt; font-weight: normal; font-style: italic; font-size: 8pt;">(documentos)</div>
+        </td>
+      </tr>
+    </table>
+    
+    <div class="vgap-10"></div>
+    
+    <table>
+      <tr>
+        <td>
+          <div class="text-center">
+             Autorizo a transferência para a minha conta corrente, da importância a saber
+          </div>
+          <div class="vgap-10"></div>
+          <table>
+            <tr>
+              <td style="border: none;">Data: ___/___/______</td>
+              <td class="text-center" style="border: none;" width="50%">
+                _________________________________________________<br/>
+                Assinatura do Militar/Pensionista
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    
+    <div class="vgap-10"></div>
+    
+    <table>
+      <tr>
+        <td width="50%" valign="top">Observações:</td>
+        <td>
+          Recebido em<br/><br/><br/>
+          ________________________________________________________<br/>
+          <div class="text-center">Assinatura/Carimbo</div>
+        </td>
+      </tr>
+    </table>
+    
+  </body>
+</html>
